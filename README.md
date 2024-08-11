@@ -1,6 +1,6 @@
-hii jama<h1 align="center">SnapCV</h1>
+<h1 align="left">SnapCV</h1>
 
-<p align="center">
+<p align="left">
   <b>SnapCV</b> is an open-source, AI-powered platform that effortlessly transforms resumes into professional portfolios. Whether you're a student, coder, or professional, SnapCV makes it easy to showcase your skills and achievements.
 </p>
 
@@ -43,7 +43,7 @@ cd snapcv</code></pre>
     <p>Create a <code>.env.local</code> file in the root directory and add the following:</p>
     <pre><code>NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-    NEXT_PUBLIC_BACKEND=backend-link</code></pre>
+NEXT_PUBLIC_BACKEND=backend-link</code></pre>
   </li>
   <li><b>Run the development server:</b>
     <pre><code>npm run dev</code></pre>
