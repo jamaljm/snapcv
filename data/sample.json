@@ -1,0 +1,82 @@
+{
+  "supabaseUserId": "550e8400-e29b-41d4-a716-446655440000",
+  "name": "John Doe",
+  "roll": "Software Engineer",
+  "about": "A passionate developer with expertise in full stack development.",
+  "skills": ["JavaScript", "TypeScript", "React", "Node.js", "GraphQL"],
+  "resumeLink": "https://example.com/resume.pdf",
+  "buttonText": "Download Resume",
+  "summary": "Innovative and deadline-driven Software Engineer with 5+ years of experience.",
+  "avatarUrl": "https://example.com/avatar.jpg",
+  "contact": {
+    "email": "john.doe@example.com",
+    "tel": "+1234567890",
+    "social": {
+      "GitHub": "https://github.com/johndoe",
+      "LinkedIn": "https://linkedin.com/in/johndoe",
+      "X": "https://x.com/johndoe",
+      "Youtube": "https://youtube.com/user/johndoe",
+      "dribbble": "https://dribbble.com/johndoe"
+    }
+  },
+  "workExperience": [
+    {
+      "company": "Tech Corp",
+      "href": "https://techcorp.com",
+      "title": "Senior Software Engineer",
+      "logoUrl": "https://techcorp.com/logo.png",
+      "start": "2020-01-01",
+      "end": "Present",
+      "description": "Leading a team of developers to build scalable web applications."
+    },
+    {
+      "company": "Web Solutions",
+      "href": "https://websolutions.com",
+      "title": "Software Engineer",
+      "logoUrl": "https://websolutions.com/logo.png",
+      "start": "2018-06-01",
+      "end": "2019-12-31",
+      "description": "Developed several high-traffic websites and web applications."
+    }
+  ],
+  "education": [
+    {
+      "school": "University of Technology",
+      "href": "https://university.com",
+      "degree": "Bachelor of Science in Computer Science",
+      "logoUrl": "https://university.com/logo.png",
+      "start": "2014-09-01",
+      "end": "2018-06-01"
+    }
+  ],
+  "hackathonDescription": "Participated in several hackathons:",
+  "hackathons": [
+    {
+      "title": "Hackathon 1",
+      "dates": "2022-03-01 to 2022-03-03",
+      "location": "New York",
+      "description": "Built a mobile app to track fitness activities.",
+      "image": "https://hackathon1.com/image.png",
+      "win": "1st Place",
+      "links": {
+        "website": "https://hackathon1.com",
+        "github": "https://github.com/johndoe/hackathon1"
+      }
+    }
+  ]
+}
+
+{
+  "title": "E-commerce Platform",
+  "href": "https://example.com/ecommerce",
+  "dates": "2023-01-01 to 2023-12-31",
+  "description": "Developed a scalable e-commerce platform using React and Node.js.",
+  "technologies": ["React", "Node.js", "Express", "MongoDB"],
+  "links":
+    {
+      "website": "https://example.com/ecommerce",
+      "source": "https://github.com/username/ecommerce"
+    },
+    
+  "image": "https://example.com/ecommerce/screenshot.jpg",
+}
