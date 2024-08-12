@@ -1,10 +1,8 @@
 "use client";
 import React, { useRef, useState } from "react";
-import OrbitingCircles from "@/components/magicui/orbiting-circles";
 import Link from "next/link";
 import { Input } from "@nextui-org/react";
 import type { ConfettiRef } from "@/components/magicui/confetti";
-import Confetti from "@/components/magicui/confetti";
 import ShimmerButton from "@/components/magicui/shimmer-button";
 import SparklesText from "@/components/magicui/sparkles-text";
 import TextReveal from "@/components/magicui/text-reveal";
@@ -14,10 +12,10 @@ import { useCommonContext } from "@/Common_context";
 import { useRouter } from "next/navigation";
 import { reservedWords } from "@/lib/type";
 import DotPattern from "../magicui/dot-pattern";
-import Marquee from "../magicui/marquee";
 import { MarqueeDemo } from "./Marquee";
 import RetroGrid from "../magicui/retro-grid";
 import Footer from "./Footer";
+import { GithubButton } from "./GithubButton";
 
 export default function Hero() {
   const { userData } = useCommonContext();
@@ -79,12 +77,15 @@ export default function Hero() {
           <img className="w-7 sm:w-10" src="/logo.png" />
           Snapcv
         </h2>
-        <Link
-          className="text-black border-2 border-black/80 px-6 font-urbanist font-semibold py-1.5 sm:py-2 text-sm sm:text-base rounded-full"
-          href="/login"
-        >
-          Sign in{" "}
-        </Link>
+        <div className="flex gap-2">
+          <GithubButton />
+          <Link
+            className="text-black border-2 border-black/80 px-6 font-urbanist font-semibold py-1.5 sm:py-1.5 text-sm sm:text-base rounded-full"
+            href="/login"
+          >
+            Sign in{" "}
+          </Link>
+        </div>
       </div>
 
       <div className=" flex flex-col  h-screen px-6 w-full absolute justify-center  items-center  overflow-hidden rounded-lg bg-white ">

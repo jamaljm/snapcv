@@ -121,43 +121,47 @@ export default function page({ user }: { user: User }) {
               {user.buttonText}{" "}
             </Link>
           </section>
-          <section id="work" className="p-6">
-            <div className="flex min-h-0 flex-col gap-y-3">
-              <h2 className="text-lg font-semibold">Work Experience</h2>
-              <div className="mt-3 space-y-6">
-                {user.workExperience.map((work, id) => (
-                  <ResumeCard
-                    key={work.company}
-                    logoUrl={work.logoUrl}
-                    altText={work.company}
-                    title={work.company}
-                    subtitle={work.title}
-                    period={`${work.start} - ${work.end ?? "Present"}`}
-                    description={work.description}
-                    href={work.link}
-                  />
-                ))}
+          {user.workExperience.length > 0 && (
+            <section id="work" className="p-6">
+              <div className="flex min-h-0 flex-col gap-y-3">
+                <h2 className="text-lg font-semibold">Work Experience</h2>
+                <div className="mt-3 space-y-6">
+                  {user.workExperience.map((work, id) => (
+                    <ResumeCard
+                      key={work.company}
+                      logoUrl={work.logoUrl}
+                      altText={work.company}
+                      title={work.company}
+                      subtitle={work.title}
+                      period={`${work.start} - ${work.end ?? "Present"}`}
+                      description={work.description}
+                      href={work.link}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          </section>
-          <section id="education" className="p-6">
-            <div className="flex min-h-0 flex-col gap-y-3">
-              <h2 className="text-lg font-semibold">Education</h2>
-              <div className="space-y-6 mt-3">
-                {user.education.map((education, id) => (
-                  <EducationCard
-                    key={education.school}
-                    href={education.link}
-                    logoUrl={education.logoUrl}
-                    altText={education.school}
-                    title={education.school}
-                    period={`${education.start} - ${education.end}`}
-                    subtitle={education.degree}
-                  />
-                ))}
+            </section>
+          )}
+          {user.workExperience.length > 0 && (
+            <section id="education" className="p-6">
+              <div className="flex min-h-0 flex-col gap-y-3">
+                <h2 className="text-lg font-semibold">Education</h2>
+                <div className="space-y-6 mt-3">
+                  {user.education.map((education, id) => (
+                    <EducationCard
+                      key={education.school}
+                      href={education.link}
+                      logoUrl={education.logoUrl}
+                      altText={education.school}
+                      title={education.school}
+                      period={`${education.start} - ${education.end}`}
+                      subtitle={education.degree}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
           {user.projects.length > 0 && (
             <section id="projects" className="p-6">
               <div className="space-y-12 w-full py-1">

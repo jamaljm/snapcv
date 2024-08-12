@@ -33,7 +33,7 @@
 <h3>Installation</h3>
 <ol>
   <li><b>Clone the repository:</b>
-    <pre><code>git clone https://github.com/your-username/snapcv.git
+    <pre><code>git clone https://github.com/jamaljm/snapcv.git
 cd snapcv</code></pre>
   </li>
   <li><b>Install dependencies:</b>
@@ -62,7 +62,7 @@ NEXT_PUBLIC_BACKEND=backend-link</code></pre>
 </ol>
 
 <h3>Reporting Issues</h3>
-<p>If you encounter any bugs or have suggestions for new features, please open an issue in the <a href="https://github.com/your-username/snapcv/issues" target="_blank">Issues section</a> of the repository. Be sure to include detailed information so we can help resolve it quickly.</p>
+<p>If you encounter any bugs or have suggestions for new features, please open an issue in the <a href="https://github.com/jamaljm/snapcv/issues" target="_blank">Issues section</a> of the repository. Be sure to include detailed information so we can help resolve it quickly.</p>
 
 <h2>Contact</h2>
-<p>For any questions, feel free to reach out via the <a href="https://github.com/your-username/snapcv/discussions" target="_blank">Discussions</a> tab or email us at <a href="mailto:jamalvga2002@gmail.com">jamalvga2002@gmail.com</a>.</p>
+<p>For any questions, feel free to reach out via the email us at <a href="mailto:jamalvga2002@gmail.com">jamalvga2002@gmail.com</a>.</p>

@@ -65,18 +65,3 @@
     }
   ]
 }
-
-{
-  "title": "E-commerce Platform",
-  "href": "https://example.com/ecommerce",
-  "dates": "2023-01-01 to 2023-12-31",
-  "description": "Developed a scalable e-commerce platform using React and Node.js.",
-  "technologies": ["React", "Node.js", "Express", "MongoDB"],
-  "links":
-    {
-      "website": "https://example.com/ecommerce",
-      "source": "https://github.com/username/ecommerce"
-    },
-    
-  "image": "https://example.com/ecommerce/screenshot.jpg",
-}

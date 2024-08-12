@@ -23,7 +23,7 @@ export const TextRevealByWord: FC<TextRevealByWordProps> = ({
   return (
     <div
       ref={targetRef}
-      className={cn("relative z-50 h-[170vh] sm:h-[150vh]", className)}
+      className={cn("relative z-50 h-[200vh] sm:h-[150vh]", className)}
     >
       <div
         className={
