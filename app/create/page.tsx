@@ -192,6 +192,7 @@ export default function Page() {
       userName: shopSlug,
       avatarUrl: userData?.user.user_metadata.avatar_url,
       fullName: userData?.user.user_metadata.full_name,
+      email: userData?.user.email,
     });
 
     if (error) {
@@ -263,6 +264,7 @@ export default function Page() {
         userName: shopSlug,
         avatarUrl: userData?.user.user_metadata.avatar_url,
         userId: userData?.user.id,
+        email: userData?.user.email,
       };
       const { data, error } = await supabase
         .from("User")
@@ -274,7 +276,6 @@ export default function Page() {
       setValue(100);
       if (!error) {
         router.push("/home");
-        setAiCreating(false);
       }
 
       console.log("AI Generated Result:", result);

@@ -18,7 +18,6 @@ ${text}
   "fullName": "",
   "roll": "",
   "about": "",
-  "email": "",
   "phone": "",
   "skills": [],
   "contact": {

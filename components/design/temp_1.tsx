@@ -92,19 +92,21 @@ export default function page({ user }: { user: User }) {
               <h4 className="font-medium text-base">{user.roll}</h4>
               <p className="text-sm font-light mt-2">{user.about}</p>
             </div>
-            <div>
-              <p className="font-medium text-sm text-slate-600">Skills</p>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {user.skills.map((skill) => (
-                  <Badge
-                    className="bg-slate-100/40  font-medium  hover:bg-slate-200 text-blue-950/95 text-xs shadow-none rounded-xl px-3.5 py-1.5"
-                    key={skill}
-                  >
-                    {skill}
-                  </Badge>
-                ))}
+            {user.skills.length > 0 && (
+              <div>
+                <p className="font-medium text-sm text-slate-600">Skills</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {user.skills.map((skill) => (
+                    <Badge
+                      className="bg-slate-100/40  font-medium  hover:bg-slate-200 text-blue-950/95 text-xs shadow-none rounded-xl px-3.5 py-1.5"
+                      key={skill}
+                    >
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </section>
           <section className="flex justify-start w-full gap-4 p-6 pt-8">
             <Link

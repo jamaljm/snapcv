@@ -71,7 +71,7 @@ export default function Footer() {
                 </svg>
               </Link>
               <Link
-                href="https://x.com/jamalVengara"
+                href="https://x.com/m_jamal_jm"
                 className="text-2xl font-urbanist text-gray-700 font-semibold"
               >
                 <svg
