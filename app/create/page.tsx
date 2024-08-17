@@ -13,6 +13,7 @@ import axios from "axios";
 import confetti from "canvas-confetti";
 
 import AnimatedCircularProgressBar from "@/components/magicui/animated-circular-progress-bar";
+import withAuth from "@/utils/authProtect";
 interface User {
   userId: string;
   email: string;
@@ -21,7 +22,7 @@ interface User {
   fullName: string;
 }
 
-export default function Page() {
+function Page() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { userData } = useCommonContext();
@@ -367,7 +368,7 @@ export default function Page() {
           />
           <div className="flex z-50 mt-8 flex-col gap-2 sm:gap-0 w-full justify-center text-sm  items-center">
             <p className="w-full text-start max-w-sm font-medium mb-2.5 text-base">
-              Upload resume for instant portfolio
+              Upload resume for instant portfolio (PDF)
             </p>
             <div className="flex max-w-sm w-full justify-center  gap-2 items-center flex-row flex-wrap">
               {resumeUrl ? (
@@ -421,7 +422,7 @@ export default function Page() {
                     d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
                   />
                 </svg>
-                {uploadStatus === "idle" && "Upload resume or CV"}
+                {uploadStatus === "idle" && "Upload resume or CV (PDF)"}
                 {uploadStatus === "uploading" && "Uploading..."}
                 {uploadStatus === "uploaded" && "resume uploaded"}
                 <input
@@ -488,3 +489,5 @@ export default function Page() {
     </div>
   );
 }
+
+export default withAuth(Page);

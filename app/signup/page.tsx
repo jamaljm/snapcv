@@ -74,10 +74,13 @@ export default function page() {
   return (
     <>
       <div className="absolute flex justify-between items-center p-6 sm:p-8 px-4 sm:px-12 z-50 top-0 w-full">
-        <h2 className="text-3xl sm:text-4xl flex items-center font-urbanist gap-1 font-bold">
+        <Link
+          href="/snapcv"
+          className="text-3xl sm:text-4xl flex items-center font-urbanist gap-1 font-bold"
+        >
           <img className="w-7 sm:w-10" src="/logo.png" />
           Snapcv
-        </h2>
+        </Link>
         <Link href={"/login"}>
           <ShimmerButton className="shadow-2xl">
             <span className="whitespace-pre-wrap text-center text-sm   font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-base">
@@ -106,7 +109,6 @@ export default function page() {
                 className="max-w-5xl flex-1 sm:max-w-4xl  text-black/90 text-2xl/relaxed  font-urbanist sm:text-3xl/relaxed font-semibold whitespace-pre-wrap  text-center dark:text-white"
                 words="You're one step away from creating it."
               />
-            
             </BlurFade>
             <BlurFade
               className="w-full flex-1 flex mt-8 h-fit justify-center items-start"

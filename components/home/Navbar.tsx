@@ -36,8 +36,8 @@ export default function Navbar() {
           <div className="flex items-center justify-between">
             <div className="flex-shrink-0">
               <Link
-                href="/"
-                title=""
+                href="/snapcv"
+                title="snapcv"
                 className="flex gap-2 justify-center items-center text-2xl font-semibold"
               >
                 <img src="/logo.png" className="h-8" /> Snapcv

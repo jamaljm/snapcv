@@ -11,7 +11,7 @@ const reviews = [
   {
     name: "Moritz Pail",
     website: "moritzpail.snapcv.me",
-    img: "https://lh3.googleusercontent.com/a/ACg8ocJG8W2lPAV8T_bC6BBvEdk0FpJ3o8B9F9py9Rk1kVhmCB5XqvQ=s96-c",
+    img: "/profile/moritz-pail.jpg",
   },
   {
     name: "Goutham",

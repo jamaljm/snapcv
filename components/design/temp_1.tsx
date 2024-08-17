@@ -144,7 +144,7 @@ export default function page({ user }: { user: User }) {
               </div>
             </section>
           )}
-          {user.workExperience.length > 0 && (
+          {user.education.length > 0 && (
             <section id="education" className="p-6">
               <div className="flex min-h-0 flex-col gap-y-3">
                 <h2 className="text-lg font-semibold">Education</h2>
