@@ -15,7 +15,7 @@ import { Providers } from "./providers";
 import { CommonContextProvider } from "@/Common_context";
 import { Toaster } from "@/components/ui/toaster";
 import { redirect } from "next/navigation";
-import { createClient } from "@/utils/supabase/server";
+import { supabase } from "@/utils/supabase/supabase_service";
 import { User } from "@/lib/type";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -62,8 +62,8 @@ const OutfitFont = Outfit({
 });
 
 async function getUSer(snapcv: string): Promise<any | null> {
-  const supabase = createClient();
   try {
+    
     const { data: userData, error: userError } = await supabase
       .from("User")
       .select("fullName, userName, about, avatarUrl")
