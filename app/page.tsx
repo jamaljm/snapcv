@@ -12,6 +12,7 @@ export default function IndexPage() {
 
   useEffect(() => {
     const href = window.location.href;
+
     getPageData(href)
       .then((data) => {
         setUser(data);
@@ -21,7 +22,6 @@ export default function IndexPage() {
         console.error("Failed to fetch page data:", error);
         setLoading(false);
       });
-
     return () => {};
   }, []);
 

@@ -16,6 +16,7 @@ import { MarqueeDemo } from "./Marquee";
 import RetroGrid from "../magicui/retro-grid";
 import Footer from "./Footer";
 import { GithubButton } from "./GithubButton";
+import axios from "axios";
 
 export default function Hero() {
   const { userData } = useCommonContext();
@@ -41,11 +42,10 @@ export default function Hero() {
     if (reservedWords.includes(slug.toLowerCase())) {
       return false;
     }
+    const response = await axios.post("/api/checkSlug", { slug: slug });
 
-    const { data, error } = await supabase
-      .from("User")
-      .select("userName")
-      .eq("userName", slug);
+    // Extract the user data and error from the response
+    const { data: data, error: error } = response.data;
 
     if (error) {
       console.error("Error checking slug:", error);

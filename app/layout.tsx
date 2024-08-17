@@ -17,6 +17,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { User } from "@/lib/type";
+import { Analytics } from "@vercel/analytics/react";
 
 const robotoFont = Roboto({
   weight: ["400", "700"],
@@ -242,7 +243,10 @@ export default function RootLayout({
         <CommonContextProvider>
           <ThemeProvider attribute="class" defaultTheme="light">
             <TooltipProvider delayDuration={0}>
-              <Providers>{children}</Providers> <Toaster />
+              <Providers>
+                {children} <Analytics />
+              </Providers>
+              <Toaster />
             </TooltipProvider>
           </ThemeProvider>
         </CommonContextProvider>

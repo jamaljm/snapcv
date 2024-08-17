@@ -1,5 +1,6 @@
 import { User } from "@/lib/type";
 import { supabase } from "@/utils/supabase/client";
+import axios from "axios";
 
 async function getPageData(href: string): Promise<User | null> {
   if (typeof window === "undefined") {
@@ -22,11 +23,12 @@ async function getPageData(href: string): Promise<User | null> {
   }
 
   try {
-    const { data: userData, error: userError } = await supabase
-      .from("User")
-      .select("*")
-      .eq("userName", page)
-      .single();
+    //call axios to get data from server
+
+    const response = await axios.post("/api/getUser", { username: page });
+
+    // Extract the user data and error from the response
+    const { data: userData, error: userError } = response.data;
 
     if (userError) {
       console.error("Supabase error:", userError);
