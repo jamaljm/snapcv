@@ -9,6 +9,11 @@ const reviews = [
     img: "/profile/jamal.jpeg",
   },
   {
+    name: "Moritz Pail",
+    website: "moritzpail.snapcv.me",
+    img: "https://lh3.googleusercontent.com/a/ACg8ocJG8W2lPAV8T_bC6BBvEdk0FpJ3o8B9F9py9Rk1kVhmCB5XqvQ=s96-c",
+  },
+  {
     name: "Goutham",
     website: "goutham.snapcv.me",
     img: "/profile/goutham.jpeg",
