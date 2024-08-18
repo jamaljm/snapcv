@@ -219,6 +219,18 @@ export default function Hero() {
             </ShimmerButton>{" "}
           </Link>
         </div>
+        <a
+          className="mt-6"
+          href="https://www.producthunt.com/posts/snapcv?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-snapcv"
+          target="_blank"
+        >
+          <img
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=480945&theme=light"
+            alt="SnapCV - Create&#0032;a&#0032;Stunning&#0032;Portfolio&#0032;that&#0032;Gets&#0032;You&#0032;Hired | Product Hunt"
+            width="250"
+            height="54"
+          />
+        </a>
         <MarqueeDemo />
       </div>
 
