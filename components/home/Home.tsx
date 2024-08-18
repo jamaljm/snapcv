@@ -1081,7 +1081,7 @@ export default function Home() {
               />
             </div>
             <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
-              <p className="pt-.05">Your roll</p>
+              <p className="pt-.05">Your role</p>
               <Input
                 type="text"
                 variant="bordered"
