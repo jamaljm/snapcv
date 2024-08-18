@@ -2316,7 +2316,7 @@ export default function Home() {
         <div className=" w-full z-50 flex gap-5 bg-white p-4 px-10 sticky bottom-0">
           <Link
             target="_blank"
-            href={`/${user.userName}`}
+            href={`https://${user.userName}.snapcv.me`}
             className="w-full rounded-xl sm:flex hidden border font-medium text-sm  justify-center items-center  bg-neutral-50"
           >
             View live
