@@ -828,7 +828,7 @@ export default function Home() {
             <div className="rounded-xl py-3 font-dmSans">
               <Link
                 target="_blank"
-                href={`/${user.userName}`}
+                href={`https://${user.userName}.snapcv.me`}
                 className="bg-green-100 border  border-slate-100 text-slate-950 font-semibold px-4 py-2 rounded-xl  cursor-pointer hover:bg-green-200 hover:text-slate-700"
               >
                 Visit your snapcv
