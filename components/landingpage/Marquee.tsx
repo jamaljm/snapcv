@@ -69,7 +69,7 @@ const ReviewCard = ({
             className="rounded-full"
             width="32"
             height="32"
-            alt=""
+            alt={name}
             src={img}
           />
           <div className="flex flex-col">

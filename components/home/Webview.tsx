@@ -5,7 +5,7 @@ import Left_panel from "./Left_panel";
 
 export default function Webview() {
   return (
-    <div>
+    <div >
       <section className=" bg-white hidden sm:block ">
         <Navbar />
 

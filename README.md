@@ -43,6 +43,7 @@ cd snapcv</code></pre>
     <p>Create a <code>.env.local</code> file in the root directory and add the following:</p>
     <pre><code>NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_ANON_KEY=your-supabase-service-key
 NEXT_PUBLIC_BACKEND=backend-link</code></pre>
   </li>
   <li><b>Run the development server:</b>

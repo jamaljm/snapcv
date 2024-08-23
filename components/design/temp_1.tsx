@@ -79,17 +79,21 @@ export default function page({ user }: { user: User }) {
               <div className="gap-4 flex flex-col">
                 <div className="flex-col flex gap-1  font-semibold flex-1 space-y-1.5">
                   <Avatar className="size-20 border-2 border-white">
-                    <AvatarImage alt={user.fullName} src={user.avatarUrl} />
+                    <AvatarImage
+                      className="w-full h-full object-cover object-top"
+                      alt={user.fullName}
+                      src={user.avatarUrl}
+                    />
                     <AvatarFallback>{user.userName.slice(0, 2)}</AvatarFallback>
                   </Avatar>
-                  <h2 className="text-xl">{user.fullName}</h2>
+                  <h1 className="text-xl">{user.fullName}</h1>
                 </div>
               </div>
             </div>
           </section>
           <section className="flex z-50 flex-col gap-4 px-6">
             <div className=" ">
-              <h4 className="font-medium text-base">{user.roll}</h4>
+              <h2 className="font-medium text-base">{user.roll}</h2>
               <p className="text-sm font-light mt-2">{user.about}</p>
             </div>
             {user.skills.length > 0 && (

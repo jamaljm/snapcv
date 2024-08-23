@@ -7,7 +7,7 @@ import React from "react";
 function Page() {
   
   return (
-    <div>
+    <div >
       <Webview />
       <Mob_view />
     </div>

@@ -18,6 +18,7 @@ import { redirect } from "next/navigation";
 import { supabase } from "@/utils/supabase/supabase_service";
 import { User } from "@/lib/type";
 import { Analytics } from "@vercel/analytics/react";
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 
 const robotoFont = Roboto({
   weight: ["400", "700"],
@@ -63,7 +64,6 @@ const OutfitFont = Outfit({
 
 async function getUSer(snapcv: string): Promise<any | null> {
   try {
-    
     const { data: userData, error: userError } = await supabase
       .from("User")
       .select("fullName, userName, about, avatarUrl")
@@ -89,8 +89,9 @@ async function getUSer(snapcv: string): Promise<any | null> {
 
 export async function generateMetadata(): Promise<Metadata> {
   const headersList = headers();
-  const userName = headersList.get("x-forwarded-host")?.split(".")[0];
+  const userName = headersList.get("x-forwarded-host")?.split(".")[0] ?? "";
   const isDev = userName?.includes("localhost");
+
   if (userName === "www" || isDev) {
     return {
       metadataBase: new URL("https://snapcv.me"),
@@ -146,13 +147,13 @@ export async function generateMetadata(): Promise<Metadata> {
   if (!user) {
     return {
       metadataBase: new URL("https://snapcv.me"),
-      title: "SnapCV - Create and Share Beautiful CVs Effortlessly",
+      title: "SnapCV - Create Stunning Portfolios and CVs that Get You Hired",
       description:
-        "SnapCV is a short CV creator that allows you to easily share your CV across DMs and social media platforms. Create stunning CVs with beautiful templates. Ideal for job seekers, professionals, and students.",
+        "SnapCV is your ultimate tool to instantly transform your resume into a beautiful, shareable portfolio. Ideal for job seekers, professionals, and students. Share your professional journey across DMs and social media with customizable templates designed to impress.",
       openGraph: {
-        title: "SnapCV - Create and Share Beautiful CVs Effortlessly",
+        title: "SnapCV - Create Stunning Portfolios and CVs that Get You Hired",
         description:
-          "SnapCV is a short CV creator that allows you to easily share your CV across DMs and social media platforms. Create stunning CVs with beautiful templates. Ideal for job seekers, professionals, and students.",
+          "Instantly create and share stunning portfolios and CVs with SnapCV. Effortlessly convert your resume into a professional portfolio that stands out. Perfect for job seekers, professionals, and students.",
         url: "https://snapcv.me",
         siteName: "SnapCV",
         locale: "en_US",
@@ -171,7 +172,7 @@ export async function generateMetadata(): Promise<Metadata> {
         },
       },
       twitter: {
-        title: "SnapCV - Create and Share Beautiful CVs Effortlessly",
+        title: "SnapCV - Create Stunning Portfolios and CVs Instantly",
         card: "summary_large_image",
       },
       verification: {
@@ -180,17 +181,27 @@ export async function generateMetadata(): Promise<Metadata> {
       },
       keywords: [
         "CV creator",
-        "short CV",
-        "beautiful CV templates",
-        "CV sharing",
+        "online portfolio maker",
+        "instant CV creator",
+        "portfolio templates",
+        "share CV online",
         "DM CV sharing",
-        "social media CV",
-        "job seekers",
-        "professional CV",
-        "student CV",
+        "social media portfolio",
+        "professional portfolio",
+        "job seekers portfolio",
+        "student CV builder",
+        "customizable CV templates",
+        "beautiful CV designs",
+        "resume to portfolio",
+        "digital portfolio",
+        "impress employers",
         "easy CV creation",
         "stunning CV designs",
         "online CV tool",
+        "get hired faster",
+        "CV for LinkedIn",
+        "social media resume",
+        "free CV builder",
       ],
     };
   }
@@ -199,7 +210,6 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(`https://${user.userName}.snapcv.me`),
     title: user.fullName,
     description: user.about,
-    icons: user.avatarUrl,
     openGraph: {
       title: `${user.fullName}`,
       description: user.about,
@@ -228,6 +238,15 @@ export async function generateMetadata(): Promise<Metadata> {
       google: "",
       yandex: "",
     },
+    keywords: [
+      `${user.fullName} portfolio`,
+      `${user.userName} CV`,
+      `${user.userName} profile`,
+      `${user.userName} online resume`,
+      "personal portfolio",
+      "online profile",
+      "digital portfolio",
+    ],
   };
 }
 
@@ -240,6 +259,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={fontVariables} suppressHydrationWarning>
       <body className="font-dmSans">
+        <GoogleAnalytics gaId="G-3VBBZ01RDS" />{" "}
+        <GoogleTagManager gtmId="GTM-P92GBK9P" />
         <CommonContextProvider>
           <ThemeProvider attribute="class" defaultTheme="light">
             <TooltipProvider delayDuration={0}>
