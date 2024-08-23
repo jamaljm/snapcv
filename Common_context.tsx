@@ -58,12 +58,43 @@ export function CommonContextProvider({
     setCurrent_page(page);
   };
 
+/*
+Previous Logout logic 
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
     router.push("/");
     if (error) {
       console.error("Error logging out:", error.message);
       return;
+    }
+  };
+
+Issues found within the previous logout logic:
+  - You were pushing to the home page ("/") right after calling supabase.auth.signOut() before checking if the sign-out was successful. 
+    This may result in the page being redirected even if the logout fails, which might be the cause of the page flicker.
+  - The user session may still exist when you push the route. Make sure the session is fully cleared before routing.
+*/
+
+/* New logout logic
+  - The user session is cleared before redirecting to the login page.
+  - The user is set to null after logging out.
+  - Redirecting to /login after ensuring the session is cleared will prevent the flickering between /home and /login.
+
+
+*/
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut(); // Clears the session
+      if (error) {
+        console.error("Error logging out:", error.message);
+        return;
+      }
+      // Ensure the user session is cleared before redirecting
+      setUser(null);
+      // Redrecting to the login page after logout
+      router.push("/login");
+    } catch (err) {
+      console.error("Unexpected error during logout:", err);
     }
   };
 
