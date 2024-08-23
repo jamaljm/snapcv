@@ -93,55 +93,66 @@ export async function generateMetadata(): Promise<Metadata> {
   const isDev = userName?.includes("localhost");
 
   if (userName === "www" || isDev) {
-    return {
-      metadataBase: new URL("https://snapcv.me"),
-      title: "SnapCV - Create and Share Beautiful CVs Effortlessly",
-      description:
-        "SnapCV is a short CV creator that allows you to easily share your CV across DMs and social media platforms. Create stunning CVs with beautiful templates. Ideal for job seekers, professionals, and students.",
-      openGraph: {
-        title: "SnapCV - Create and Share Beautiful CVs Effortlessly",
-        description:
-          "SnapCV is a short CV creator that allows you to easily share your CV across DMs and social media platforms. Create stunning CVs with beautiful templates. Ideal for job seekers, professionals, and students.",
-        url: "https://snapcv.me",
-        siteName: "SnapCV",
-        locale: "en_US",
-        type: "website",
-        images: "/logo_icon.png",
-      },
-      robots: {
-        index: true,
-        follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-          "max-video-preview": -1,
-          "max-image-preview": "large",
-          "max-snippet": -1,
-        },
-      },
-      twitter: {
-        title: "SnapCV - Create and Share Beautiful CVs Effortlessly",
-        card: "summary_large_image",
-      },
-      verification: {
-        google: "",
-        yandex: "",
-      },
-      keywords: [
-        "CV creator",
-        "short CV",
-        "beautiful CV templates",
-        "CV sharing",
-        "DM CV sharing",
-        "social media CV",
-        "job seekers",
-        "professional CV",
-        "student CV",
-        "easy CV creation",
-        "stunning CV designs",
-        "online CV tool",
-      ],
-    };
+     return {
+       metadataBase: new URL("https://snapcv.me"),
+       title: "SnapCV - Create Stunning Portfolios and CVs that Get You Hired",
+       description:
+         "SnapCV is your ultimate tool to instantly transform your resume into a beautiful, shareable portfolio. Ideal for job seekers, professionals, and students. Share your professional journey across DMs and social media with customizable templates designed to impress.",
+       openGraph: {
+         title:
+           "SnapCV - Create Stunning Portfolios and CVs that Get You Hired",
+         description:
+           "Instantly create and share stunning portfolios and CVs with SnapCV. Effortlessly convert your resume into a professional portfolio that stands out. Perfect for job seekers, professionals, and students.",
+         url: "https://snapcv.me",
+         siteName: "SnapCV",
+         locale: "en_US",
+         type: "website",
+         images: "/logo_icon.png",
+       },
+       robots: {
+         index: true,
+         follow: true,
+         googleBot: {
+           index: true,
+           follow: true,
+           "max-video-preview": -1,
+           "max-image-preview": "large",
+           "max-snippet": -1,
+         },
+       },
+       twitter: {
+         title: "SnapCV - Create Stunning Portfolios and CVs Instantly",
+         card: "summary_large_image",
+       },
+       verification: {
+         google: "",
+         yandex: "",
+       },
+       keywords: [
+         "CV creator",
+         "online portfolio maker",
+         "instant CV creator",
+         "portfolio templates",
+         "share CV online",
+         "DM CV sharing",
+         "social media portfolio",
+         "professional portfolio",
+         "job seekers portfolio",
+         "student CV builder",
+         "customizable CV templates",
+         "beautiful CV designs",
+         "resume to portfolio",
+         "digital portfolio",
+         "impress employers",
+         "easy CV creation",
+         "stunning CV designs",
+         "online CV tool",
+         "get hired faster",
+         "CV for LinkedIn",
+         "social media resume",
+         "free CV builder",
+       ],
+     };
   }
   const user: User | null = await getUSer(userName || "");
   if (!user) {
