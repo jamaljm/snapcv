@@ -165,7 +165,7 @@ export default function Hero() {
         <div className=" mt-5 sm:hidden flex justify-center items-center gap-5  flex-col w-full max-w-lg">
           <Input
             type="url"
-            placeholder="Your name"
+            placeholder="name"
             labelPlacement="outside"
             className="z-50  col-span-1 sm:col-span-2 max-w-xs flex justify-center  w-full  font-urbanist font-semibold text-lg rounded-xl min-w-lg"
             size="lg"

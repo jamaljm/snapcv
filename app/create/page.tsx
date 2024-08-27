@@ -296,7 +296,7 @@ function Page() {
       </div>
       <div className="w-full h-full px-7 flex flex-col justify-between items-center ">
         {aiCreating ? (
-          <div className="flex justify-start flex-col items-center gap-10">
+          <div className="flex justify-start mt-20 flex-col items-center gap-10">
             <DotPattern className="absolute mt-16 [mask-image:radial-gradient(300px_circle_at_center,white,transparent)]" />
             <h1 className="text-3xl z-50  pb-0 text-black font-semibold font-urbanist text-center">
               AI is generating
