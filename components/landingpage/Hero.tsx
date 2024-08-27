@@ -116,8 +116,9 @@ export default function Hero() {
                 alert("Spaces are not allowed in the username.");
                 return;
               }
+              const value = e.target.value.toLowerCase().replace(/[^a-z]/g, "");
               setSlugError(false);
-              setShopSlug(e.target.value);
+              setShopSlug(value);
             }}
             endContent={
               <div className="pointer-events-none w-full justify-between pl-2 flex items-center">
@@ -220,7 +221,7 @@ export default function Hero() {
           </Link>
         </div>
         <a
-          className="mt-6"
+          className="mt-6 hidden sm:block"
           href="https://www.producthunt.com/posts/snapcv?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-snapcv"
           target="_blank"
         >

@@ -191,7 +191,7 @@ function Page() {
     }, 250);
     const { data, error } = await supabase.from("User").insert({
       userId: userData?.user.id,
-      userName: shopSlug,
+      userName: shopSlug.toLowerCase(),
       avatarUrl: userData?.user.user_metadata.avatar_url,
       fullName: userData?.user.user_metadata.full_name,
       email: userData?.user.email,
@@ -263,7 +263,7 @@ function Page() {
       setValue(90);
       const extendedResult = await {
         ...result,
-        userName: shopSlug,
+        userName: shopSlug.toLowerCase(),
         avatarUrl: userData?.user.user_metadata.avatar_url,
         userId: userData?.user.id,
         email: userData?.user.email,
@@ -316,7 +316,7 @@ function Page() {
               Create your portfolio
             </h1>
             <Input
-              type="url"
+              type="text"
               placeholder=""
               labelPlacement="outside"
               label="Claim your portfolio domain"
@@ -331,8 +331,11 @@ function Page() {
               value={shopSlug}
               onBlur={handleBlur}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const value = e.target.value
+                  .toLowerCase()
+                  .replace(/[^a-z]/g, "");
                 setSlugError(false);
-                setShopSlug(e.target.value);
+                setShopSlug(value);
               }}
               endContent={
                 <div className="pointer-events-none w-full justify-between pl-2 flex items-center">
