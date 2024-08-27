@@ -223,7 +223,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(`https://${user.userName}.snapcv.me`),
-    title: user.fullName + "Portfolio",
+    title: user.fullName + "- Portfolio",
     description:
       user.fullName +
       ", " +

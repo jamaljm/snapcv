@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import Script from "next/script";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const revalidate = 60;
 
 async function getUser(pathname: string) {
   try {
