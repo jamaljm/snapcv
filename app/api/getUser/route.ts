@@ -7,8 +7,7 @@ export async function POST(request: Request) {
     .from("User")
     .select("*")
     .eq("userName", username)
-    .single();
-
+    .limit(1);
 
   return NextResponse.json({ data, error }, { status: 200 });
 }

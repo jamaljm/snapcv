@@ -223,7 +223,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(`https://${user.userName}.snapcv.me`),
-    title: user.fullName,
+    title: user.fullName + "Portfolio",
     description:
       user.fullName +
       ", " +
@@ -271,11 +271,6 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       title: `${user.fullName}`,
       card: "summary_large_image",
-      description: `Discover ${user.fullName}'s professional journey, from ${
-        user.education[0].degree
-      } at ${user.education[0].school} to roles like ${user.workExperience
-        .map((exp) => exp.title)
-        .join(", ")}.`,
     },
     verification: {
       google: "",
