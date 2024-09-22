@@ -1,3 +1,5 @@
 {
-  "WillLuke.nextjs.hasPrompted": true
+  "WillLuke.nextjs.hasPrompted": true,
+  "editor.minimap.autohide": false,
+  "editor.minimap.enabled": true
 }

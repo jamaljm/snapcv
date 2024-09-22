@@ -2,7 +2,7 @@
 import { getCookie } from "cookies-next";
 import DotPattern from "@/components/magicui/dot-pattern";
 import React, { useRef, useState, useEffect } from "react";
-import { avatar, Input, Spinner } from "@nextui-org/react";
+import { avatar, Input, Spinner, user } from "@nextui-org/react";
 import type { ConfettiRef } from "@/components/magicui/confetti";
 import { supabase } from "@/utils/supabase/client";
 import { setCookie } from "cookies-next";
@@ -12,9 +12,10 @@ import { reservedWords } from "@/lib/type";
 import axios from "axios";
 import confetti from "canvas-confetti";
 import Navbar from "@/components/create/Navbar";
-
+import { Tabs, Tab } from "@nextui-org/react";
 import AnimatedCircularProgressBar from "@/components/magicui/animated-circular-progress-bar";
 import withAuth from "@/utils/authProtect";
+import { link } from "fs";
 interface User {
   userId: string;
   email: string;
@@ -36,6 +37,8 @@ function Page() {
   const [uploadStatus, setUploadStatus] = useState("idle");
   const [resumeUrl, setResumeUrl] = useState("");
   const [aiCreating, setAiCreating] = useState(false);
+  const [linkedInUrl, setLinkedInUrl] = useState("");
+  const [linkedInError, setLinkedInError] = useState(false);
 
   const [isAvailable, setIsAvailable] = useState(false);
   const isError = slugError || isChecking;
@@ -207,9 +210,21 @@ function Page() {
   };
 
   const generateai = async () => {
-    if (!resumeUrl) {
-      alert("Please upload your resume");
+    const linkedInPattern = /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/;
+
+    if (!resumeUrl && !linkedInUrl) {
+      alert("Please upload your resume or enter your LinkedIn profile URL");
       return;
+    }
+    if (!resumeUrl && linkedInUrl) {
+      if (!linkedInPattern.test(linkedInUrl)) {
+        alert("Please enter a valid LinkedIn URL.");
+        setLinkedInError(true);
+        return;
+      }
+    }
+    if (resumeUrl && linkedInUrl) {
+      setLinkedInUrl("");
     }
     if (!shopSlug) {
       alert("Please enter your portfolio domain");
@@ -218,73 +233,145 @@ function Page() {
     setAiCreating(true);
     setValue(0);
 
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND}/extract-pdf`,
-        {
-          pdfUrl: resumeUrl,
+    if (resumeUrl) {
+      try {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND}/extract-pdf`,
+          {
+            pdfUrl: resumeUrl,
+          }
+        );
+        console.log("AI Generated Result:", response);
+        const result = response.data;
+        setValue(80);
+        // result.userName = shopSlug;
+        // result.avatarUrl = userData?.user_metadata.avatarUrl;
+        // result.userId = userData?.user.id;
+        console.log("AI Generated Result:", result);
+        // Filter out null values from the result object
+        const end = Date.now() + 3 * 1000; // 3 seconds
+        const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+
+        const frame = () => {
+          if (Date.now() > end) return;
+
+          confetti({
+            particleCount: 2,
+            angle: 60,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 0, y: 0.5 },
+            colors: colors,
+          });
+          confetti({
+            particleCount: 2,
+            angle: 120,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 1, y: 0.5 },
+            colors: colors,
+          });
+
+          requestAnimationFrame(frame);
+        };
+
+        frame();
+        setValue(90);
+        const extendedResult = await {
+          ...result,
+          userName: shopSlug,
+          avatarUrl: userData?.user.user_metadata.avatar_url,
+          userId: userData?.user.id,
+          email: userData?.user.email,
+        };
+        const { data, error } = await supabase
+          .from("User")
+          .insert(extendedResult);
+
+        if (error) {
+          console.error("Error inserting user:", error);
         }
-      );
-      console.log("AI Generated Result:", response);
-      const result = response.data;
-      setValue(80);
-      // result.userName = shopSlug;
-      // result.avatarUrl = userData?.user_metadata.avatarUrl;
-      // result.userId = userData?.user.id;
-      console.log("AI Generated Result:", result);
-      // Filter out null values from the result object
-      const end = Date.now() + 3 * 1000; // 3 seconds
-      const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+        setValue(100);
+        if (!error) {
+          router.push("/home");
+        }
 
-      const frame = () => {
-        if (Date.now() > end) return;
-
-        confetti({
-          particleCount: 2,
-          angle: 60,
-          spread: 55,
-          startVelocity: 60,
-          origin: { x: 0, y: 0.5 },
-          colors: colors,
-        });
-        confetti({
-          particleCount: 2,
-          angle: 120,
-          spread: 55,
-          startVelocity: 60,
-          origin: { x: 1, y: 0.5 },
-          colors: colors,
-        });
-
-        requestAnimationFrame(frame);
-      };
-
-      frame();
-      setValue(90);
-      const extendedResult = await {
-        ...result,
-        userName: shopSlug,
-        avatarUrl: userData?.user.user_metadata.avatar_url,
-        userId: userData?.user.id,
-        email: userData?.user.email,
-      };
-      const { data, error } = await supabase
-        .from("User")
-        .insert(extendedResult);
-
-      if (error) {
-        console.error("Error inserting user:", error);
+        console.log("AI Generated Result:", result);
+      } catch (error) {
+        console.error("Error in AI generation:", error);
+        alert("Error in AI generation");
+        setAiCreating(false);
       }
-      setValue(100);
-      if (!error) {
-        router.push("/home");
-      }
+    }
+    if (linkedInUrl) {
+      try {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND}/get-resume`,
+          {
+            profileurl: linkedInUrl,
+          }
+        );
+        console.log("AI Generated Result:", response);
+        const result = response.data;
+        setValue(80);
+        // result.userName = shopSlug;
+        // result.avatarUrl = userData?.user_metadata.avatarUrl;
+        // result.userId = userData?.user.id;
+        console.log("AI Generated Result:", result);
+        // Filter out null values from the result object
+        const end = Date.now() + 3 * 1000; // 3 seconds
+        const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
 
-      console.log("AI Generated Result:", result);
-    } catch (error) {
-      console.error("Error in AI generation:", error);
-      alert("Error in AI generation");
-      setAiCreating(false);
+        const frame = () => {
+          if (Date.now() > end) return;
+
+          confetti({
+            particleCount: 2,
+            angle: 60,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 0, y: 0.5 },
+            colors: colors,
+          });
+          confetti({
+            particleCount: 2,
+            angle: 120,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 1, y: 0.5 },
+            colors: colors,
+          });
+
+          requestAnimationFrame(frame);
+        };
+
+        frame();
+        setValue(90);
+        const extendedResult = await {
+          ...result,
+          userName: shopSlug,
+          avatarUrl: userData?.user.user_metadata.avatar_url,
+          userId: userData?.user.id,
+          email: userData?.user.email,
+        };
+        const { data, error } = await supabase
+          .from("User")
+          .insert(extendedResult);
+
+        if (error) {
+          console.error("Error inserting user:", error);
+        }
+        setValue(100);
+        if (!error) {
+          router.push("/home");
+        }
+
+        console.log("AI Generated Result:", result);
+      } catch (error) {
+        console.error("Error in AI generation:", error);
+        alert("Error in AI generation");
+        setAiCreating(false);
+      }
     }
     return null;
   };
@@ -296,7 +383,7 @@ function Page() {
       </div>
       <div className="w-full h-full px-7 flex flex-col justify-between items-center ">
         {aiCreating ? (
-          <div className="flex justify-start flex-col items-center gap-10">
+          <div className="flex mt-20 justify-start flex-col items-center gap-10">
             <DotPattern className="absolute mt-16 [mask-image:radial-gradient(300px_circle_at_center,white,transparent)]" />
             <h1 className="text-3xl z-50  pb-0 text-black font-semibold font-urbanist text-center">
               AI is generating
@@ -364,78 +451,213 @@ function Page() {
                   </span>
                 </div>
               }
-            />
-            <div className="flex z-50 mt-8 flex-col gap-2 sm:gap-0 w-full justify-center text-sm  items-center">
-              <p className="w-full text-start max-w-sm font-medium mb-2.5 text-base">
-                Upload resume for instant portfolio (PDF)
-              </p>
-              <div className="flex max-w-sm w-full justify-center  gap-2 items-center flex-row flex-wrap">
-                {resumeUrl ? (
-                  <div className="w-12 h-12 flex items-center justify-center  bg-gray-100 rounded-xl">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-6 text-green-500"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12"
-                      />
-                    </svg>
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 flex items-center justify-center  bg-gray-100 rounded-xl">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-6 text-slate-500"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
-                      />
-                    </svg>
-                  </div>
-                )}
+            />{" "}
+            <div className="flex z-50 mt-8 relative flex-col sm:gap-0 w-full justify-center text-sm  items-center">
+              <Tabs
+                className="w-full bg-gray-100 rounded-2xl font-dmSans flex justify-center items-center max-w-sm"
+                aria-label="Options"
+                color="default"
+                variant="light"
+                size="lg"
+                radius="sm"
+              >
+                <Tab
+                  className="w-full "
+                  key="photos"
+                  title={
+                    <div className="flex justify-center items-center  space-x-1 ">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        x="0px"
+                        y="0px"
+                        className="size-6"
+                        viewBox="0 0 48 48"
+                      >
+                        <path
+                          fill="#0288D1"
+                          d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"
+                        ></path>
+                        <path
+                          fill="#FFF"
+                          d="M12 19H17V36H12zM14.485 17h-.028C12.965 17 12 15.888 12 14.499 12 13.08 12.995 12 14.514 12c1.521 0 2.458 1.08 2.486 2.499C17 15.887 16.035 17 14.485 17zM36 36h-5v-9.099c0-2.198-1.225-3.698-3.192-3.698-1.501 0-2.313 1.012-2.707 1.99C24.957 25.543 25 26.511 25 27v9h-5V19h5v2.616C25.721 20.5 26.85 19 29.738 19c3.578 0 6.261 2.25 6.261 7.274L36 36 36 36z"
+                        ></path>
+                      </svg>
+                      <span className="flex text-base h-full justify-center items-center">
+                        Enter linkedIn profile
+                      </span>
+                    </div>
+                  }
+                >
+                  {" "}
+                  <div className="flex z-50 mt-3 flex-col gap-2 sm:gap-0 w-full justify-center text-sm  items-center">
+                    <p className="w-full text-start max-w-sm font-medium mb-2.5 text-base">
+                      Enter your LinkedIn profile URL
+                    </p>
+                    <div className="flex max-w-sm w-full justify-center  gap-2 items-center flex-row flex-wrap">
+                      {resumeUrl ? (
+                        <div className="w-12 h-12 flex items-center justify-center  bg-gray-100 rounded-xl">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            x="0px"
+                            y="0px"
+                            className="size-6"
+                            viewBox="0 0 48 48"
+                          >
+                            <path
+                              fill="#22c55e"
+                              d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"
+                            ></path>
+                            <path
+                              fill="#FFF"
+                              d="M12 19H17V36H12zM14.485 17h-.028C12.965 17 12 15.888 12 14.499 12 13.08 12.995 12 14.514 12c1.521 0 2.458 1.08 2.486 2.499C17 15.887 16.035 17 14.485 17zM36 36h-5v-9.099c0-2.198-1.225-3.698-3.192-3.698-1.501 0-2.313 1.012-2.707 1.99C24.957 25.543 25 26.511 25 27v9h-5V19h5v2.616C25.721 20.5 26.85 19 29.738 19c3.578 0 6.261 2.25 6.261 7.274L36 36 36 36z"
+                            ></path>
+                          </svg>
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 flex items-center justify-center  bg-gray-100 rounded-xl">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            x="0px"
+                            y="0px"
+                            className="size-6"
+                            viewBox="0 0 48 48"
+                          >
+                            <path
+                              fill="#64748b"
+                              d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"
+                            ></path>
+                            <path
+                              fill="#FFF"
+                              d="M12 19H17V36H12zM14.485 17h-.028C12.965 17 12 15.888 12 14.499 12 13.08 12.995 12 14.514 12c1.521 0 2.458 1.08 2.486 2.499C17 15.887 16.035 17 14.485 17zM36 36h-5v-9.099c0-2.198-1.225-3.698-3.192-3.698-1.501 0-2.313 1.012-2.707 1.99C24.957 25.543 25 26.511 25 27v9h-5V19h5v2.616C25.721 20.5 26.85 19 29.738 19c3.578 0 6.261 2.25 6.261 7.274L36 36 36 36z"
+                            ></path>
+                          </svg>
+                        </div>
+                      )}
 
-                <label className=" flex flex-row gap-2 text-slate-500 cursor-pointer shadow-xs justify-center items-center  flex-1 px-3 h-12 border-black/40 rounded-xl border-dashed border  bg-white">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-4 text-slate-500"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
-                    />
-                  </svg>
-                  {uploadStatus === "idle" && "Upload resume or CV (PDF)"}
-                  {uploadStatus === "uploading" && "Uploading..."}
-                  {uploadStatus === "uploaded" && "resume uploaded"}
-                  <input
-                    onChange={(event) => {
-                      // setIsError(false);
-                      if (event.target.files) {
-                        handleFileUpload(event.target.files[0]);
-                      }
-                    }}
-                    type="file"
-                    className="  w-full hidden  font-body font-light text-black/80 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-gray-700 hover:file:bg-slate-400"
-                  />
-                </label>
-              </div>
+                      <div className=" flex flex-row h-12 text-slate-500 cursor-pointer shadow-xs justify-center items-center  flex-1   border-black/40 rounded-xl  bg-white">
+                        <Input
+                          type="url"
+                          placeholder="https://"
+                          labelPlacement="outside"
+                          className="z-50  text-gray-600 mt-2 col-span-1 sm:col-span-2 font-semibold max-w-sm flex justify-center  w-full  font-urbanist  text-lg rounded-lg min-w-lg"
+                          size="lg"
+                          radius="md"
+                          classNames={{
+                            input: "font-semibold text-lg ",
+                            label: "font-semibold text-base text-black/70",
+                          }}
+                          isInvalid={linkedInError}
+                          errorMessage="Invalid linkedin URL"
+                          value={linkedInUrl}
+                          onChange={(
+                            e: React.ChangeEvent<HTMLInputElement>
+                          ) => {
+                            setLinkedInError(false);
+                            setLinkedInUrl(e.target.value);
+                          }}
+                        />{" "}
+                      </div>
+                    </div>
+                  </div>
+                </Tab>
+                <Tab
+                  className="w-full"
+                  key="music"
+                  title={
+                    <div className="flex justify-center items-center  space-x-2 ">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-5 text-red-500"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                        />
+                      </svg>
+                      <span>Upload resume </span>
+                    </div>
+                  }
+                >
+                  {" "}
+                  <div className="flex z-50 mt-3 flex-col gap-2 sm:gap-0 w-full justify-center text-sm  items-center">
+                    <p className="w-full text-start max-w-sm font-medium mb-2.5 text-base">
+                      Upload resume for instant portfolio (PDF)
+                    </p>
+                    <div className="flex max-w-sm w-full justify-center  gap-2 items-center flex-row flex-wrap">
+                      {resumeUrl ? (
+                        <div className="w-12 h-12 flex items-center justify-center  bg-gray-100 rounded-xl">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-6 text-green-500"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12"
+                            />
+                          </svg>
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 flex items-center justify-center  bg-gray-100 rounded-xl">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-6 text-slate-500"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                            />
+                          </svg>
+                        </div>
+                      )}
+
+                      <label className=" flex flex-row gap-2 text-slate-500 cursor-pointer shadow-xs justify-center items-center  flex-1 px-3 h-12 border-black/40 rounded-xl border-dashed border  bg-white">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-4 text-slate-500"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
+                          />
+                        </svg>
+                        {uploadStatus === "idle" && "Upload resume or CV (PDF)"}
+                        {uploadStatus === "uploading" && "Uploading..."}
+                        {uploadStatus === "uploaded" && "resume uploaded"}
+                        <input
+                          onChange={(event) => {
+                            // setIsError(false);
+                            if (event.target.files) {
+                              handleFileUpload(event.target.files[0]);
+                            }
+                          }}
+                          type="file"
+                          className="  w-full hidden  font-body font-light text-black/80 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-gray-700 hover:file:bg-slate-400"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </Tab>
+              </Tabs>
             </div>
             <button
               onClick={generateai}

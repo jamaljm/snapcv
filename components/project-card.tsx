@@ -10,34 +10,39 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import Markdown from "react-markdown";
-import { Project } from "@/lib/type";
+import { ProjectDetail } from "@/lib/type";
+import { useMemo } from 'react';
 
-interface Props {
-  title: string;
-  href?: string;
-  description: string;
-  dates: string;
-  tags: readonly string[];
-  link?: string;
-  image?: string;
-  video?: string;
-  links?: readonly {
-    icon: React.ReactNode;
-    type: string;
-    href: string;
-  }[];
-  className?: string;
+function generateGradient(): string {
+  const gradients = [
+    "from-red-500 to-orange-500",
+    "from-slate-500 to-slate-800",
+    "from-teal-400 to-gray-800",
+    "from-yellow-200 to-pink-400",
+    "from-blue-400 to-emerald-400",
+    "from-indigo-500 to-purple-500",
+    "from-green-400 to-cyan-500",
+    "from-rose-400 to-orange-300",
+    "from-fuchsia-500 to-cyan-500",
+    "from-violet-600 to-indigo-600"
+  ];
+
+  const randomIndex = Math.floor(Math.random() * gradients.length);
+  return gradients[randomIndex];
 }
 
 export function ProjectCard({
   title,
-  href,
   description,
-  dates,
-  technologies: tags,
+  technologies,
   image,
-  links,
-}: Project) {
+  website,
+  source,
+  duration,
+  highlights,
+}: ProjectDetail) {
+  const gradient = useMemo(() => generateGradient(), []);
+
   return (
     <Card
       className={
@@ -45,21 +50,9 @@ export function ProjectCard({
       }
     >
       <Link
-        href={href || "#"}
-        className={cn(
-          "block cursor-pointer bg-gradient-to-r from-red-500 to-orange-500 px-4 pt-4"
-        )}
+        href={website || "#"}
+        className={`block cursor-pointer bg-gradient-to-r ${gradient} px-4 pt-4`}
       >
-        {/* {video && (
-          <video
-            src={video}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="pointer-events-none mx-auto h-40 w-full object-cover object-top" // needed because random black line at bottom of video
-          />
-        )} */}
         {image && (
           <img
             src={image}
@@ -68,40 +61,39 @@ export function ProjectCard({
           />
         )}
       </Link>
-      <CardHeader className=" p-3 pb-1">
-        <div className="space-y-1">
-          <CardTitle className="mt-1 text-base">{title}</CardTitle>
-          <time className=" text-xs">{dates}</time>
-          <div className="hidden  text-xs underline print:visible">
-            {/* {link?.replace("https://", "").replace("www.", "").replace("/", "")} */}
-          </div>
-          <Markdown className="prose max-w-full text-pretty  text-xs/relaxed text-muted-foreground dark:prose-invert">
+      <CardHeader className="p-3 pb-1">
+        <CardTitle className="mt-1 text-base">{title}</CardTitle>
+        {description && (
+          <Markdown className="prose mt-1 max-w-full text-pretty  text-xs/relaxed text-muted-foreground dark:prose-invert">
             {description}
           </Markdown>
-        </div>
+        )}
       </CardHeader>
+
       <CardContent className="mt-auto flex flex-col px-3">
-        {tags && tags.length > 0 && (
+        {technologies && technologies.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1">
-            {tags?.map((tag) => (
+            {technologies.map((tech) => (
               <Badge
                 className="px-2 hover:bg-slate-200 bg-slate-100 text-slate-800/90 shadow-none rounded-xl py-0.5 text-[.67rem]"
-                key={tag}
+                key={tech}
               >
-                {tag}
+                {tech}
               </Badge>
             ))}
           </div>
         )}
       </CardContent>
+
       <CardFooter className="px-3 pb-4 pt-3">
         <div className="flex flex-row flex-wrap items-start gap-2">
-          {links.website && (
+          {website && (
             <Link
-              href={links?.website}
+              href={website}
               target="_blank"
-              className="flex gap-2 items-center text-xs border rounded-xl px-4 py-1.5 "
+              className="flex gap-2 items-center text-xs border rounded-xl px-4 py-1.5"
             >
+              {" "}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -119,18 +111,13 @@ export function ProjectCard({
               Website
             </Link>
           )}
-          {links.source && (
+          {source && (
             <Link
-              href={links?.source}
+              href={source}
               target="_blank"
-              className="flex gap-2 items-center text-xs border rounded-xl px-4 py-1.5 "
+              className="flex gap-2 items-center text-xs border rounded-xl px-4 py-1.5"
             >
-              <img
-                className="size-4 text-gray-600"
-                src="https://img.icons8.com/ios-glyphs/30/github.png"
-                alt="github"
-              />
-              Github
+              {/* Github link content */}
             </Link>
           )}
         </div>

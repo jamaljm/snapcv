@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 html {
-  font-size: calc(15 * 100vw / 1440);
+  font-size: calc(15.6 * 100vw / 1440);
 }
 
 @media all and (max-width: 660px) {
   html {
-    font-size: calc(16 * 100vw / 400);
+    font-size: calc(17 * 100vw / 400);
   }
 }
 ::-webkit-scrollbar {

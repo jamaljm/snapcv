@@ -1,8 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Hackathon } from "@/lib/type";
-import { link } from "fs";
+import { HackathonDetail } from "@/lib/type";
 
 export function HackathonCard({
   title,
@@ -10,8 +9,9 @@ export function HackathonCard({
   dates,
   location,
   image,
-  links,
-}: Hackathon) {
+  win,
+  url,
+}: HackathonDetail) {
   return (
     <li className="relative ml-10 py-6">
       <div className="absolute -left-16 top-2 flex items-center justify-center bg-white rounded-full">
@@ -33,14 +33,18 @@ export function HackathonCard({
             {description}
           </span>
         )}
+        {win && (
+          <Badge variant="secondary" className="w-fit rounded-full font-semibold">
+            {win}
+          </Badge>
+        )}
       </div>
       <div className="mt-2 flex flex-row flex-wrap items-start gap-2">
-        {links.website && (
+        {url && (
           <Link
-            href={links?.website}
-            key={"idx"}
+            href={url}
             target="_blank"
-            className="flex gap-2 items-center text-xs border rounded-xl px-4 py-1.5 "
+            className="flex gap-2 items-center text-xs border rounded-xl px-4 py-1.5"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -57,19 +61,6 @@ export function HackathonCard({
               />
             </svg>
             Website
-          </Link>
-        )}
-        {links.github && (
-          <Link
-            href={links.github}
-            className="flex gap-2 items-center text-xs border rounded-xl px-4 py-1.5 "
-          >
-            <img
-              className="size-4 text-gray-600"
-              src="https://img.icons8.com/ios-glyphs/30/github.png"
-              alt="github"
-            />
-            Github
           </Link>
         )}
       </div>

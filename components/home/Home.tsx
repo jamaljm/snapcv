@@ -11,6 +11,8 @@ import {
   Snippet,
   Spinner,
   Textarea,
+  Tabs,
+  Tab,
 } from "@nextui-org/react";
 import React, {
   ChangeEvent,
@@ -20,168 +22,27 @@ import React, {
   useEffect,
   useRef,
 } from "react";
-
 import Link from "next/link";
-import { User, SocialLinks } from "@/lib/type";
+import {
+  UserProfile,
+  IndexedUploadStatus,
+  PhotoTypes,
+  reservedWords,
+} from "@/lib/type";
 import { supabase } from "@/utils/supabase/client";
 import { cn } from "@/lib/utils";
 import { useCommonContext } from "@/Common_context";
 import imageCompression from "browser-image-compression";
 import { useToast } from "@/components/ui/use-toast";
-import { reservedWords } from "@/lib/type";
 import Temp1 from "@/components/design/temp_1";
 import { useRouter } from "next/navigation";
+import { tailwindColors } from "@/lib/utils";
+import { initialUserState } from "@/lib/utils";
+import ResumeTemplate from "../ResumeTemplate";
+import Download from "../resume/Download";
 
-const tailwindColors = [
-  { name: "red", value: "#ef4444" },
-  { name: "green", value: "#10b981" },
-  { name: "white", value: "#fff" },
-  { name: "blue", value: "#3b82f6" },
-  { name: "yellow", value: "#f59e0b" },
-  { name: "purple", value: "#8b5cf6" },
-  { name: "pink", value: "#ec4899" },
-  { name: "indigo", value: "#6366f1" },
-  { name: "gray", value: "#6b7280" },
-  { name: "orange", value: "#f97316" },
-  { name: "teal", value: "#14b8a6" },
-  { name: "cyan", value: "#06b6d4" },
-  { name: "lime", value: "#84cc16" },
-  { name: "emerald", value: "#10b981" },
-  { name: "fuchsia", value: "#d946ef" },
-  { name: "rose", value: "#f43f5e" },
-  { name: "violet", value: "#8b5cf6" },
-  { name: "sky", value: "#0ea5e9" },
-];
-const tailwindColors100: Record<ThemeColor, string> = {
-  red: "#fee2e2",
-  green: "#d1fae5",
-  white: "#ffffff",
-  blue: "#dbeafe",
-  yellow: "#fef9c3",
-  purple: "#f3e8ff",
-  pink: "#fce7f3",
-  indigo: "#e0e7ff",
-  gray: "#f3f4f6",
-  orange: "#ffedd5",
-  teal: "#ccfbf1",
-  cyan: "#cffafe",
-  lime: "#ecfccb",
-  emerald: "#d1fae5",
-  fuchsia: "#fae8ff",
-  rose: "#ffe4e6",
-  violet: "#f3e8ff",
-  sky: "#e0f2fe",
-};
-type ThemeColor =
-  | "red"
-  | "green"
-  | "white"
-  | "blue"
-  | "yellow"
-  | "purple"
-  | "pink"
-  | "indigo"
-  | "gray"
-  | "orange"
-  | "teal"
-  | "cyan"
-  | "lime"
-  | "emerald"
-  | "fuchsia"
-  | "rose"
-  | "violet"
-  | "sky";
-
-const initialUserState: User = {
-  userId: "",
-  fullName: "",
-  userName: "",
-  roll: "",
-  about: "",
-  email: "",
-  phone: "",
-  skills: [],
-  resumeLink: "",
-  buttonText: "",
-  avatarUrl: "",
-  themeColor: "" as ThemeColor,
-  contact: {
-    GitHub: "",
-    LinkedIn: "",
-    X: "",
-    Youtube: "",
-    dribbble: "",
-  },
-  workExperience: [
-    {
-      company: "",
-      title: "",
-      logoUrl: "",
-      start: "",
-      end: "",
-      description: "",
-      link: "",
-    },
-  ],
-  education: [
-    {
-      school: "",
-      degree: "",
-      logoUrl: "",
-      start: "",
-      end: "",
-      link: "",
-    },
-  ],
-  hackathonDescription: "",
-  projects: [
-    {
-      title: "",
-      href: "",
-      dates: "",
-      description: "",
-      technologies: [],
-      links: {
-        website: "",
-        source: "",
-      },
-      image: "",
-    },
-  ],
-  projectDescription: "",
-  hackathons: [
-    {
-      title: "",
-      dates: "",
-      location: "",
-      description: "",
-      image: "",
-      win: "",
-      links: {
-        website: "",
-        github: "",
-      },
-    },
-  ],
-};
-
-// Define the types of photos
-type PhotoTypes =
-  | "profilePhoto"
-  | "workExperienceLogo"
-  | "educationLogo"
-  | "projectImage"
-  | "hackathonLogo";
-
-// Define the upload status type with index tracking
-type IndexedUploadStatus = {
-  [key: string]: "idle" | "uploading" | "uploaded";
-};
-
-// Initial upload status state
 const initialUploadStatus: IndexedUploadStatus = {
   "profilePhoto-0": "idle",
-  // Other statuses will be added dynamically
 };
 
 const compressImage = async (file: File) => {
@@ -205,8 +66,7 @@ const socialMediaImages: { [key: string]: string } = {
   X: "/icon/twitter.png",
   Youtube: "/icon/youtube.png",
   dribbble: "/icon/dribbble.png",
-  // Add more as needed
-  default: "/icon/dribbble.png", // Default icon URL
+  default: "/icon/dribbble.png",
 };
 
 export default function Home() {
@@ -218,9 +78,9 @@ export default function Home() {
   const [demo, setDemo] = useState(false);
   const [uploadStatus, setUploadStatus] =
     useState<IndexedUploadStatus>(initialUploadStatus);
-  const [user, setUser] = useState<User>(initialUserState);
-  const [initialUser, setInitialUser] = useState<User>(initialUserState);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<UserProfile>(initialUserState);
+  const [initialUser, setInitialUser] = useState<UserProfile>(initialUserState);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false); // Track unsaved changes
   const [slugError, setSlugError] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
@@ -233,17 +93,17 @@ export default function Home() {
   useEffect(() => {
     const fetchUserData = async () => {
       const { data, error } = await supabase
-        .from("User")
+        .from("users")
         .select("*")
-        .eq("userId", userData?.user.id);
+        .eq("userName", "jamalpp");
+      console.log(data, error, "dbdfb");
 
       if (error || data.length === 0) {
         console.error("Error fetching user data:", error);
-        router.push("/create");
       } else {
         if (data && data.length > 0) {
-          setUser(JSON.parse(JSON.stringify(data[0]))); // Deep clone
-          setInitialUser(JSON.parse(JSON.stringify(data[0]))); // Deep clone
+          setUser(JSON.parse(JSON.stringify(data[0].resumeJson))); // Deep clone
+          setInitialUser(JSON.parse(JSON.stringify(data[0].resumeJson))); // Deep clone
           setIsLoading(false);
         }
       }
@@ -270,36 +130,56 @@ export default function Home() {
     setHasUnsavedChanges(true);
   };
 
-  const handleNestedFieldChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    category: keyof User,
-    index: number,
-    field: string
+  const handleInputChange = (
+    key: string,
+    index: number = -1,
+    subKey: string = "",
+    value: string
   ) => {
-    const { value } = e.target;
-    markAsEdited();
     setUser((prevUser) => {
-      const updatedCategory = (prevUser[category] as any[]).map((item, i) => {
-        if (i === index) {
-          const fieldParts = field.split(".");
-          if (fieldParts.length > 1) {
-            // For nested fields like "links.website"
-            const [nestedField, subField] = fieldParts;
-            return {
-              ...item,
-              [nestedField]: {
-                ...item[nestedField],
-                [subField]: value,
-              },
-            };
-          }
-          return { ...item, [field]: value };
+      const newUser = { ...prevUser };
+      const keys = key.split(".");
+      let current: any = newUser;
+
+      // Navigate through nested objects
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+          current[keys[i]] = {};
         }
-        return item;
-      });
-      return { ...prevUser, [category]: updatedCategory };
+        current = current[keys[i]];
+      }
+
+      const lastKey = keys[keys.length - 1];
+
+      if (index === -1) {
+        // Handle non-array fields
+        if (subKey) {
+          current[lastKey][subKey] = value;
+        } else {
+          current[lastKey] = value;
+        }
+      } else {
+        // Handle array fields
+        if (!Array.isArray(current[lastKey])) {
+          current[lastKey] = [];
+        }
+        if (!current[lastKey][index]) {
+          current[lastKey][index] = {};
+        }
+        if (subKey) {
+          current[lastKey][index][subKey] = value;
+        } else {
+          current[lastKey][index] = value;
+        }
+      }
+
+      return newUser;
     });
+
+    markAsEdited();
   };
+
+  console.log(user, "user");
 
   const uploadImageAndGetUrl = async (
     file: File,
@@ -363,7 +243,7 @@ export default function Home() {
         case "workExperienceLogo":
           setUser((prevUser) => ({
             ...prevUser,
-            workExperience: prevUser.workExperience.map((exp, idx) =>
+            workExperience: prevUser.work.map((exp, idx) =>
               idx === index ? { ...exp, logoUrl: fileUrl } : exp
             ),
           }));
@@ -379,17 +259,24 @@ export default function Home() {
         case "projectImage":
           setUser((prevUser) => ({
             ...prevUser,
-            projects: prevUser.projects.map((proj, idx) =>
-              idx === index ? { ...proj, image: fileUrl } : proj
-            ),
+            projects: {
+              ...prevUser.projects,
+              projects: prevUser.projects.projects.map(
+                (proj: any, idx: number) =>
+                  idx === index ? { ...proj, image: fileUrl } : proj
+              ),
+            },
           }));
           break;
         case "hackathonLogo":
           setUser((prevUser) => ({
             ...prevUser,
-            hackathons: prevUser.hackathons.map((hack, idx) =>
-              idx === index ? { ...hack, image: fileUrl } : hack
-            ),
+            hackathons: {
+              ...prevUser.hackathons,
+              hackathons: prevUser.hackathons.hackathons.map((hack, idx) =>
+                idx === index ? { ...hack, image: fileUrl } : hack
+              ),
+            },
           }));
           break;
         default:
@@ -421,53 +308,22 @@ export default function Home() {
     }
   };
 
-  const setNestedProperty = (obj: any, path: string, value: any) => {
-    const keys = path.split(".");
-    const lastKey = keys.pop();
-    const deepClone = JSON.parse(JSON.stringify(obj)); // Deep clone
-
-    let temp = deepClone;
-    keys.forEach((key) => {
-      if (!temp[key]) {
-        temp[key] = {};
-      }
-      temp = temp[key];
-    });
-
-    if (lastKey) {
-      temp[lastKey] = value;
-    }
-
-    return deepClone;
-  };
-
-  const handleInputChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.target;
-
-    if (name === "userName") {
-      if (value.includes(" ")) {
-        // Show an alert when there is a space
-        alert("Spaces are not allowed in the username.");
-        return; // Stop further processing
-      }
-
-      // Update state if no spaces
-      setUser((prevUser) =>
-        setNestedProperty(prevUser, name, value.toLowerCase())
-      );
-    } else {
-      setUser((prevUser) => setNestedProperty(prevUser, name, value));
-    }
-  };
-
-  const handleSkillClose = (skillToRemove: string) => {
+  const handleSkillClose = (skillName: string, keywordToRemove: string) => {
     markAsEdited();
     setUser((prevUser) => {
-      const updatedSkills = prevUser.skills.filter(
-        (skill) => skill !== skillToRemove
-      );
+      const updatedSkills = prevUser.skills.map((skill) => {
+        if (skill.name === skillName) {
+          const updatedKeywords = skill.keywords.filter(
+            (keyword) => keyword !== keywordToRemove
+          );
+          return {
+            ...skill,
+            keywords: updatedKeywords,
+          };
+        }
+        return skill;
+      });
+
       return {
         ...prevUser,
         skills:
@@ -475,42 +331,113 @@ export default function Home() {
       };
     });
   };
-
   const handleSkillInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     markAsEdited();
     setInputValue(event.target.value);
   };
 
-  const handleSkillInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && inputValue.trim() !== "") {
+  const handleSkillInputKeyDown = (
+    event: KeyboardEvent<HTMLInputElement>,
+    skillName: string
+  ) => {
+    if (event.key === "Enter" && skillName.trim() !== "") {
       markAsEdited();
-      setUser((prevUser) => ({
-        ...prevUser,
-        skills: [...prevUser.skills, inputValue.trim()],
-      }));
-      setInputValue("");
+      setUser((prevUser) => {
+        // Check if the skill already exists
+        const existingSkillIndex = prevUser.skills.findIndex(
+          (skill) => skill.name === skillName.trim()
+        );
+
+        let updatedSkills;
+        if (existingSkillIndex > -1) {
+          // Update existing skill by adding a new keyword
+          updatedSkills = prevUser.skills.map((skill, index) => {
+            if (index === existingSkillIndex) {
+              return {
+                ...skill,
+                keywords: [
+                  ...skill.keywords,
+                  inputValue.trim(), // Assuming inputValue is the new keyword
+                ],
+              };
+            }
+            return skill;
+          });
+        } else {
+          // Add new skill if it doesn't exist
+          updatedSkills = [
+            ...prevUser.skills,
+            {
+              name: skillName.trim(),
+              keywords: [], // Initialize with empty keywords
+            },
+          ];
+        }
+
+        return {
+          ...prevUser,
+          skills: updatedSkills,
+        };
+      });
+      setInputValue(""); // Clear the input after adding
     }
   };
+
   const handleTechnologyClose = (
     projectIndex: number,
     techToRemove: string
   ) => {
     console.log(projectIndex, techToRemove);
     markAsEdited();
+
     setUser((prevUser) => {
-      const updatedProjects = [...prevUser.projects];
+      const updatedProjects = [...prevUser.projects.projects]; // Accessing the nested projects array
       const updatedTechnologies = updatedProjects[
         projectIndex
       ].technologies.filter((tech) => tech !== techToRemove);
+
       updatedProjects[projectIndex] = {
         ...updatedProjects[projectIndex],
         technologies: updatedTechnologies,
       };
+
       return {
         ...prevUser,
-        projects: updatedProjects,
+        projects: {
+          ...prevUser.projects,
+          projects: updatedProjects, // Properly update the nested projects array
+        },
       };
     });
+  };
+
+  const handleSocialProfileChange = (
+    network: string,
+    value: string,
+    setUser: React.Dispatch<React.SetStateAction<UserProfile>>
+  ) => {
+    setUser((prevUser) => {
+      const newUser = { ...prevUser };
+      const profileIndex = newUser.basics.profiles.findIndex(
+        (profile) => profile.network === network
+      );
+
+      if (profileIndex !== -1) {
+        // Update existing profile
+        newUser.basics.profiles[profileIndex].url = value;
+      } else {
+        // Add new profile
+        newUser.basics.profiles.push({
+          network: network,
+          url: value,
+          username: "",
+        });
+      }
+
+      return newUser;
+    });
+
+    markAsEdited();
   };
 
   const handleTechnologyInputKeyDown = (
@@ -520,8 +447,9 @@ export default function Home() {
   ) => {
     if (event.key === "Enter" && inputValue.trim() !== "") {
       markAsEdited();
+
       setUser((prevUser) => {
-        const updatedProjects = [...prevUser.projects];
+        const updatedProjects = [...prevUser.projects.projects];
         updatedProjects[index] = {
           ...updatedProjects[index],
           technologies: [
@@ -529,9 +457,13 @@ export default function Home() {
             inputValue.trim(),
           ],
         };
+
         return {
           ...prevUser,
-          projects: updatedProjects,
+          projects: {
+            ...prevUser.projects,
+            projects: updatedProjects,
+          },
         };
       });
       setInputValueProject("");
@@ -543,41 +475,553 @@ export default function Home() {
   type DeleteType = "hackathons" | "workExperience" | "education" | "projects";
 
   const deleteItemByIndex = (
-    type: DeleteType,
+    path: string,
     index: number,
-    setState: React.Dispatch<React.SetStateAction<User>>
+    setState: React.Dispatch<React.SetStateAction<UserProfile>>
   ) => {
     setState((prevUser) => {
-      const updatedUser = { ...prevUser };
+      const newUser = { ...prevUser };
+      const keys = path.split(".");
+      let current: any = newUser;
 
-      switch (type) {
-        case "hackathons":
-          updatedUser.hackathons = updatedUser.hackathons.filter(
-            (_, i) => i !== index
-          );
-          break;
-        case "workExperience":
-          updatedUser.workExperience = updatedUser.workExperience.filter(
-            (_, i) => i !== index
-          );
-          break;
-        case "education":
-          updatedUser.education = updatedUser.education.filter(
-            (_, i) => i !== index
-          );
-          break;
-        case "projects":
-          updatedUser.projects = updatedUser.projects.filter(
-            (_, i) => i !== index
-          );
-          break;
-        default:
-          console.error("Invalid type specified");
+      // Navigate to the parent of the target array
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+          console.error(`Invalid path: ${path}`);
           return prevUser;
+        }
+        current = current[keys[i]];
       }
 
-      return updatedUser;
+      const lastKey = keys[keys.length - 1];
+
+      if (Array.isArray(current[lastKey])) {
+        current[lastKey] = current[lastKey].filter(
+          (_: any, i: number) => i !== index
+        );
+      } else {
+        console.error(`${lastKey} is not an array`);
+        return prevUser;
+      }
+
+      return newUser;
     });
+
+    markAsEdited();
+  };
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    setFile(acceptedFiles[0]);
+"use client";
+
+import {
+  Button,
+  Chip,
+  DateRangePicker,
+  Input,
+  Kbd,
+  Radio,
+  RadioGroup,
+  Snippet,
+  Spinner,
+  Textarea,
+  Tabs,
+  Tab,
+} from "@nextui-org/react";
+import React, {
+  ChangeEvent,
+  KeyboardEvent,
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
+import Link from "next/link";
+import {
+  UserProfile,
+  IndexedUploadStatus,
+  PhotoTypes,
+  reservedWords,
+} from "@/lib/type";
+import { supabase } from "@/utils/supabase/client";
+import { cn } from "@/lib/utils";
+import { useCommonContext } from "@/Common_context";
+import imageCompression from "browser-image-compression";
+import { useToast } from "@/components/ui/use-toast";
+import Temp1 from "@/components/design/temp_1";
+import { useRouter } from "next/navigation";
+import { tailwindColors } from "@/lib/utils";
+import { initialUserState } from "@/lib/utils";
+import ResumeTemplate from "../ResumeTemplate";
+import Download from "../resume/Download";
+
+const initialUploadStatus: IndexedUploadStatus = {
+  "profilePhoto-0": "idle",
+};
+
+const compressImage = async (file: File) => {
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 800,
+    useWebWorker: true,
+  };
+
+  try {
+    const compressedFile = await imageCompression(file, options);
+    return compressedFile;
+  } catch (error) {
+    console.error("Error during image compression:", error);
+    throw error;
+  }
+};
+const socialMediaImages: { [key: string]: string } = {
+  GitHub: "/icon/github.png",
+  LinkedIn: "/icon/linkedin.png",
+  X: "/icon/twitter.png",
+  Youtube: "/icon/youtube.png",
+  dribbble: "/icon/dribbble.png",
+  default: "/icon/dribbble.png",
+};
+
+export default function Home() {
+  const { userData } = useCommonContext();
+  const [inputValue, setInputValue] = useState("");
+  const [inputValueProject, setInputValueProject] = useState("");
+  const [selectedSection, setSelectedSection] = useState("general-info");
+  const manualScroll = useRef(false);
+  const [demo, setDemo] = useState(false);
+  const [uploadStatus, setUploadStatus] =
+    useState<IndexedUploadStatus>(initialUploadStatus);
+  const [user, setUser] = useState<UserProfile>(initialUserState);
+  const [initialUser, setInitialUser] = useState<UserProfile>(initialUserState);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false); // Track unsaved changes
+  const [slugError, setSlugError] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Already taken!");
+  const [isAvailable, setIsAvailable] = useState(false);
+  const isError = slugError || isChecking;
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("userName", "jamalpp");
+      console.log(data, error, "dbdfb");
+
+      if (error || data.length === 0) {
+        console.error("Error fetching user data:", error);
+      } else {
+        if (data && data.length > 0) {
+          setUser(JSON.parse(JSON.stringify(data[0].resumeJson))); // Deep clone
+          setInitialUser(JSON.parse(JSON.stringify(data[0].resumeJson))); // Deep clone
+          setIsLoading(false);
+        }
+      }
+    };
+    if (userData?.user.id) fetchUserData();
+  }, [userData]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [hasUnsavedChanges]);
+
+  const markAsEdited = () => {
+    setHasUnsavedChanges(true);
+  };
+
+  const handleInputChange = (
+    key: string,
+    index: number = -1,
+    subKey: string = "",
+    value: string
+  ) => {
+    setUser((prevUser) => {
+      const newUser = { ...prevUser };
+      const keys = key.split(".");
+      let current: any = newUser;
+
+      // Navigate through nested objects
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+          current[keys[i]] = {};
+        }
+        current = current[keys[i]];
+      }
+
+      const lastKey = keys[keys.length - 1];
+
+      if (index === -1) {
+        // Handle non-array fields
+        if (subKey) {
+          current[lastKey][subKey] = value;
+        } else {
+          current[lastKey] = value;
+        }
+      } else {
+        // Handle array fields
+        if (!Array.isArray(current[lastKey])) {
+          current[lastKey] = [];
+        }
+        if (!current[lastKey][index]) {
+          current[lastKey][index] = {};
+        }
+        if (subKey) {
+          current[lastKey][index][subKey] = value;
+        } else {
+          current[lastKey][index] = value;
+        }
+      }
+
+      return newUser;
+    });
+
+    markAsEdited();
+  };
+
+  console.log(user, "user");
+
+  const uploadImageAndGetUrl = async (
+    file: File,
+    path: string
+  ): Promise<string | null> => {
+    try {
+      const fileExtension = file.name.split(".").pop();
+      if (!fileExtension) {
+        throw new Error("File extension not found");
+      }
+
+      const filename = `${path}/${file.name.replace(/ /g, "-")}`;
+      const compressedFile = await compressImage(file);
+
+      const { data, error } = await supabase.storage
+        .from("snapcv")
+        .upload(filename, compressedFile, {
+          upsert: true,
+        });
+
+      if (error) {
+        console.error("Upload error:", error);
+        return null;
+      }
+
+      if (data) {
+        const fileUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/snapcv/${data.path}`;
+        return fileUrl;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("Error in uploadImageAndGetUrl:", error);
+      return null;
+    }
+  };
+
+  const handleFileUpload = async (
+    file: File,
+    type: PhotoTypes,
+    index: number
+  ) => {
+    const randomNumber = Math.floor(Math.random() * 900) + 100;
+    const path = `user/${userData?.user.id}/${type}_${randomNumber}`;
+
+    // Set the upload status to uploading
+    setUploadStatus((prevStatus) => ({
+      ...prevStatus,
+      [`${type}-${index}`]: "uploading",
+    }));
+    console.log("hiiiiiiiiZ");
+    const fileUrl = await uploadImageAndGetUrl(file, path);
+
+    if (fileUrl) {
+      console.log("File uploaded successfully:", fileUrl);
+      markAsEdited();
+      switch (type) {
+        case "profilePhoto":
+          setUser((prevUser) => ({ ...prevUser, avatarUrl: fileUrl }));
+          break;
+        case "workExperienceLogo":
+          setUser((prevUser) => ({
+            ...prevUser,
+            workExperience: prevUser.work.map((exp, idx) =>
+              idx === index ? { ...exp, logoUrl: fileUrl } : exp
+            ),
+          }));
+          break;
+        case "educationLogo":
+          setUser((prevUser) => ({
+            ...prevUser,
+            education: prevUser.education.map((edu, idx) =>
+              idx === index ? { ...edu, logoUrl: fileUrl } : edu
+            ),
+          }));
+          break;
+        case "projectImage":
+          setUser((prevUser) => ({
+            ...prevUser,
+            projects: {
+              ...prevUser.projects,
+              projects: prevUser.projects.projects.map(
+                (proj: any, idx: number) =>
+                  idx === index ? { ...proj, image: fileUrl } : proj
+              ),
+            },
+          }));
+          break;
+        case "hackathonLogo":
+          setUser((prevUser) => ({
+            ...prevUser,
+            hackathons: {
+              ...prevUser.hackathons,
+              hackathons: prevUser.hackathons.hackathons.map((hack, idx) =>
+                idx === index ? { ...hack, image: fileUrl } : hack
+              ),
+            },
+          }));
+          break;
+        default:
+          break;
+      }
+
+      // Set the upload status to uploaded
+      setUploadStatus((prevStatus) => ({
+        ...prevStatus,
+        [`${type}-${index}`]: "uploaded",
+      }));
+
+      // Reset the upload status to idle after 2 seconds
+      setTimeout(() => {
+        setUploadStatus((prevStatus) => ({
+          ...prevStatus,
+          [`${type}-${index}`]: "idle",
+        }));
+      }, 2000);
+    } else {
+      // Handle upload failure
+      console.error("File upload failed");
+
+      // Reset the upload status to idle
+      setUploadStatus((prevStatus) => ({
+        ...prevStatus,
+        [`${type}-${index}`]: "idle",
+      }));
+    }
+  };
+
+  const handleSkillClose = (skillName: string, keywordToRemove: string) => {
+    markAsEdited();
+    setUser((prevUser) => {
+      const updatedSkills = prevUser.skills.map((skill) => {
+        if (skill.name === skillName) {
+          const updatedKeywords = skill.keywords.filter(
+            (keyword) => keyword !== keywordToRemove
+          );
+          return {
+            ...skill,
+            keywords: updatedKeywords,
+          };
+        }
+        return skill;
+      });
+
+      return {
+        ...prevUser,
+        skills:
+          updatedSkills.length === 0 ? initialUserState.skills : updatedSkills,
+      };
+    });
+  };
+  const handleSkillInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    markAsEdited();
+    setInputValue(event.target.value);
+  };
+
+  const handleSkillInputKeyDown = (
+    event: KeyboardEvent<HTMLInputElement>,
+    skillName: string
+  ) => {
+    if (event.key === "Enter" && skillName.trim() !== "") {
+      markAsEdited();
+      setUser((prevUser) => {
+        // Check if the skill already exists
+        const existingSkillIndex = prevUser.skills.findIndex(
+          (skill) => skill.name === skillName.trim()
+        );
+
+        let updatedSkills;
+        if (existingSkillIndex > -1) {
+          // Update existing skill by adding a new keyword
+          updatedSkills = prevUser.skills.map((skill, index) => {
+            if (index === existingSkillIndex) {
+              return {
+                ...skill,
+                keywords: [
+                  ...skill.keywords,
+                  inputValue.trim(), // Assuming inputValue is the new keyword
+                ],
+              };
+            }
+            return skill;
+          });
+        } else {
+          // Add new skill if it doesn't exist
+          updatedSkills = [
+            ...prevUser.skills,
+            {
+              name: skillName.trim(),
+              keywords: [], // Initialize with empty keywords
+            },
+          ];
+        }
+
+        return {
+          ...prevUser,
+          skills: updatedSkills,
+        };
+      });
+      setInputValue(""); // Clear the input after adding
+    }
+  };
+
+  const handleTechnologyClose = (
+    projectIndex: number,
+    techToRemove: string
+  ) => {
+    console.log(projectIndex, techToRemove);
+    markAsEdited();
+
+    setUser((prevUser) => {
+      const updatedProjects = [...prevUser.projects.projects]; // Accessing the nested projects array
+      const updatedTechnologies = updatedProjects[
+        projectIndex
+      ].technologies.filter((tech) => tech !== techToRemove);
+
+      updatedProjects[projectIndex] = {
+        ...updatedProjects[projectIndex],
+        technologies: updatedTechnologies,
+      };
+
+      return {
+        ...prevUser,
+        projects: {
+          ...prevUser.projects,
+          projects: updatedProjects, // Properly update the nested projects array
+        },
+      };
+    });
+  };
+
+  const handleSocialProfileChange = (
+    network: string,
+    value: string,
+    setUser: React.Dispatch<React.SetStateAction<UserProfile>>
+  ) => {
+    setUser((prevUser) => {
+      const newUser = { ...prevUser };
+      const profileIndex = newUser.basics.profiles.findIndex(
+        (profile) => profile.network === network
+      );
+
+      if (profileIndex !== -1) {
+        // Update existing profile
+        newUser.basics.profiles[profileIndex].url = value;
+      } else {
+        // Add new profile
+        newUser.basics.profiles.push({
+          network: network,
+          url: value,
+          username: "",
+        });
+      }
+
+      return newUser;
+    });
+
+    markAsEdited();
+  };
+
+  const handleTechnologyInputKeyDown = (
+    event: KeyboardEvent<HTMLInputElement>,
+    index: number,
+    inputValue: string
+  ) => {
+    if (event.key === "Enter" && inputValue.trim() !== "") {
+      markAsEdited();
+
+      setUser((prevUser) => {
+        const updatedProjects = [...prevUser.projects.projects];
+        updatedProjects[index] = {
+          ...updatedProjects[index],
+          technologies: [
+            ...updatedProjects[index].technologies,
+            inputValue.trim(),
+          ],
+        };
+
+        return {
+          ...prevUser,
+          projects: {
+            ...prevUser.projects,
+            projects: updatedProjects,
+          },
+        };
+      });
+      setInputValueProject("");
+    }
+  };
+
+  const [file, setFile] = useState<File | null>(null);
+
+  type DeleteType = "hackathons" | "workExperience" | "education" | "projects";
+
+  const deleteItemByIndex = (
+    path: string,
+    index: number,
+    setState: React.Dispatch<React.SetStateAction<UserProfile>>
+  ) => {
+    setState((prevUser) => {
+      const newUser = { ...prevUser };
+      const keys = path.split(".");
+      let current: any = newUser;
+
+      // Navigate to the parent of the target array
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+          console.error(`Invalid path: ${path}`);
+          return prevUser;
+        }
+        current = current[keys[i]];
+      }
+
+      const lastKey = keys[keys.length - 1];
+
+      if (Array.isArray(current[lastKey])) {
+        current[lastKey] = current[lastKey].filter(
+          (_: any, i: number) => i !== index
+        );
+      } else {
+        console.error(`${lastKey} is not an array`);
+        return prevUser;
+      }
+
+      return newUser;
+    });
+
+    markAsEdited();
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -598,7 +1042,7 @@ export default function Home() {
           }
         });
       },
-      { threshold: 0.6 }
+      { threshold: 0.3 }
     );
 
     const sectionIds = [
@@ -608,6 +1052,14 @@ export default function Home() {
       "project",
       "hackathon",
       "social-links",
+      "awards",
+      "certificates",
+      "publications",
+      "skills",
+      "interests",
+      "references",
+      "languages",
+      "volunteer",
     ];
 
     sectionIds.forEach((id) => {
@@ -641,179 +1093,199 @@ export default function Home() {
       }, 1000); // Adjust the timeout based on scroll duration
     }
   };
+  type AddItemFunction = () => void;
 
-  const addWorkExperience = () => {
-    markAsEdited();
-    setUser((prevUser) => ({
-      ...prevUser,
-      workExperience: [
-        ...prevUser.workExperience,
-        {
-          company: "",
-          title: "",
-          logoUrl: "",
-          start: "",
-          end: "",
-          description: "",
-          link: "",
-        },
-      ],
-    }));
-  };
+  const createAddItemFunctions = (): Record<string, AddItemFunction> => {
+    const itemTemplates = {
+      work: {
+        summary: "",
+        website: "",
+        name: "",
+        location: "",
+        position: "",
+        startDate: "",
+        endDate: "",
+        logo: "",
+        highlights: [],
+      },
+      education: {
+        endDate: "",
+        startDate: "",
+        area: "",
+        studyType: "",
+        institution: "",
+        url: "",
+        logo: "",
+        score: "",
+        courses: [""],
+      },
 
-  const addEducation = () => {
-    markAsEdited();
-    setUser((prevUser) => ({
-      ...prevUser,
-      education: [
-        ...prevUser.education,
-        {
-          school: "",
-          degree: "",
-          logoUrl: "",
-          start: "",
-          end: "",
-          link: "",
-        },
-      ],
-    }));
-  };
-
-  const addProject = () => {
-    markAsEdited();
-    setUser((prevUser) => ({
-      ...prevUser,
-      projects: [
-        ...prevUser.projects,
-        {
-          title: "",
-          href: "",
-          dates: "",
-          description: "",
-          technologies: [],
-          links: {
-            website: "",
-            source: "",
-          },
-          image: "",
-        },
-      ],
-    }));
-  };
-
-  const addHackathon = () => {
-    markAsEdited();
-    setUser((prevUser) => ({
-      ...prevUser,
-      hackathons: [
-        ...prevUser.hackathons,
-        {
-          title: "",
-          dates: "",
-          location: "",
-          description: "",
-          image: "",
-          win: "",
-          links: {
-            website: "",
-            github: "",
-          },
-        },
-      ],
-    }));
-  };
-  const generateUpdateObject = (newData: User, initialData: User) => {
-    const updateObject: { [key: string]: any } = {};
-    console.log(newData, "newData");
-    console.log(initialData, "initialData");
-
-    // Helper function to add https:// if missing
-    const ensureHttps = (url: string) => {
-      if (url && !url.startsWith("https://") && !url.startsWith("http://")) {
-        return "https://" + url;
-      }
-      return url;
+      certificates: {
+        name: "",
+        date: "",
+        issuer: "",
+        url: "",
+      },
+      skills: {
+        name: "",
+        keywords: [""],
+      },
+      awards: {
+        title: "",
+        awarder: "",
+        date: "",
+        summary: "",
+      },
+      publications: {
+        name: "",
+        publisher: "",
+        releaseDate: "",
+        url: "",
+        summary: "",
+      },
+      volunteer: {
+        organization: "",
+        position: "",
+        url: "",
+        startDate: "",
+        summary: "",
+        highlights: [""],
+      },
+      languages: {
+        language: "",
+        fluency: "",
+      },
+      interests: {
+        name: "",
+        keywords: [""],
+      },
+      references: {
+        reference: "",
+        name: "",
+      },
     };
 
-    // Ensure URLs in contact, education, projects, and hackathons have https://
-    const updateUrls = (data: User) => {
-      // Update contact URLs
-      Object.keys(data.contact).forEach((key) => {
-        data.contact[key as keyof SocialLinks] = ensureHttps(
-          data.contact[key as keyof SocialLinks]
-        );
-      });
+    return Object.entries(itemTemplates).reduce((acc, [key, template]) => {
+      acc[`add${key.charAt(0).toUpperCase() + key.slice(1)}`] = () => {
+        addItemToArray(key, template, setUser);
+      };
+      return acc;
+    }, {} as Record<string, AddItemFunction>);
+  };
 
-      // Update education links
-      data.education.forEach((edu) => {
-        edu.link = ensureHttps(edu.link);
-      });
+  const {
+    addWork,
+    addEducation,
+    addCertificates,
+    addSkills,
+    addAwards,
+    addPublications,
+    addVolunteer,
+    addLanguages,
+    addInterests,
+    addReferences,
+  } = createAddItemFunctions();
 
-      // Update project links
-      data.projects.forEach((project) => {
-        project.links.website = ensureHttps(project.links.website);
-        project.links.source = ensureHttps(project.links.source);
-      });
+  const addItemToArray = (
+    path: string,
+    newItem: any,
+    setUser: React.Dispatch<React.SetStateAction<UserProfile>>
+  ) => {
+    setUser((prevUser) => {
+      const newUser = { ...prevUser };
+      const keys = path.split(".");
+      let current: any = newUser;
 
-      // Update hackathon links
-      data.hackathons.forEach((hackathon) => {
-        hackathon.links.website = ensureHttps(hackathon.links.website);
-        hackathon.links.github = ensureHttps(hackathon.links.github);
-      });
-    };
-
-    // Ensure newData URLs are correct
-    updateUrls(newData);
-
-    // Helper function to compare objects recursively
-    const compareObjects = (
-      newObj: { [x: string]: any },
-      oldObj: { [x: string]: any }
-    ) => {
-      Object.keys(newObj).forEach((key) => {
-        if (key === "contact") {
-          // Special handling for 'contact'
-          if (JSON.stringify(newObj[key]) !== JSON.stringify(oldObj[key])) {
-            updateObject[key] = newObj[key];
-          }
-        } else if (
-          typeof newObj[key] === "object" &&
-          !Array.isArray(newObj[key]) &&
-          newObj[key] !== null
-        ) {
-          // Instead of comparing nested objects recursively, compare the top-level key directly
-          if (JSON.stringify(newObj[key]) !== JSON.stringify(oldObj[key])) {
-            updateObject[key] = newObj[key];
-          }
-        } else if (Array.isArray(newObj[key])) {
-          // For arrays, compare length and content
-          if (JSON.stringify(newObj[key]) !== JSON.stringify(oldObj[key])) {
-            updateObject[key] = newObj[key];
-          }
-        } else if (newObj[key] !== oldObj[key]) {
-          updateObject[key] = newObj[key];
+      // Navigate to the parent of the target array
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+          current[keys[i]] = {};
         }
-      });
-    };
+        current = current[keys[i]];
+      }
 
-    // Compare top-level properties
-    compareObjects(newData, initialData);
+      const lastKey = keys[keys.length - 1];
 
-    return updateObject;
+      if (Array.isArray(current[lastKey])) {
+        current[lastKey] = [...current[lastKey], newItem];
+      } else if (
+        typeof current[lastKey] === "object" &&
+        current[lastKey] !== null
+      ) {
+        // Handle nested objects like projects and hackathons
+        if (!Array.isArray(current[lastKey][lastKey])) {
+          current[lastKey][lastKey] = [];
+        }
+        current[lastKey][lastKey] = [...current[lastKey][lastKey], newItem];
+      } else {
+        console.error(`${lastKey} is not an array or a valid object`);
+        return prevUser;
+      }
+
+      return newUser;
+    });
+
+    markAsEdited();
   };
+
+  // ... existing code ...
+
+  const addProjects = () => {
+    setUser((prevUser) => {
+      const newProject = {
+        title: "",
+        description: "",
+        website: "",
+        duration: "",
+        technologies: [],
+        highlights: [],
+        image: "",
+        source: "",
+      };
+      return {
+        ...prevUser,
+        projects: {
+          ...prevUser.projects,
+          projects: [...prevUser.projects.projects, newProject],
+        },
+      };
+    });
+    markAsEdited();
+  };
+
+  const addHackathons = () => {
+    setUser((prevUser) => {
+      const newHackathon = {
+        title: "",
+        dates: "",
+        location: "",
+        description: "",
+        image: "",
+        win: "",
+        url: "",
+      };
+      return {
+        ...prevUser,
+        hackathons: {
+          ...prevUser.hackathons,
+          hackathons: [...prevUser.hackathons.hackathons, newHackathon],
+        },
+      };
+    });
+    markAsEdited();
+  };
+
+  // ... rest of the existing code ...
 
   const handleSaveChanges = async () => {
     console.log("Saving changes...");
-    const userUpdates = generateUpdateObject(user, initialUser);
 
     let userUpdateSuccess = true;
 
-    console.log(userUpdates, "update");
-
-    if (Object.keys(userUpdates).length > 0) {
+    if (Object.keys(user).length > 0) {
       const { data, error } = await supabase
         .from("User")
-        .update(userUpdates)
+        .update(user)
         .eq("userId", userData?.user.id);
 
       if (error) {
@@ -828,7 +1300,7 @@ export default function Home() {
             <div className="rounded-xl py-3 font-dmSans">
               <Link
                 target="_blank"
-                href={`https://${user.userName}.snapcv.me`}
+                href={`https://${user.meta.userName}.snapcv.me`}
                 className="bg-green-100 border  border-slate-100 text-slate-950 font-semibold px-4 py-2 rounded-xl  cursor-pointer hover:bg-green-200 hover:text-slate-700"
               >
                 Visit your snapcv
@@ -848,7 +1320,7 @@ export default function Home() {
   };
 
   const checkSlugUnique = async (slug: string): Promise<boolean> => {
-    if (slug === initialUser.userName) {
+    if (slug === initialUser.meta.userName) {
       return true;
     }
     if (reservedWords.includes(slug.toLowerCase())) {
@@ -870,12 +1342,12 @@ export default function Home() {
 
   const handleBlur = async () => {
     setIsChecking(true);
-    const isUnique = await checkSlugUnique(user.userName);
+    const isUnique = await checkSlugUnique(user.meta.userName);
     setIsChecking(false);
-    if (user.userName === "") {
+    if (user.meta.userName === "") {
       setIsAvailable(false);
     }
-    if (isUnique && user.userName !== "") {
+    if (isUnique && user.meta.userName !== "") {
       setIsAvailable(isUnique);
     }
     setSlugError(!isUnique);
@@ -889,49 +1361,61 @@ export default function Home() {
     );
   }
 
+  const sections = [
+    { id: "general-info", label: "General Info" },
+    { id: "work-experience", label: "Work Experience" },
+    { id: "education", label: "Education" },
+    { id: "project", label: "Projects" },
+    { id: "hackathon", label: "Hackathons" },
+    { id: "awards", label: "Awards" },
+    { id: "certificates", label: "Certificates" },
+    { id: "publications", label: "Publications" },
+    { id: "skills", label: "Skills" },
+    { id: "interests", label: "Interests" },
+    { id: "references", label: "References" },
+    { id: "languages", label: "Languages" },
+    { id: "volunteer", label: "Volunteer" },
+    { id: "social-links", label: "Social Links" },
+  ];
+
+  const RadioLink = ({
+    id,
+    label,
+    isLast,
+  }: {
+    id: string;
+    label: string;
+    isLast: boolean;
+  }) => (
+    <Link href={`#${id}`}>
+      <Radio
+        className={`bg-white  p-0 -ml-2.5 ${!isLast ? "mb-6" : ""}`}
+        value={id}
+        size="md"
+      >
+        {label}
+      </Radio>
+    </Link>
+  );
+
   return (
     <div className="grid grid-cols-5  font-dmSans  w-full h-full">
-      <div className="col-span-1 hidden sm:block  border-r h-full p-12">
+      <div className="col-span-1  hidden sm:block  border-r h-full p-12">
         <RadioGroup
           color="secondary"
-          className="font-medium sticky top-12 border-l text-gray-400"
+          className="font-medium sticky  top-12 border-l text-gray-400"
           defaultValue="general-info"
           value={selectedSection}
           onChange={handleRadioChange}
         >
-          <Link href="#general-info">
-            <Radio className="bg-white mb-8 p-0 -ml-2.5" value="general-info">
-              General Info
-            </Radio>
-          </Link>
-          <Link href="#work-experience">
-            <Radio
-              className="bg-white mb-8 p-0 -ml-2.5"
-              value="work-experience"
-            >
-              Work Experience
-            </Radio>
-          </Link>
-          <Link href="#education">
-            <Radio className="bg-white mb-8 p-0 -ml-2.5" value="education">
-              Education
-            </Radio>
-          </Link>
-          <Link href="#project">
-            <Radio className="bg-white mb-8 p-0 -ml-2.5" value="project">
-              Projects
-            </Radio>
-          </Link>
-          <Link href="#hackathon">
-            <Radio className="bg-white mb-8 p-0 -ml-2.5" value="hackathon">
-              Hackathons
-            </Radio>
-          </Link>
-          <Link href="#social-links">
-            <Radio className="bg-white p-0 -ml-2.5" value="social-links">
-              Social Links
-            </Radio>
-          </Link>
+          {sections.map((section, index) => (
+            <RadioLink
+              key={section.id}
+              id={section.id}
+              label={section.label}
+              isLast={index === sections.length - 1}
+            />
+          ))}
         </RadioGroup>
       </div>
       <div
@@ -939,6 +1423,12 @@ export default function Home() {
           demo ? "hidden" : "block"
         }`}
       >
+        <div className="flex w-full justify-center items-center p-6 border-b">
+          <Download profile={user} />
+          <Link className="w-full bg-slate-100 text-slate-950 font-semibold px-4 py-2 rounded-xl  cursor-pointer hover:bg-green-200 hover:text-slate-700" href={`https://${user.meta.userName}.snapcv.me`}>
+            View Portfolio
+          </Link>
+        </div>
         <div className="py-6 px-6 border-b block sm:hidden">
           {" "}
           <Snippet
@@ -950,7 +1440,7 @@ export default function Home() {
             }}
             className="flex font-dmSans  sm:hidden"
           >
-            {`https://${user.userName}.snapcv.me`}
+            {`https://${user.meta.userName}.snapcv.me`}
           </Snippet>
         </div>
         <div className="px-8">
@@ -962,9 +1452,9 @@ export default function Home() {
             <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
               <p className="pt-.05">Profile photo</p>
               <div className="flex max-w-xs w-full justify-start  gap-2 items-center flex-row flex-wrap">
-                {user.avatarUrl ? (
+                {user.basics.avatarUrl ? (
                   <img
-                    src={user.avatarUrl}
+                    src={user.basics.avatarUrl}
                     className="w-12 h-12 sm:h-12 sm:w-12 rounded-xl object-cover"
                   />
                 ) : (
@@ -1029,9 +1519,11 @@ export default function Home() {
               <Input
                 type="text"
                 variant="bordered"
-                value={user.fullName}
-                onChange={handleInputChange}
-                name="fullName"
+                value={user.basics.name}
+                onChange={(e) =>
+                  handleInputChange("basics.name", -1, "", e.target.value)
+                }
+                name="basics.name"
                 className="max-w-xs text-gray-600"
                 classNames={{
                   inputWrapper: "border-1 shadow-none",
@@ -1043,8 +1535,10 @@ export default function Home() {
               <Input
                 type="text"
                 variant="bordered"
-                value={user.userName}
-                onChange={handleInputChange}
+                value={user.meta.userName}
+                onChange={(e) =>
+                  handleInputChange("meta.userName", -1, "", e.target.value)
+                }
                 name="userName"
                 isInvalid={isError}
                 errorMessage={errorMessage}
@@ -1086,9 +1580,11 @@ export default function Home() {
                 type="text"
                 variant="bordered"
                 defaultValue="Product designer"
-                value={user.roll}
-                onChange={handleInputChange}
-                name="roll"
+                value={user.basics.label}
+                onChange={(e) =>
+                  handleInputChange("basics.label", -1, "", e.target.value)
+                }
+                name="role"
                 className="max-w-xs text-gray-600"
                 classNames={{
                   inputWrapper: "border-1 shadow-none",
@@ -1101,8 +1597,10 @@ export default function Home() {
                 variant="bordered"
                 labelPlacement="outside"
                 placeholder="Enter your description"
-                value={user.about}
-                onChange={handleInputChange}
+                value={user.basics.about}
+                onChange={(e) =>
+                  handleInputChange("basics.about", -1, "", e.target.value)
+                }
                 name="about"
                 defaultValue="NextUI is a React UI library that provides a set of accessible, reusable, and beautiful components."
                 className="max-w-xs text-gray-600"
@@ -1111,7 +1609,7 @@ export default function Home() {
                 }}
               />
             </div>
-            <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+            {/* <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
               <p className="pt-.05">Skills</p>
               <div className="flex max-w-xs w-full flex-col justify-start items-start gap-3">
                 <Input
@@ -1121,9 +1619,11 @@ export default function Home() {
                   description=" Press Enter to add a new skill"
                   variant="bordered"
                   value={inputValue}
-                  onChange={handleSkillInputChange}
-                  onKeyDown={handleSkillInputKeyDown}
-                  classNames={{
+                  onChange={(e) => handleSkillInputChange(e.target.value)}
+                  onKeyDown={(event) =>
+                    handleSkillInputKeyDown(event, inputValue)
+                  }
+                  classNames={{ 
                     inputWrapper: "border-1 shadow-none",
                   }}
                   endContent={
@@ -1134,10 +1634,10 @@ export default function Home() {
                   className=" text-xs max-w-xs flex-wrap"
                 />
                 <div className="w-full  flex flex-wrap gap-1 max-w-xs">
-                  {user.skills.map((skill, index) => (
+                  {user.basics..map((skill, index) => (
                     <Chip
                       key={index}
-                      onClose={() => handleSkillClose(skill)}
+                      onClose={(event) => handleSkillClose(event, skill)}
                       variant="flat"
                       classNames={{
                         closeButton: "text-gray-500 z-10",
@@ -1150,14 +1650,16 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
               <p className="pt-.05">Contact mail</p>
               <Input
                 type="email"
                 variant="bordered"
-                value={user.email}
-                onChange={handleInputChange}
+                value={user.basics.email}
+                onChange={(e) =>
+                  handleInputChange("basics.email", -1, "", e.target.value)
+                }
                 name="email"
                 className="max-w-xs text-gray-600"
                 classNames={{
@@ -1170,8 +1672,10 @@ export default function Home() {
               <Input
                 type="url"
                 variant="bordered"
-                value={user.resumeLink}
-                onChange={handleInputChange}
+                value={user.basics.resumeUrl}
+                onChange={(e) =>
+                  handleInputChange("basics.resumeUrl", -1, "", e.target.value)
+                }
                 name="resumeLink"
                 className="max-w-xs text-gray-600"
                 classNames={{
@@ -1184,8 +1688,10 @@ export default function Home() {
               <Input
                 type="text"
                 variant="bordered"
-                value={user.buttonText}
-                onChange={handleInputChange}
+                value={user.meta.buttonText}
+                onChange={(e) =>
+                  handleInputChange("meta.buttonText", -1, "", e.target.value)
+                }
                 name="buttonText"
                 className="max-w-xs text-gray-600"
                 classNames={{
@@ -1202,7 +1708,7 @@ export default function Home() {
                     style={{
                       backgroundColor: color.value,
                       border:
-                        user.themeColor === color.name
+                        user.meta.portfolioColor === color.name
                           ? ".1rem solid black"
                           : "",
                     }}
@@ -1212,7 +1718,10 @@ export default function Home() {
                     onClick={() =>
                       setUser((prevUser) => ({
                         ...prevUser,
-                        themeColor: color.name,
+                        meta: {
+                          ...prevUser.meta,
+                          portfolioColor: color.name,
+                        },
                       }))
                     }
                   ></div>
@@ -1225,9 +1734,9 @@ export default function Home() {
             className="flex min-h-screen flex-col pt-11 justify-center items-start gap-4"
           >
             <h2 className="font-semibold text-lg mb-4">Work expirience</h2>
-            {user.workExperience &&
-              user.workExperience.length > 0 &&
-              user.workExperience.map((experience, index) => (
+            {user.work &&
+              user.work.length > 0 &&
+              user.work.map((experience, index) => (
                 <div
                   key={index}
                   className="flex flex-col w-full gap-4 border rounded-xl p-5"
@@ -1259,9 +1768,9 @@ export default function Home() {
                   <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
                     <p className="pt-0.05">Company logo</p>
                     <div className="flex max-w-xs w-full justify-start gap-2 items-center flex-row flex-wrap">
-                      {experience.logoUrl ? (
+                      {experience.logo ? (
                         <img
-                          src={experience.logoUrl}
+                          src={experience.logo}
                           alt="Company Logo"
                           className="w-12 h-12 sm:h-12 sm:w-12 rounded-xl object-cover"
                         />
@@ -1329,19 +1838,15 @@ export default function Home() {
                     <Input
                       type="text"
                       variant="bordered"
-                      value={experience.company}
+                      value={experience.name}
                       className="max-w-xs text-gray-600"
                       classNames={{
                         inputWrapper: "border-1 shadow-none",
                       }}
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
-                          "workExperience",
-                          index,
-                          "company"
-                        )
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange("work", index, "name", e.target.value)
                       }
+                      placeholder="Company name"
                     />
                   </div>
                   <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
@@ -1349,17 +1854,17 @@ export default function Home() {
                     <Input
                       type="text"
                       variant="bordered"
-                      value={experience.title}
+                      value={experience.position}
                       className="max-w-xs text-gray-600"
                       classNames={{
                         inputWrapper: "border-1 shadow-none",
                       }}
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
-                          "workExperience",
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "work",
                           index,
-                          "title"
+                          "position",
+                          e.target.value
                         )
                       }
                     />
@@ -1373,15 +1878,15 @@ export default function Home() {
                           inputWrapper: "border-1 shadow-none",
                         }}
                         placeholder="Start eg: April 2020"
-                        onChange={(e) =>
-                          handleNestedFieldChange(
-                            e,
-                            "workExperience",
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleInputChange(
+                            "work",
                             index,
-                            "start"
+                            "startDate",
+                            e.target.value
                           )
                         }
-                        value={experience.start}
+                        value={experience.startDate}
                         variant="bordered"
                         className="max-w-xs text-gray-600"
                         // value={[experience.start, experience.end]}
@@ -1391,15 +1896,15 @@ export default function Home() {
                           inputWrapper: "border-1 shadow-none",
                         }}
                         placeholder="end"
-                        onChange={(e) =>
-                          handleNestedFieldChange(
-                            e,
-                            "workExperience",
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleInputChange(
+                            "work",
                             index,
-                            "end"
+                            "endDate",
+                            e.target.value
                           )
                         }
-                        value={experience.end}
+                        value={experience.endDate}
                         variant="bordered"
                         className="max-w-xs text-gray-600"
                         // value={[experience.start, experience.end]}
@@ -1407,19 +1912,19 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
-                    <p className="pt-.05">Description</p>
+                    <p className="pt-.05">Summary</p>
                     <Textarea
                       variant="bordered"
                       labelPlacement="outside"
                       placeholder="Enter your description"
-                      value={experience.description}
+                      value={experience.summary}
                       className="max-w-xs text-gray-600"
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
-                          "workExperience",
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "work",
                           index,
-                          "description"
+                          "summary",
+                          e.target.value
                         )
                       }
                       classNames={{
@@ -1432,17 +1937,17 @@ export default function Home() {
                     <Input
                       type="text"
                       variant="bordered"
-                      value={experience.link}
+                      value={experience.website}
                       className="max-w-xs text-gray-600"
                       classNames={{
                         inputWrapper: "border-1 shadow-none",
                       }}
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
-                          "workExperience",
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "work",
                           index,
-                          "link"
+                          "website",
+                          e.target.value
                         )
                       }
                     />
@@ -1451,7 +1956,7 @@ export default function Home() {
               ))}
             <Button
               variant="bordered"
-              onClick={addWorkExperience}
+              onClick={addWork}
               className="border bg-none flex justify-center items-center gap-1 text-sm"
             >
               <svg
@@ -1468,7 +1973,7 @@ export default function Home() {
                   d="M12 4.5v15m7.5-7.5h-15"
                 />
               </svg>
-              Add Work
+              Add Experience
             </Button>
           </div>
           <div
@@ -1510,9 +2015,9 @@ export default function Home() {
                   <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
                     <p className="pt-.05">College logo</p>
                     <div className="flex max-w-xs w-full justify-start gap-2 items-center flex-row flex-wrap">
-                      {edu.logoUrl ? (
+                      {edu.logo ? (
                         <img
-                          src={edu.logoUrl}
+                          src={edu.logo}
                           alt="College Logo"
                           className="w-12 h-12 sm:h-12 sm:w-12 rounded-xl object-cover"
                         />
@@ -1579,9 +2084,14 @@ export default function Home() {
                     <Input
                       type="text"
                       variant="bordered"
-                      value={edu.school}
-                      onChange={(e) =>
-                        handleNestedFieldChange(e, "education", index, "school")
+                      value={edu.institution}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "education",
+                          index,
+                          "institution",
+                          e.target.value
+                        )
                       }
                       className="max-w-xs text-gray-600"
                       classNames={{
@@ -1590,13 +2100,18 @@ export default function Home() {
                     />
                   </div>
                   <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
-                    <p className="pt-.05">Degree</p>
+                    <p className="pt-.05">Area of Study</p>
                     <Input
                       type="text"
                       variant="bordered"
-                      value={edu.degree}
-                      onChange={(e) =>
-                        handleNestedFieldChange(e, "education", index, "degree")
+                      value={edu.area}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "education",
+                          index,
+                          "area",
+                          e.target.value
+                        )
                       }
                       className="max-w-xs text-gray-600"
                       classNames={{
@@ -1613,15 +2128,15 @@ export default function Home() {
                           inputWrapper: "border-1 shadow-none",
                         }}
                         placeholder="Start eg: April 2020"
-                        onChange={(e) =>
-                          handleNestedFieldChange(
-                            e,
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleInputChange(
                             "education",
                             index,
-                            "start"
+                            "startDate",
+                            e.target.value
                           )
                         }
-                        value={edu.start}
+                        value={edu.startDate}
                         variant="bordered"
                         className="max-w-xs text-gray-600"
                         // value={[experience.start, experience.end]}
@@ -1631,10 +2146,15 @@ export default function Home() {
                           inputWrapper: "border-1 shadow-none",
                         }}
                         placeholder="end"
-                        onChange={(e) =>
-                          handleNestedFieldChange(e, "education", index, "end")
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          handleInputChange(
+                            "education",
+                            index,
+                            "endDate",
+                            e.target.value
+                          )
                         }
-                        value={edu.end}
+                        value={edu.endDate}
                         variant="bordered"
                         className="max-w-xs text-gray-600"
                         // value={[experience.start, experience.end]}
@@ -1675,9 +2195,16 @@ export default function Home() {
               <Textarea
                 type="text"
                 variant="bordered"
-                value={user.projectDescription}
-                onChange={handleInputChange}
-                name="projectDescription"
+                value={user.projects.description}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleInputChange(
+                    "projects",
+                    0,
+                    "description",
+                    e.target.value
+                  )
+                }
+                name="projects.description"
                 className="max-w-xs text-gray-600"
                 classNames={{
                   inputWrapper: "border-1 shadow-none",
@@ -1685,8 +2212,8 @@ export default function Home() {
               />
             </div>
             {user.projects &&
-              user.projects.length > 0 &&
-              user.projects.map((project, index) => (
+              user.projects.projects.length > 0 &&
+              user.projects.projects.map((project, index) => (
                 <div
                   key={index}
                   className="flex flex-col w-full gap-4 border rounded-xl p-5"
@@ -1695,7 +2222,7 @@ export default function Home() {
                   <div className="w-full flex justify-end">
                     <button
                       onClick={() =>
-                        deleteItemByIndex("projects", index, setUser)
+                        deleteItemByIndex("projects.projects", index, setUser)
                       }
                       aria-label={`Delete projects ${index}`}
                     >
@@ -1788,8 +2315,13 @@ export default function Home() {
                       type="text"
                       variant="bordered"
                       value={project.title}
-                      onChange={(e) =>
-                        handleNestedFieldChange(e, "projects", index, "title")
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "projects",
+                          index,
+                          "name",
+                          e.target.value
+                        )
                       }
                       className="max-w-xs text-gray-600"
                       classNames={{
@@ -1802,9 +2334,14 @@ export default function Home() {
                     <Input
                       type="text"
                       variant="bordered"
-                      value={project.dates}
-                      onChange={(e) =>
-                        handleNestedFieldChange(e, "projects", index, "dates")
+                      value={project.duration}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "projects",
+                          index,
+                          "duration",
+                          e.target.value
+                        )
                       }
                       className="max-w-xs text-gray-600"
                       classNames={{
@@ -1819,12 +2356,12 @@ export default function Home() {
                       labelPlacement="outside"
                       placeholder="Enter your description"
                       value={project.description}
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
                           "projects",
                           index,
-                          "description"
+                          "description",
+                          e.target.value
                         )
                       }
                       className="max-w-xs text-gray-600"
@@ -1846,13 +2383,14 @@ export default function Home() {
                         onChange={(event) =>
                           setInputValueProject(event.target.value)
                         }
-                        onKeyDown={(event) =>
-                          handleTechnologyInputKeyDown(
-                            event,
-                            index,
-                            inputValueProject
-                          )
-                        }
+                        // onKeyDown={(event) =>
+                        //   handleTechnologyInputKeyDown(
+                        //     event,
+                        //     index,
+                        //     inputValueProject,
+                        //     "projects"
+                        //   )
+                        // }
                         classNames={{
                           inputWrapper: "border-1 shadow-none",
                         }}
@@ -1886,13 +2424,13 @@ export default function Home() {
                     <Input
                       type="text"
                       variant="bordered"
-                      value={project.links.website}
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
+                      value={project.website}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
                           "projects",
                           index,
-                          "links.website"
+                          "website",
+                          e.target.value
                         )
                       }
                       className="max-w-xs text-gray-600"
@@ -1906,13 +2444,13 @@ export default function Home() {
                     <Input
                       type="text"
                       variant="bordered"
-                      value={project.links.source}
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
+                      value={project.source}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
                           "projects",
                           index,
-                          "links.source"
+                          "source",
+                          e.target.value
                         )
                       }
                       className="max-w-xs text-gray-600"
@@ -1925,7 +2463,7 @@ export default function Home() {
               ))}
             <Button
               variant="bordered"
-              onClick={addProject}
+              onClick={addProjects}
               className="border bg-none flex justify-center items-center gap-1 text-sm"
             >
               <svg
@@ -1955,9 +2493,15 @@ export default function Home() {
               <Textarea
                 type="text"
                 variant="bordered"
-                value={user.hackathonDescription}
-                onChange={handleInputChange}
-                name="hackathonDescription"
+                value={user.hackathons.description}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleInputChange(
+                    "hackathons",
+                    0,
+                    "description",
+                    e.target.value
+                  )
+                }
                 className="max-w-xs text-gray-600"
                 classNames={{
                   inputWrapper: "border-1 shadow-none",
@@ -1965,8 +2509,8 @@ export default function Home() {
               />
             </div>
             {user.hackathons &&
-              user.hackathons.length > 0 &&
-              user.hackathons.map((hackathon, index) => (
+              user.hackathons.hackathons.length > 0 &&
+              user.hackathons.hackathons.map((hackathon, index) => (
                 <div
                   key={index}
                   className="flex flex-col w-full gap-4 border rounded-xl p-5"
@@ -2072,8 +2616,13 @@ export default function Home() {
                       type="text"
                       variant="bordered"
                       value={hackathon.title}
-                      onChange={(e) =>
-                        handleNestedFieldChange(e, "hackathons", index, "title")
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "hackathons",
+                          index,
+                          "title",
+                          e.target.value
+                        )
                       }
                       className="max-w-xs text-gray-600"
                       classNames={{
@@ -2087,12 +2636,12 @@ export default function Home() {
                       type="text"
                       variant="bordered"
                       value={hackathon.location}
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
                           "hackathons",
                           index,
-                          "location"
+                          "location",
+                          e.target.value
                         )
                       }
                       className="max-w-xs text-gray-600"
@@ -2107,8 +2656,13 @@ export default function Home() {
                       type="text"
                       variant="bordered"
                       value={hackathon.dates}
-                      onChange={(e) =>
-                        handleNestedFieldChange(e, "hackathons", index, "dates")
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "hackathons",
+                          index,
+                          "dates",
+                          e.target.value
+                        )
                       }
                       className="max-w-xs text-gray-600"
                       classNames={{
@@ -2123,12 +2677,12 @@ export default function Home() {
                       labelPlacement="outside"
                       placeholder="Enter your description"
                       value={hackathon.description}
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
                           "hackathons",
                           index,
-                          "description"
+                          "description",
+                          e.target.value
                         )
                       }
                       className="max-w-xs text-gray-600"
@@ -2142,33 +2696,13 @@ export default function Home() {
                     <Input
                       type="text"
                       variant="bordered"
-                      value={hackathon.links.website}
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
+                      value={hackathon.url}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
                           "hackathons",
                           index,
-                          "links.website"
-                        )
-                      }
-                      className="max-w-xs text-gray-600"
-                      classNames={{
-                        inputWrapper: "border-1 shadow-none",
-                      }}
-                    />
-                  </div>
-                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
-                    <p className="pt-0.5">Source Link</p>
-                    <Input
-                      type="text"
-                      variant="bordered"
-                      value={hackathon.links.github}
-                      onChange={(e) =>
-                        handleNestedFieldChange(
-                          e,
-                          "hackathons",
-                          index,
-                          "links.github"
+                          "links.website",
+                          e.target.value
                         )
                       }
                       className="max-w-xs text-gray-600"
@@ -2181,7 +2715,7 @@ export default function Home() {
               ))}
             <Button
               variant="bordered"
-              onClick={addHackathon}
+              onClick={addHackathons}
               className="border bg-none flex justify-center items-center gap-1 text-sm"
             >
               <svg
@@ -2201,6 +2735,1002 @@ export default function Home() {
               Add Hackathon
             </Button>
           </div>
+          {/* Awards Section */}
+          <div
+            id="awards"
+            className="flex flex-col pt-11 justify-center items-start gap-4"
+          >
+            <h2 className="font-semibold text-lg mb-4">Awards</h2>
+            {user.awards &&
+              user.awards.length > 0 &&
+              user.awards.map((award, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col w-full gap-4 border rounded-xl p-5"
+                >
+                  <div className="w-full flex justify-end">
+                    <button
+                      onClick={() =>
+                        deleteItemByIndex("awards", index, setUser)
+                      }
+                      aria-label={`Delete award ${index}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 text-red-400"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Award Title</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={award.title}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "awards",
+                          index,
+                          "title",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Awarder</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={award.awarder}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "awards",
+                          index,
+                          "awarder",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Date</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={award.date}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "awards",
+                          index,
+                          "date",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Summary</p>
+                    <Textarea
+                      variant="bordered"
+                      value={award.summary}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "awards",
+                          index,
+                          "summary",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            <Button
+              variant="bordered"
+              onClick={addAwards}
+              className="border bg-none flex justify-center items-center gap-1 text-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 text-gray-700"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Award
+            </Button>
+          </div>
+          {/* Certificates Section */}
+          <div
+            id="certificates"
+            className="flex flex-col pt-11 justify-center items-start gap-4"
+          >
+            <h2 className="font-semibold text-lg mb-4">Certificates</h2>
+            {user.certificates &&
+              user.certificates.length > 0 &&
+              user.certificates.map((certificate, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col w-full gap-4 border rounded-xl p-5"
+                >
+                  <div className="w-full flex justify-end">
+                    <button
+                      onClick={() =>
+                        deleteItemByIndex("certificates", index, setUser)
+                      }
+                      aria-label={`Delete certificate ${index}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 text-red-400"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Certificate Name</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={certificate.name}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "certificates",
+                          index,
+                          "name",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Issuer</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={certificate.issuer}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "certificates",
+                          index,
+                          "issuer",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Date</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={certificate.date}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "certificates",
+                          index,
+                          "date",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">URL</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={certificate.url}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "certificates",
+                          index,
+                          "url",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            <Button
+              variant="bordered"
+              onClick={addCertificates}
+              className="border bg-none flex justify-center items-center gap-1 text-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 text-gray-700"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Certificate
+            </Button>
+          </div>
+          {/* Skills Section */}
+          <div
+            id="skills"
+            className="flex flex-col pt-11 justify-center items-start gap-4"
+          >
+            <h2 className="font-semibold text-lg mb-4">Skills</h2>
+            {user.skills &&
+              user.skills.length > 0 &&
+              user.skills.map((skill, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col w-full gap-4 border rounded-xl p-5"
+                >
+                  <div className="w-full flex justify-end">
+                    <button
+                      onClick={() =>
+                        deleteItemByIndex("skills", index, setUser)
+                      }
+                      aria-label={`Delete skill ${index}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 text-red-400"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Skill Name</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={skill.name}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "skills",
+                          index,
+                          "name",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Keywords</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={skill.keywords.join(", ")}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "skills",
+                          index,
+                          "keywords",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            <Button
+              variant="bordered"
+              onClick={addSkills}
+              className="border bg-none flex justify-center items-center gap-1 text-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 text-gray-700"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Skill
+            </Button>
+          </div>
+          {/* Publications Section */}
+          <div
+            id="publications"
+            className="flex flex-col pt-11 justify-center items-start gap-4"
+          >
+            <h2 className="font-semibold text-lg mb-4">Publications</h2>
+            {user.publications &&
+              user.publications.length > 0 &&
+              user.publications.map((publication, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col w-full gap-4 border rounded-xl p-5"
+                >
+                  <div className="w-full flex justify-end">
+                    <button
+                      onClick={() =>
+                        deleteItemByIndex("publications", index, setUser)
+                      }
+                      aria-label={`Delete publication ${index}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 text-red-400"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Publication Name</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={publication.name}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "publications",
+                          index,
+                          "name",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Publisher</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={publication.publisher}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "publications",
+                          index,
+                          "publisher",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Release Date</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={publication.releaseDate}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "publications",
+                          index,
+                          "releaseDate",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">URL</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={publication.url}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "publications",
+                          index,
+                          "url",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Summary</p>
+                    <Textarea
+                      variant="bordered"
+                      value={publication.summary}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "publications",
+                          index,
+                          "summary",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            <Button
+              variant="bordered"
+              onClick={addPublications}
+              className="border bg-none flex justify-center items-center gap-1 text-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 text-gray-700"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Publication
+            </Button>
+          </div>
+          {/* Languages Section */}
+          <div
+            id="languages"
+            className="flex flex-col pt-11 justify-center items-start gap-4"
+          >
+            <h2 className="font-semibold text-lg mb-4">Languages</h2>
+            {user.languages &&
+              user.languages.length > 0 &&
+              user.languages.map((language, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col w-full gap-4 border rounded-xl p-5"
+                >
+                  <div className="w-full flex justify-end">
+                    <button
+                      onClick={() =>
+                        deleteItemByIndex("languages", index, setUser)
+                      }
+                      aria-label={`Delete language ${index}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 text-red-400"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Language</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={language.language}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "languages",
+                          index,
+                          "language",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Fluency</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={language.fluency}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "languages",
+                          index,
+                          "fluency",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            <Button
+              variant="bordered"
+              onClick={addLanguages}
+              className="border bg-none flex justify-center items-center gap-1 text-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 text-gray-700"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Language
+            </Button>
+          </div>
+          {/* Volunteer Section */}
+          <div
+            id="volunteer"
+            className="flex flex-col pt-11 justify-center items-start gap-4"
+          >
+            <h2 className="font-semibold text-lg mb-4">Volunteer Work</h2>
+            {user.volunteer &&
+              user.volunteer.length > 0 &&
+              user.volunteer.map((work, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col w-full gap-4 border rounded-xl p-5"
+                >
+                  <div className="w-full flex justify-end">
+                    <button
+                      onClick={() =>
+                        deleteItemByIndex("volunteer", index, setUser)
+                      }
+                      aria-label={`Delete volunteer work ${index}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 text-red-400"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Organization</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={work.organization}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "volunteer",
+                          index,
+                          "organization",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Position</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={work.position}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "volunteer",
+                          index,
+                          "position",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">URL</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={work.url}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "volunteer",
+                          index,
+                          "url",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Start Date</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={work.startDate}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "volunteer",
+                          index,
+                          "startDate",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Summary</p>
+                    <Textarea
+                      variant="bordered"
+                      value={work.summary}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "volunteer",
+                          index,
+                          "summary",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            <Button
+              variant="bordered"
+              onClick={addVolunteer}
+              className="border bg-none flex justify-center items-center gap-1 text-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 text-gray-700"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Volunteer Work
+            </Button>
+          </div>
+          {/* Interests Section */}
+          <div
+            id="interests"
+            className="flex flex-col pt-11 justify-center items-start gap-4"
+          >
+            <h2 className="font-semibold text-lg mb-4">Interests</h2>
+            {user.interests &&
+              user.interests.length > 0 &&
+              user.interests.map((interest, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col w-full gap-4 border rounded-xl p-5"
+                >
+                  <div className="w-full flex justify-end">
+                    <button
+                      onClick={() =>
+                        deleteItemByIndex("interests", index, setUser)
+                      }
+                      aria-label={`Delete interest ${index}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 text-red-400"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Interest Name</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={interest.name}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "interests",
+                          index,
+                          "name",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Keywords</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={interest.keywords.join(", ")}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "interests",
+                          index,
+                          "keywords",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            <Button
+              variant="bordered"
+              onClick={addInterests}
+              className="border bg-none flex justify-center items-center gap-1 text-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 text-gray-700"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Interest
+            </Button>
+          </div>
+          {/* References Section */}
+          <div
+            id="references"
+            className="flex flex-col pt-11 justify-center items-start gap-4"
+          >
+            <h2 className="font-semibold text-lg mb-4">References</h2>
+            {user.references &&
+              user.references.length > 0 &&
+              user.references.map((reference, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col w-full gap-4 border rounded-xl p-5"
+                >
+                  <div className="w-full flex justify-end">
+                    <button
+                      onClick={() =>
+                        deleteItemByIndex("references", index, setUser)
+                      }
+                      aria-label={`Delete reference ${index}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6 text-red-400"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Name</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={reference.name}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "references",
+                          index,
+                          "name",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Reference</p>
+                    <Textarea
+                      variant="bordered"
+                      value={reference.reference}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "references",
+                          index,
+                          "reference",
+                          e.target.value
+                        )
+                      }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            <Button
+              variant="bordered"
+              onClick={addReferences}
+              className="border bg-none flex justify-center items-center gap-1 text-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 text-gray-700"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Reference
+            </Button>
+          </div>
           <div
             id="social-links"
             className="flex flex-col pb-6 pt-11 justify-center items-start gap-4"
@@ -2211,9 +3741,14 @@ export default function Home() {
               <Input
                 type="text"
                 variant="bordered"
-                value={user.contact.LinkedIn}
-                onChange={handleInputChange}
-                name="contact.LinkedIn"
+                value={
+                  user.basics.profiles.find(
+                    (profile) => profile.network === "LinkedIn"
+                  )?.url || ""
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleSocialProfileChange("LinkedIn", e.target.value, setUser)
+                }
                 className="max-w-xs text-gray-600"
                 startContent={
                   <img
@@ -2232,9 +3767,14 @@ export default function Home() {
               <Input
                 type="text"
                 variant="bordered"
-                value={user.contact.GitHub}
-                onChange={handleInputChange}
-                name="contact.GitHub"
+                value={
+                  user.basics.profiles.find(
+                    (profile) => profile.network === "GitHub"
+                  )?.url || ""
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleSocialProfileChange("GitHub", e.target.value, setUser)
+                }
                 className="max-w-xs text-gray-600"
                 startContent={
                   <img
@@ -2253,9 +3793,14 @@ export default function Home() {
               <Input
                 type="text"
                 variant="bordered"
-                value={user.contact.X}
-                onChange={handleInputChange}
-                name="contact.X"
+                value={
+                  user.basics.profiles.find(
+                    (profile) => profile.network === "X"
+                  )?.url || ""
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleSocialProfileChange("X", e.target.value, setUser)
+                }
                 className="max-w-xs text-gray-600"
                 startContent={
                   <img
@@ -2274,9 +3819,14 @@ export default function Home() {
               <Input
                 type="text"
                 variant="bordered"
-                value={user.contact.Youtube}
-                onChange={handleInputChange}
-                name="contact.Youtube"
+                value={
+                  user.basics.profiles.find(
+                    (profile) => profile.network === "Youtube"
+                  )?.url || ""
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleSocialProfileChange("Youtube", e.target.value, setUser)
+                }
                 className="max-w-xs text-gray-600"
                 startContent={
                   <img
@@ -2295,9 +3845,14 @@ export default function Home() {
               <Input
                 type="text"
                 variant="bordered"
-                value={user.contact.dribbble}
-                onChange={handleInputChange}
-                name="contact.dribbble"
+                value={
+                  user.basics.profiles.find(
+                    (profile) => profile.network === "Dribbble"
+                  )?.url || ""
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleSocialProfileChange("Dribbble", e.target.value, setUser)
+                }
                 className="max-w-xs text-gray-600"
                 startContent={
                   <img
@@ -2316,7 +3871,7 @@ export default function Home() {
         <div className=" w-full z-50 flex gap-5 bg-white p-4 px-10 sticky bottom-0">
           <Link
             target="_blank"
-            href={`https://${user.userName}.snapcv.me`}
+            href={`https://${user.meta.userName}.snapcv.me`}
             className="w-full rounded-xl sm:flex hidden border font-medium text-sm  justify-center items-center  bg-neutral-50"
           >
             View live
@@ -2368,7 +3923,19 @@ export default function Home() {
           demo ? "block" : "hidden"
         }`}
       >
-        <Temp1 user={user} />
+        <Tabs
+          color="secondary"
+          aria-label="Template Options"
+          className="w-full  p-6 border-b"
+          fullWidth
+        >
+          <Tab key="template1" className="p-0" title="Portfolio">
+            <Temp1 user={user} />
+          </Tab>
+          <Tab key="template2" className="p-0" title="Resume">
+            <ResumeTemplate profile={user} />
+          </Tab>
+        </Tabs>
 
         <div className=" w-full z-50 flex gap-5 sm:hidden bg-white p-4 px-10 fixed bottom-0">
           <Button
