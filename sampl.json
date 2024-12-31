@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "userName": "jamalpp",
+    "buttonText": "Hire me",
+    "resumeTheme": "professional",
+    "portfolioColor": "sky",
+    "portfolioTheme": "basic"
+  },
+  "work": [
+    {
+      "logo": "https://zyadha.com/logo.png",
+      "name": "Zyadha",
+      "endDate": "Present",
+      "website": "https://zyadha.com",
+      "location": "Kochi, India",
+      "position": "Co-founder and Developer",
+      "startDate": "2023",
+      "highlights": [
+        "Built AI-driven personal finance tools",
+        "Achieved 500+ users in early-stage development",
+        "Integrated NLP to auto-categorize expenses"
+      ],
+      "description": "An AI-fintech startup helping users manage and track their finances using AI. Still in early-stage development with over 500+ users now. Leverages NLP processing to auto-categorize and manage all expenses."
+    },
+    {
+      "logo": "https://hyperlaneindia.com/logo.png",
+      "name": "Hyperlane India",
+      "endDate": "Present",
+      "website": "https://hyperlaneindia.com",
+      "location": "Remote",
+      "position": "Full Stack Developer and Web3",
+      "startDate": "2022",
+      "highlights": [
+        "Built Hyperlane India Academy website",
+        "Conducted extensive user research",
+        "Developed internal tools for the support team"
+      ],
+      "description": "Developed a Website for Hyperlane India Academy aimed at showcasing their services and offerings. Also did user research and built a few subsequent projects for the support team."
+    },
+    {
+      "logo": "https://directreview.com/logo.png",
+      "name": "DirectReview",
+      "endDate": "2023",
+      "website": "https://directreview.com",
+      "location": "Bengaluru, India",
+      "position": "Full Stack Developer",
+      "startDate": "2023",
+      "highlights": [
+        "Developed review collection web app",
+        "Integrated feedback analysis features",
+        "Increased client revenue by 20%"
+      ],
+      "description": "Developed a web app for the startup that aimed to collect reviews for shops and increase their revenue, with advanced analysis of each feedback."
+    }
+  ],
+  "awards": [
+    {
+      "date": "2023",
+      "title": "Best Innovator Award",
+      "awarder": "TinkerHub MEC",
+      "summary": "Awarded for outstanding innovation in AI applications during the GenAI Hackathon."
+    }
+  ],
+  "basics": {
+    "name": "Jamal P",
+    "about": "A co-founder and developer at Zyadha, with extensive experience in Full Stack Development and a strong passion for Artificial Intelligence and financial technology.",
+    "email": "webworldleaning@gmail.com",
+    "label": "Full Stack Developer",
+    "phone": "+91 9526106287",
+    "website": "https://jamalpp.dev",
+    "location": {
+      "city": "Kochi",
+      "countryCode": "IN"
+    },
+    "profiles": [
+      {
+        "url": "https://github.com/jamalpp",
+        "network": "GitHub",
+        "username": "jamalpp"
+      },
+      {
+        "url": "https://linkedin.com/in/jamalpp",
+        "network": "LinkedIn",
+        "username": "jamalpp"
+      }
+    ],
+    "avatarUrl": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/8c96630e-585d-4bd9-a3be-f5c8cf3a477b/profilePhoto_348/a-candid-portrait-of-a-young-kerala-coder-aged-20--BoddrROFTb2ufWROPltGVw-0DRIdhdwT_KFq4Zv6SUpgw.jpeg",
+    "resumeUrl": "https://snapcv.me/jamalpp"
+  },
+  "skills": [
+    {
+      "name": "Technical Skills",
+      "keywords": [
+        "Typescript",
+        "React",
+        "NextJS",
+        "Nodejs",
+        "Python",
+        "Express",
+        "GitHub",
+        "DevOps",
+        "CSS",
+        "HTML",
+        "Flask",
+        "FastAPI",
+        "Tailwind",
+        "Figma",
+        "Photoshop"
+      ]
+    }
+  ],
+  "projects": {
+    "projects": [
+      {
+        "image": "https://instacontract.com/demo.png",
+        "title": "InstaContract",
+        "website": "https://instacontract.com",
+        "duration": "2023",
+        "highlights": [
+          "Won at ETHIndia 2023",
+          "Automated contract creation using AI",
+          "Enabled easy smart contract deployment with NLP"
+        ],
+        "description": "Built at ETHIndia 2023, InstaContract is an AI tool empowering developers to easily create, deploy, and test smart contracts using simple English. It uses NLP to convert English to Rust/C++ code.",
+        "technologies": ["Rust", "Python", "NextJS", "C++"]
+      },
+      {
+        "image": "https://rapidalert.com/screenshot.png",
+        "title": "RapidAlert",
+        "website": "https://rapidalert.com",
+        "duration": "2022",
+        "highlights": [
+          "Real-time accident reporting",
+          "Simple UI for quick emergency requests"
+        ],
+        "description": "A quick and easy way for people to report accidents and request emergency services via a website that allows users to report accidents in real-time.",
+        "technologies": ["Nextjs", "ExpressJS"]
+      }
+    ],
+    "description": "A collection of innovative and impactful projects focused on solving real-world problems with AI and Web3 technologies."
+  },
+  "education": [
+    {
+      "area": "Computer Science",
+      "logo": "https://gmec.edu.in/logo.png",
+      "score": "8.2 CGPA",
+      "courses": [
+        "Data Structures and Algorithms",
+        "Artificial Intelligence",
+        "Web Development",
+        "Database Management Systems"
+      ],
+      "endDate": "2025",
+      "startDate": "2021",
+      "studyType": "B. Tech in Computer Science and Engineering",
+      "institution": "Govt. Model Engineering College, Kochi"
+    }
+  ],
+  "interests": [
+    {
+      "name": "Tech and Innovation",
+      "keywords": ["Artificial Intelligence", "Web3", "Fintech"]
+    }
+  ],
+  "languages": [
+    {
+      "fluency": "Fluent",
+      "language": "English"
+    }
+  ],
+  "volunteer": [
+    {
+      "url": "https://tinkerhub.org",
+      "endDate": "Present",
+      "position": "Core Team Member",
+      "startDate": "2022",
+      "highlights": [
+        "Organized the first Gen AI Hackathon in Kerala",
+        "Mentored student participants"
+      ],
+      "description": "Actively involved in organizing tech events and mentoring participants at TinkerHub Foundation.",
+      "organization": "TinkerHub MEC"
+    }
+  ],
+  "hackathons": {
+    "hackathons": [
+      {
+        "win": "1st position",
+        "dates": "30th July 2023",
+        "image": "https://genairush.com/winners.png",
+        "title": "GenAI Rush 2023",
+        "location": "Bengaluru",
+        "description": "All India Hackathon for students and professionals. Secured 1st position."
+      },
+      {
+        "win": "1st place",
+        "dates": "5th August 2023",
+        "image": "https://cubethon.com/winners.png",
+        "title": "Cubethon 2023",
+        "location": "Kochi",
+        "description": "Kerala's largest student hackathon sponsored by Cubet and Nasscom. Achieved first place."
+      },
+      {
+        "win": "1st prize",
+        "dates": "25th June 2023",
+        "image": "https://hackgec.com/winners.png",
+        "title": "Hack GEC 2023",
+        "location": "Thrissur",
+        "description": "Hosted by Government Engineering College Thrissur as part of the Summer Startup Festival. Secured first prize."
+      },
+      {
+        "win": "Winner",
+        "dates": "Excel 2022",
+        "image": "https://excel2022.com/winners.png",
+        "title": "IbeTo 2022",
+        "location": "Kochi",
+        "description": "Hosted as part of Excel 2022 by Govt Model Engineering College. Won the event."
+      }
+    ],
+    "description": "Core organizer for Tinkhack 2023, Kerala’s largest Gen AI Hackathon conducted by TinkerHub MEC, MEC Chapter of the TinkerHub Foundation."
+  },
+  "references": [
+    {
+      "name": "Dr. Arun G",
+      "reference": "Jamal worked with me on several AI projects, showing great technical ability and leadership skills. Highly recommend."
+    }
+  ]
+}

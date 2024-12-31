@@ -1,0 +1,203 @@
+{
+  "meta": {
+    "resumeTheme": "professional",
+    "portfolioTheme": "basic",
+    "portfolioColor": "sky",
+    "username": "thomasdavis",
+    "buttonText": "Hire me"
+  },
+  "basics": {
+    "name": "Thomas Davis",
+    "phone": "0411021021",
+    "label": "Web Developer",
+    "image": "https://avatars0.githubusercontent.com/u/416209?s=460&u=38f220a2c9c658141804f881c334c594eb1642ac&v=4",
+    "about": "I'm a full stack web developer who can build apps from the ground up. I've worked mostly at startups so I am used to wearing many hats. I am a very product focused developer who prioritizes user feedback first and foremost. I'm generally very flexible when investigating new roles.",
+    "website": "https://lordajax.com",
+    "resumeUrl": "https://lordajax.com",
+    "email": "thomasalwyndavis@gmail.com",
+    "location": {
+      "city": "Melbourne",
+      "countryCode": "AU"
+    },
+    "profiles": [
+      {
+        "username": "ajaxdavis",
+        "url": "https://twitter.com/ajaxdavis",
+        "network": "twitter"
+      },
+      {
+        "url": "https://github.com/thomasdavis",
+        "username": "thomasdavis",
+        "network": "github"
+      }
+    ]
+  },
+  "certificates": [
+    {
+      "name": "Certified Kubernetes Administrator",
+      "date": "2021-05-01",
+      "issuer": "Cloud Native Computing Foundation",
+      "url": "http://certificates.com/kubernetes"
+    }
+  ],
+  "education": [
+    {
+      "endDate": "2009-12-12",
+      "startDate": "2008-02-12",
+      "area": "Software Engineering (incomplete)",
+      "studyType": "Bachelors",
+      "institution": "The University of Queensland",
+      "url": "http://uq.edu.au",
+      "logo": "https://uq.edu.au/logo.png",
+      "score": "3.8 GPA",
+      "courses": [
+        "SE101 - Introduction to Software Engineering",
+        "SE201 - Software Design",
+        "SE301 - Software Testing"
+      ]
+    }
+  ],
+
+  "skills": [
+    {
+      "keywords": [
+        "HTML / JSX",
+        "SCSS / CSS / BEM / Styled Components",
+        "Javascript / Typescript",
+        "React / Next",
+        "Redux / Apollo"
+      ],
+      "name": "Frontend"
+    },
+    {
+      "keywords": ["Node", "Ruby", "Python", "Postgres", "Redis", "Serverless"],
+      "name": "Backend"
+    },
+    {
+      "keywords": ["AWS", "G Cloud", "Heroku", "Caching"],
+      "name": "Devops"
+    }
+  ],
+  "awards": [
+    {
+      "title": "Defender of the Internet",
+      "awarder": "Fight For The Future",
+      "date": "2014-10-02",
+      "summary": "For my work against mass surveillance and building out civic tools for digital democracy."
+    }
+  ],
+  "hackathons": {
+    "description": "Participated in several hackathons:",
+    "hackathons": [
+      {
+        "title": "Hackathon 1",
+        "dates": "2022-03-01 to 2022-03-03",
+        "location": "New York",
+        "description": "Built a mobile app to track fitness activities.",
+        "image": "https://hackathon1.com/image.png",
+        "win": "1st Place"
+      }
+    ]
+  },
+  "publications": [
+    {
+      "name": "Advanced JavaScript Techniques",
+      "publisher": "Tech Books Publishing",
+      "releaseDate": "2019-08-01",
+      "url": "http://techbookspublishing.com/advanced-javascript",
+      "summary": "A comprehensive guide to modern JavaScript development."
+    }
+  ],
+  "volunteer": [
+    {
+      "organization": "Open Source Project",
+      "position": "Contributor",
+      "url": "http://opensourceproject.com",
+      "startDate": "2016-01-01",
+      "summary": "Contributing to open source projects to improve software quality.",
+      "highlights": [
+        "Fixed critical bugs and added new features.",
+        "Mentored new contributors."
+      ]
+    }
+  ],
+  "work": [
+    {
+      "summary": "Over the past several years, I've worked at various roles and companies. Mostly early stage startups, doing full stack product development. ",
+      "website": "https://lordajax.com/",
+      "name": "Misc Companies",
+      "location": "Melbourne",
+      "position": "Product Engineer",
+      "startDate": "2020-05-05",
+      "endDate": "2021-05-05",
+      "logo": "https://uq.edu.au/logo.png",
+      "highlights": [
+        "React / Next",
+        "Node / Laravel",
+        "LLM's",
+        "Diagrams / Canvas"
+      ]
+    }
+  ],
+  "projects": {
+    "description": "Participated in several hackathons:",
+    "projects": [
+      {
+        "highlights": [
+          "This resume is built with JSON Resume",
+          "Over 3000 stars on Github",
+          "Community developed themes",
+          "Tens of thousands of users"
+        ],
+        "description": "JSON Resume is a community driven open source initiative to create a JSON based standard for resumes. There is no reason why there can't be a common standard for writing a resume that can be extended with an ecosystem of open source tools.",
+        "website": "http://jsonresume.org",
+        "name": "JSON Resume",
+        "duration": "2014-04-01",
+        "technologies": ["Node", "JSON", "HTML", "CSS", "Javascript"],
+        "image": "https://jsonresume.org/images/logo.png"
+      }
+    ]
+  },
+  "languages": [
+    {
+      "language": "English",
+      "fluency": "Native speaker"
+    }
+  ],
+  "interests": [
+    {
+      "name": "Gardening",
+      "keywords": ["Lazy Gardening"]
+    },
+    {
+      "name": "Music",
+      "keywords": ["Guitar", "Singing", "Dancing"]
+    },
+    {
+      "name": "Books",
+      "keywords": ["Reading", "Writing", "History"]
+    },
+    {
+      "name": "Open Source",
+      "keywords": ["All of it"]
+    }
+  ],
+  "references": [
+    {
+      "reference": "Thomas was hired as a lead developer and, upon the leaving of our co-founder took over as CTO of Earbits. Thomas is, hands down, one of those A Players you hear of companies dying to hire. He is incredibly smart, not just at code but about everything from classical music to Chinese language and culture. Thomas is great to work with and, as a well established contributor to open source projects and several successful ventures, commands the respect of engineers at all levels. I would suggest doing anything you can to have him on your team.",
+      "name": "Joey Flores, Co-founder and CEO of Earbits, Inc."
+    },
+    {
+      "reference": "I've had the great pleasure of working with Thomas for the past three years at Earbits, and on a few side projects. Two years ago our CTO left on a moment's notice, Thomas saved our company by quickly stepping up to fill this role. He has been with our company through thick and thin and made serious personal sacrifices in order to help the company during tough times. He is a phenomenal hacker and a true team player. Highly recommended!",
+      "name": "Yotam Rosenbaum, SVP of Operations, Earbits, Inc."
+    },
+    {
+      "reference": "Thomas is an extremely talented engineer with a very broad range of skills and experience. From being a thought leader in the front-end community via backbonetutorials.com and cdnjs.com, to designing and implementing the API for cdnjs.com, working with Thomas has been fantastic learning experience. Thomas is truly a full stack develop, and his work output is incredible. If there is any opportunity to work with Thomas, I take it. He is the definition of an A player.",
+      "name": "Ryan Kirkman, Senior Software Engineer at Nerdwallet"
+    },
+    {
+      "reference": "On Thomas Davis... Hire this guy. Do not be fooled. Incredibly capable and fast. Plays well with others. Unbelievable at front-end work end programming but that is just the start. Visionary. Hire him before I do.",
+      "name": "Greg Davis"
+    }
+  ]
+}

@@ -27,6 +27,7 @@ const config = {
         dmSans: ["var(--font-dm-sans)", "sans-serif"],
         sora: ["var(--font-sora)", "sans-serif"],
         roboto: ["var(--font-roboto)", "sans-serif"],
+        quattrocento: ["var(--font-quattrocento)", "serif"],
       },
       colors: {},
       borderRadius: {
