@@ -22,7 +22,7 @@ export default function page() {
           pixelRatio: 3,
           backgroundColor: "#111827",
           style: {
-            transform: "scale(1)",
+            transform: "scale(0.9)",
           },
           filter: (node) => {
             return !node.classList?.contains("loading");

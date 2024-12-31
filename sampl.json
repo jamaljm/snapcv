@@ -1,6 +1,7 @@
 {
   "meta": {
-    "userName": "jamalpp",
+    "userName": "jamal",
+    "avatarUrl": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/profilePhoto_182/IMG_0329.JPG",
     "buttonText": "Hire me",
     "resumeTheme": "professional",
     "portfolioColor": "sky",
@@ -8,221 +9,310 @@
   },
   "work": [
     {
-      "logo": "https://zyadha.com/logo.png",
-      "name": "Zyadha",
-      "endDate": "Present",
-      "website": "https://zyadha.com",
-      "location": "Kochi, India",
-      "position": "Co-founder and Developer",
-      "startDate": "2023",
-      "highlights": [
-        "Built AI-driven personal finance tools",
-        "Achieved 500+ users in early-stage development",
-        "Integrated NLP to auto-categorize expenses"
-      ],
-      "description": "An AI-fintech startup helping users manage and track their finances using AI. Still in early-stage development with over 500+ users now. Leverages NLP processing to auto-categorize and manage all expenses."
+      "logo": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/workExperienceLogo_983/Frame-4-(1).png",
+      "name": "Ragas",
+      "endDate": "December 2024",
+      "summary": "Ragas is a platform improving AI content evaluation through prompt annotation and refinement tools. I developed the MVP with a complex dashboard to enhance user workflows.",
+      "website": "https://www.ragas.io",
+      "location": "",
+      "position": "Full-stack developer",
+      "startDate": "October 2024",
+      "highlights": []
     },
     {
-      "logo": "https://hyperlaneindia.com/logo.png",
+      "logo": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/workExperienceLogo_714/logo-icon.png",
+      "name": "Zyadha.com",
+      "endDate": "March 2024",
+      "summary": "Zyadha offers a WhatsApp-based AI bot that simplifies personal finance and loan management with an interactive and user-friendly interface.",
+      "website": "https://www.zyadha.com",
+      "location": "",
+      "position": "Co-founder",
+      "startDate": "December 2023",
+      "highlights": []
+    },
+    {
+      "logo": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/workExperienceLogo_827/New-Project-(5).png",
+      "name": "Tosto.in",
+      "endDate": "May 2024",
+      "summary": "Tosto offers instant, customizable apps for restaurants and cafes, enhancing customer engagement through personalized WhatsApp campaigns, loyalty programs, referrals, and automated Google review collection.",
+      "website": "https://www.tosto.in",
+      "location": "",
+      "position": "Co-founder",
+      "startDate": "March 2024",
+      "highlights": []
+    },
+    {
+      "logo": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/workExperienceLogo_423/wGzRPeEf_400x400.jpg",
       "name": "Hyperlane India",
-      "endDate": "Present",
-      "website": "https://hyperlaneindia.com",
-      "location": "Remote",
-      "position": "Full Stack Developer and Web3",
-      "startDate": "2022",
-      "highlights": [
-        "Built Hyperlane India Academy website",
-        "Conducted extensive user research",
-        "Developed internal tools for the support team"
-      ],
-      "description": "Developed a Website for Hyperlane India Academy aimed at showcasing their services and offerings. Also did user research and built a few subsequent projects for the support team."
+      "endDate": "March 2024",
+      "summary": "At Hyperlane India, I worked as a front-end developer, building their academy website and creating an admin panel to manage and enhance their community.",
+      "website": "https://www.hyperlane.xyz",
+      "location": "",
+      "position": "Front-end Developer",
+      "startDate": "November 2023",
+      "highlights": []
     },
     {
-      "logo": "https://directreview.com/logo.png",
-      "name": "DirectReview",
-      "endDate": "2023",
-      "website": "https://directreview.com",
-      "location": "Bengaluru, India",
-      "position": "Full Stack Developer",
-      "startDate": "2023",
-      "highlights": [
-        "Developed review collection web app",
-        "Integrated feedback analysis features",
-        "Increased client revenue by 20%"
-      ],
-      "description": "Developed a web app for the startup that aimed to collect reviews for shops and increase their revenue, with advanced analysis of each feedback."
+      "logo": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/workExperienceLogo_893/Screenshot-2024-07-06-231820.png",
+      "name": "Directreview",
+      "endDate": "April 2023",
+      "summary": "Direct Review is a startup enhancing review collection for shops by creating dedicated pages for them. I developed the entire front end and part of the back end during the MVP stage.",
+      "website": "https://www.directreview.in",
+      "location": "",
+      "position": "Full-stack developer",
+      "startDate": "January 2023 ",
+      "highlights": []
     }
   ],
-  "awards": [
-    {
-      "date": "2023",
-      "title": "Best Innovator Award",
-      "awarder": "TinkerHub MEC",
-      "summary": "Awarded for outstanding innovation in AI applications during the GenAI Hackathon."
-    }
-  ],
+  "awards": [],
   "basics": {
-    "name": "Jamal P",
-    "about": "A co-founder and developer at Zyadha, with extensive experience in Full Stack Development and a strong passion for Artificial Intelligence and financial technology.",
-    "email": "webworldleaning@gmail.com",
-    "label": "Full Stack Developer",
-    "phone": "+91 9526106287",
-    "website": "https://jamalpp.dev",
-    "location": {
-      "city": "Kochi",
-      "countryCode": "IN"
-    },
+    "name": "",
+    "about": "I'm a full-stack developer and designer with extensive experience in building web applications from the ground up. Having developed over 10 MVPs for clients and startups, I specialize in creating complex, user-friendly applications using Next.js.",
+    "email": "jamalvga2002@gmail.com",
+    "label": "",
+    "phone": "",
+    "skills": [
+      "Nextjs",
+      "Typescript",
+      "Python",
+      "Figma",
+      "UI/UX",
+      "Nodejs",
+      "Project management",
+      "OpenAI",
+      "TailwindCSS",
+      "Shadcn",
+      "Javascript",
+      "React",
+      "PostgreSQL"
+    ],
+    "website": "",
+    "location": {},
     "profiles": [
       {
-        "url": "https://github.com/jamalpp",
+        "url": "https://github.com/jamaljm",
         "network": "GitHub",
-        "username": "jamalpp"
+        "username": "jamaljm"
       },
       {
-        "url": "https://linkedin.com/in/jamalpp",
+        "url": "",
+        "network": "Youtube",
+        "username": ""
+      },
+      {
+        "url": "https://www.linkedin.com/in/jamal-p-5156a1170/",
         "network": "LinkedIn",
-        "username": "jamalpp"
+        "username": ""
+      },
+      {
+        "url": "",
+        "network": "Dribbble",
+        "username": ""
       }
     ],
-    "avatarUrl": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/8c96630e-585d-4bd9-a3be-f5c8cf3a477b/profilePhoto_348/a-candid-portrait-of-a-young-kerala-coder-aged-20--BoddrROFTb2ufWROPltGVw-0DRIdhdwT_KFq4Zv6SUpgw.jpeg",
-    "resumeUrl": "https://snapcv.me/jamalpp"
+    "avatarUrl": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/profilePhoto_182/IMG_0329.JPG",
+    "resumeUrl": "https://registry.jsonresume.org/jamaljm"
   },
   "skills": [
     {
-      "name": "Technical Skills",
-      "keywords": [
-        "Typescript",
-        "React",
-        "NextJS",
-        "Nodejs",
-        "Python",
-        "Express",
-        "GitHub",
-        "DevOps",
-        "CSS",
-        "HTML",
-        "Flask",
-        "FastAPI",
-        "Tailwind",
-        "Figma",
-        "Photoshop"
-      ]
+      "name": "Nextjs",
+      "keywords": []
+    },
+    {
+      "name": "Typescript",
+      "keywords": []
+    },
+    {
+      "name": "Python",
+      "keywords": []
+    },
+    {
+      "name": "Figma",
+      "keywords": []
+    },
+    {
+      "name": "UI/UX",
+      "keywords": []
+    },
+    {
+      "name": "Nodejs",
+      "keywords": []
+    },
+    {
+      "name": "Project management",
+      "keywords": []
+    },
+    {
+      "name": "OpenAI",
+      "keywords": []
+    },
+    {
+      "name": "TailwindCSS",
+      "keywords": []
+    },
+    {
+      "name": "Shadcn",
+      "keywords": []
+    },
+    {
+      "name": "Javascript",
+      "keywords": []
+    },
+    {
+      "name": "React",
+      "keywords": []
+    },
+    {
+      "name": "PostgreSQL",
+      "keywords": []
     }
   ],
   "projects": {
     "projects": [
       {
-        "image": "https://instacontract.com/demo.png",
+        "image": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/projectImage_536/macbook-smooth-lid-drop.png",
+        "title": "snapCV",
+        "source": "https://github.com/jamaljm/snapcv/",
+        "website": "https://snapcv.me",
+        "duration": "1 Month",
+        "highlights": [],
+        "description": "SnapCV makes creating and sharing your portfolio easy. Just upload your resume, and SnapCV instantly turns it into a clean, professional portfolio that’s ready to share across DMs and social media.",
+        "technologies": [
+          "Nextjs",
+          "Tailwind",
+          "Supabase",
+          "PostgreSQL",
+          "Nodejs",
+          "OpenAI"
+        ]
+      },
+      {
+        "image": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/projectImage_312/68747470733a2f2f692e696d6775722e636f6d2f4b7568694f6d462e6a7067.jpeg",
+        "title": "Foodo",
+        "source": "https://github.com/jamaljm/mini-project",
+        "website": "https://codecrypt-team420.vercel.app/",
+        "duration": "1 Month",
+        "highlights": [],
+        "description": "Foodo is a restaurant call order automation system that uses AI to seamlessly gather and manage order details and locations, all within an intuitive PA dashboard.",
+        "technologies": ["Nextjs", "Flask", "Twilio", "OpenAI", "Tailwind"]
+      },
+      {
+        "image": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/projectImage_198/68747470733a2f2f692e696d6775722e636f6d2f63376c4344624b2e706e67.png",
         "title": "InstaContract",
-        "website": "https://instacontract.com",
-        "duration": "2023",
-        "highlights": [
-          "Won at ETHIndia 2023",
-          "Automated contract creation using AI",
-          "Enabled easy smart contract deployment with NLP"
-        ],
-        "description": "Built at ETHIndia 2023, InstaContract is an AI tool empowering developers to easily create, deploy, and test smart contracts using simple English. It uses NLP to convert English to Rust/C++ code.",
+        "source": "https://github.com/zodwick/ethglobal_team420",
+        "website": "",
+        "duration": "2 Weeks",
+        "highlights": [],
+        "description": "InstaContract, built at ETHIndia 2023, is an AI tool that lets developers easily create, deploy, and test smart contracts using simple English. It converts English to Rust/C++ and compiles on the Arbitrum chain.",
         "technologies": ["Rust", "Python", "NextJS", "C++"]
       },
       {
-        "image": "https://rapidalert.com/screenshot.png",
+        "image": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/projectImage_117/68747470733a2f2f692e696d6775722e636f6d2f6d596877737a472e706e67.png",
         "title": "RapidAlert",
-        "website": "https://rapidalert.com",
-        "duration": "2022",
-        "highlights": [
-          "Real-time accident reporting",
-          "Simple UI for quick emergency requests"
-        ],
-        "description": "A quick and easy way for people to report accidents and request emergency services via a website that allows users to report accidents in real-time.",
-        "technologies": ["Nextjs", "ExpressJS"]
+        "source": "https://github.com/jamaljm/RapidAlert",
+        "website": "",
+        "duration": "2 Months",
+        "highlights": [],
+        "description": "An AI-powered solution for quick accident reporting and emergency service requests. Users can instantly report accidents, providing details like location, type, and needed assistance (ambulance, police, fire).",
+        "technologies": ["Nextjs", "Expressjs"]
       }
     ],
-    "description": "A collection of innovative and impactful projects focused on solving real-world problems with AI and Web3 technologies."
+    "description": "Involved in several innovative projects focusing on AI and efficient web applications."
   },
   "education": [
     {
-      "area": "Computer Science",
-      "logo": "https://gmec.edu.in/logo.png",
-      "score": "8.2 CGPA",
-      "courses": [
-        "Data Structures and Algorithms",
-        "Artificial Intelligence",
-        "Web Development",
-        "Database Management Systems"
-      ],
-      "endDate": "2025",
-      "startDate": "2021",
-      "studyType": "B. Tech in Computer Science and Engineering",
-      "institution": "Govt. Model Engineering College, Kochi"
-    }
-  ],
-  "interests": [
-    {
-      "name": "Tech and Innovation",
-      "keywords": ["Artificial Intelligence", "Web3", "Fintech"]
-    }
-  ],
-  "languages": [
-    {
-      "fluency": "Fluent",
-      "language": "English"
-    }
-  ],
-  "volunteer": [
-    {
-      "url": "https://tinkerhub.org",
+      "url": "",
+      "area": "",
+      "logo": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/educationLogo_943/Model_Engineering_College_(logo).jpg",
+      "score": "",
+      "courses": [],
       "endDate": "Present",
-      "position": "Core Team Member",
-      "startDate": "2022",
-      "highlights": [
-        "Organized the first Gen AI Hackathon in Kerala",
-        "Mentored student participants"
-      ],
-      "description": "Actively involved in organizing tech events and mentoring participants at TinkerHub Foundation.",
-      "organization": "TinkerHub MEC"
+      "startDate": "April 2020",
+      "studyType": "Bachelor of Technology in Computer Science",
+      "institution": "Model Engineering college"
     }
   ],
+  "interests": [],
+  "languages": [],
+  "volunteer": [],
   "hackathons": {
     "hackathons": [
       {
         "win": "1st position",
         "dates": "30th July 2023",
-        "image": "https://genairush.com/winners.png",
+        "image": "https://ahjejkcbrakgzvgvmywb.supabase.co/storage/v1/object/public/snapcv/user/93c5b241-ff1e-4202-8b21-2586fece6b37/hackathonLogo_947/Screenshot-2024-08-18-091911.png",
+        "links": {
+          "github": "",
+          "website": "https://hack2skill.com/hack/gen-ai-rush-buildathon"
+        },
         "title": "GenAI Rush 2023",
         "location": "Bengaluru",
-        "description": "All India Hackathon for students and professionals. Secured 1st position."
+        "description": "All India Hackathon for students and professionals where we secured 1st position."
       },
       {
         "win": "1st place",
         "dates": "5th August 2023",
-        "image": "https://cubethon.com/winners.png",
+        "image": "",
+        "links": {
+          "github": "",
+          "website": "https://english.mathrubhumi.com/education/news/cubethon-23-mec-kochi-emerges-champions-tn-colleges-on-other-top-positions-1.8796858"
+        },
         "title": "Cubethon 2023",
         "location": "Kochi",
-        "description": "Kerala's largest student hackathon sponsored by Cubet and Nasscom. Achieved first place."
+        "description": "Kerala's largest student hackathon, where I achieved first place."
       },
       {
-        "win": "1st prize",
+        "win": "First prize",
         "dates": "25th June 2023",
-        "image": "https://hackgec.com/winners.png",
+        "image": "",
+        "links": {
+          "github": "",
+          "website": ""
+        },
         "title": "Hack GEC 2023",
         "location": "Thrissur",
-        "description": "Hosted by Government Engineering College Thrissur as part of the Summer Startup Festival. Secured first prize."
+        "description": "Hosted by Government Engineering College Thrissur as part of the Summer Startup Festival where we secured First prize."
       },
       {
         "win": "Winner",
-        "dates": "Excel 2022",
-        "image": "https://excel2022.com/winners.png",
+        "dates": "",
+        "image": "",
+        "links": {
+          "github": "",
+          "website": ""
+        },
         "title": "IbeTo 2022",
+        "location": "",
+        "description": "Hosted as part of Excel 2022 by Govt Model Engineering College where I was the winner."
+      },
+      {
+        "win": "",
+        "dates": "",
+        "image": "",
+        "links": {
+          "github": "",
+          "website": ""
+        },
+        "title": "Hack For Tomorrow ",
         "location": "Kochi",
-        "description": "Hosted as part of Excel 2022 by Govt Model Engineering College. Won the event."
+        "description": "Won first prize"
+      },
+      {
+        "win": "",
+        "dates": "",
+        "image": "",
+        "links": {
+          "github": "",
+          "website": ""
+        },
+        "title": "HACKTKM",
+        "location": "Kollam",
+        "description": "Won choice award"
       }
     ],
-    "description": "Core organizer for Tinkhack 2023, Kerala’s largest Gen AI Hackathon conducted by TinkerHub MEC, MEC Chapter of the TinkerHub Foundation."
+    "description": "Participated in several hackathons showcasing skills in AI and full stack development, winning accolades and recognition."
   },
-  "references": [
-    {
-      "name": "Dr. Arun G",
-      "reference": "Jamal worked with me on several AI projects, showing great technical ability and leadership skills. Highly recommend."
-    }
-  ]
+  "references": [],
+  "certificates": [],
+  "publications": []
 }
