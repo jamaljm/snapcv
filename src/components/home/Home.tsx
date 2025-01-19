@@ -2042,14 +2042,13 @@ export default function Home() {
                         onChange={(event) =>
                           setInputValueProject(event.target.value)
                         }
-                        // onKeyDown={(event) =>
-                        //   handleTechnologyInputKeyDown(
-                        //     event,
-                        //     index,
-                        //     inputValueProject,
-                        //     "projects"
-                        //   )
-                        // }
+                        onKeyDown={(event) =>
+                          handleTechnologyInputKeyDown(
+                            event,
+                            index,
+                            inputValueProject
+                          )
+                        }
                         classNames={{
                           inputWrapper: "border-1 shadow-none",
                         }}
@@ -2061,10 +2060,10 @@ export default function Home() {
                         className=" text-xs max-w-xs flex-wrap"
                       />
                       <div className="w-full  flex flex-wrap gap-1 max-w-xs">
-                        {project.technologies.map((tech, index) => (
+                        {project.technologies.map((tech, techIndex) => (
                           <Chip
-                            key={`tech-${index}`}
-                            onClose={() => handleTechnologyClose(index, tech)}
+                            key={`tech-${techIndex}`}
+                            onClose={() => handleTechnologyClose(index, tech)} // Use the project's index, not techIndex
                             variant="flat"
                             classNames={{
                               closeButton: "text-gray-500 z-10",
