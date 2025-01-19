@@ -11,7 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Markdown from "react-markdown";
 import { ProjectDetail } from "@/lib/type";
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
 function generateGradient(): string {
   const gradients = [
@@ -24,7 +24,7 @@ function generateGradient(): string {
     "from-green-400 to-cyan-500",
     "from-rose-400 to-orange-300",
     "from-fuchsia-500 to-cyan-500",
-    "from-violet-600 to-indigo-600"
+    "from-violet-600 to-indigo-600",
   ];
 
   const randomIndex = Math.floor(Math.random() * gradients.length);
@@ -117,7 +117,7 @@ export function ProjectCard({
               target="_blank"
               className="flex gap-2 items-center text-xs border rounded-xl px-4 py-1.5"
             >
-              {/* Github link content */}
+              Source Code
             </Link>
           )}
         </div>
