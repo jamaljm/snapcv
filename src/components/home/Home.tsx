@@ -2032,44 +2032,80 @@ export default function Home() {
                   <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
                     <p className="pt-.05">Stack</p>
                     <div className="flex max-w-xs w-full flex-col justify-start items-start gap-3">
-                      <Input
-                        type="text"
-                        labelPlacement="inside"
-                        placeholder="Add a technology"
-                        description=" Press Enter to add a new technology"
-                        variant="bordered"
-                        value={inputValueProject}
-                        onChange={(event) =>
-                          setInputValueProject(event.target.value)
-                        }
-                        onKeyDown={(event) =>
-                          handleTechnologyInputKeyDown(
-                            event,
-                            index,
-                            inputValueProject
-                          )
-                        }
-                        classNames={{
-                          inputWrapper: "border-1 shadow-none",
-                        }}
-                        endContent={
-                          <Kbd className="font-dmSans text-xs" keys={["enter"]}>
-                            Enter
-                          </Kbd>
-                        }
-                        className=" text-xs max-w-xs flex-wrap"
-                      />
-                      <div className="w-full  flex flex-wrap gap-1 max-w-xs">
+                      <div className="flex w-full gap-2">
+                        <Input
+                          type="text"
+                          labelPlacement="inside"
+                          placeholder="Add a technology"
+                          description=" Press Enter to add a new technology"
+                          variant="bordered"
+                          value={inputValueProject}
+                          onChange={(event) =>
+                            setInputValueProject(event.target.value)
+                          }
+                          onKeyDown={(event) =>
+                            handleTechnologyInputKeyDown(
+                              event,
+                              index,
+                              inputValueProject
+                            )
+                          }
+                          classNames={{
+                            inputWrapper: "border-1 shadow-none",
+                          }}
+                          endContent={
+                            <Kbd
+                              className="font-dmSans text-xs"
+                              keys={["enter"]}
+                            >
+                              Enter
+                            </Kbd>
+                          }
+                          className="text-xs flex-1"
+                        />
+                        <Button
+                          size="sm"
+                          variant="bordered"
+                          onClick={() => {
+                            if (inputValueProject.trim() !== "") {
+                              handleTechnologyInputKeyDown(
+                                {
+                                  key: "Enter",
+                                } as KeyboardEvent<HTMLInputElement>,
+                                index,
+                                inputValueProject
+                              );
+                            }
+                          }}
+                          className="min-w-[40px] h-[40px] p-0 rounded-full"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-5 h-5 text-gray-700"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </Button>
+                      </div>
+                      <div className="w-full flex flex-wrap gap-1 max-w-xs">
                         {project.technologies.map((tech, techIndex) => (
                           <Chip
                             key={`tech-${techIndex}`}
-                            onClose={() => handleTechnologyClose(index, tech)} // Use the project's index, not techIndex
+                            onClose={() => handleTechnologyClose(index, tech)}
                             variant="flat"
                             classNames={{
                               closeButton: "text-gray-500 z-10",
                               base: "bg-gray-50",
                             }}
-                            className="flex mt-1 mb-1  items-center bg-none text-xs rounded-full border-1 border-gray-200 pl-2 "
+                            className="flex mt-1 mb-1 items-center bg-none text-xs rounded-full border-1 border-gray-200 pl-2"
                           >
                             {tech}
                           </Chip>
