@@ -756,7 +756,7 @@ export default function Home() {
         .from("users")
         .update({
           resumeJson: user,
-          userName: user.meta.userName,
+          userName: user.meta.userName.toLowerCase().replace(/\s+/g, ""),
           metaJson: userMetaData,
           updatedAt: new Date().toISOString(),
         })
@@ -1167,9 +1167,14 @@ export default function Home() {
                 onChange={(e) => {
                   setUserMetaData((prevUserMetaData: UserMetaData) => ({
                     ...prevUserMetaData,
-                    userName: e.target.value.toLowerCase(),
+                    userName: e.target.value.toLowerCase().replace(/\s+/g, ""),
                   }));
-                  handleInputChange("meta.userName", -1, "", e.target.value.toLowerCase());
+                  handleInputChange(
+                    "meta.userName",
+                    -1,
+                    "",
+                    e.target.value.toLowerCase().replace(/\s+/g, "")
+                  );
                 }}
                 name="userName"
                 isInvalid={isError}

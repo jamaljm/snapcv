@@ -197,14 +197,14 @@ function Page() {
     }, 250);
     const { data, error } = await supabase.from("users").insert({
       id: userData?.user.id,
-      userName: shopSlug.toLowerCase(),
+      userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
       resumeJson: {
         meta: {
           buttonText: "Hire me",
           resumeTheme: "professional",
           portfolioColor: "sky",
           portfolioTheme: "basic",
-          userName: shopSlug.toLowerCase(),
+          userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
           avatarUrl: userData?.user.user_metadata.avatar_url,
         },
         basics: {
@@ -357,7 +357,7 @@ function Page() {
         ],
       },
       metaJson: {
-        userName: shopSlug.toLowerCase(),
+        userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
         avatarUrl: userData?.user.user_metadata.avatar_url,
         buttonText: "Hire me",
         resumeTheme: "professional",
@@ -444,11 +444,11 @@ function Page() {
         frame();
         setValue(90);
         const extendedResult = await {
-          userName: shopSlug.toLowerCase(),
+          userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
           resumeJson: {
             meta: {
               ...result.meta,
-              userName: shopSlug.toLowerCase(),
+              userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
               buttonText: "Hire me",
               resumeTheme: "professional",
               portfolioColor: "sky",
@@ -463,7 +463,7 @@ function Page() {
             ...result,
           },
           metaJson: {
-            userName: shopSlug.toLowerCase(),
+            userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
             avatarUrl: userData?.user.user_metadata.avatar_url,
             buttonText: "Hire me",
             resumeTheme: "professional",
@@ -537,10 +537,10 @@ function Page() {
         frame();
         setValue(90);
         const extendedResult = await {
-          userName: shopSlug.toLowerCase(),
+          userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
           resumeJson: {
             meta: {
-              userName: shopSlug.toLowerCase(),
+              userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
               buttonText: "Hire me",
               resumeTheme: "professional",
               portfolioColor: "sky",
@@ -555,7 +555,7 @@ function Page() {
             ...result,
           },
           metaJson: {
-            userName: shopSlug.toLowerCase(),
+            userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
             avatarUrl: userData?.user.user_metadata.avatar_url,
             buttonText: "Hire me",
             resumeTheme: "professional",
