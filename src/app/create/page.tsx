@@ -630,7 +630,7 @@ function Page() {
               onBlur={handleBlur}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setSlugError(false);
-                setShopSlug(e.target.value);
+                setShopSlug(e.target.value.toLowerCase().replace(/\s+/g, ""));
               }}
               endContent={
                 <div className="pointer-events-none w-full justify-between pl-2 flex items-center">

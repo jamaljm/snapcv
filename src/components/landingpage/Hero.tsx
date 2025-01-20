@@ -116,7 +116,7 @@ export default function Hero() {
                 return;
               }
               setSlugError(false);
-              setShopSlug(e.target.value);
+              setShopSlug(e.target.value.toLowerCase().replace(/\s+/g, ""));
             }}
             endContent={
               <div className="pointer-events-none w-full justify-between pl-2 flex items-center">
