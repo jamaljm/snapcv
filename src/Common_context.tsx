@@ -43,7 +43,6 @@ export function CommonContextProvider({
     const fetchData = async () => {
       try {
         const { data, error } = await supabase.auth.getSession();
-        console.log(data.session, "data");
         setUser(data.session);
       } catch (error) {
         console.error("Error:", error);

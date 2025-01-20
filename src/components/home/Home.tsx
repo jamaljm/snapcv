@@ -974,7 +974,7 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <div className="flex flex-col bg-slate-50 gap-4 p-4 sm:p-6 border-b">
+        {/* <div className="flex flex-col bg-slate-50 gap-4 p-4 sm:p-6 border-b">
           {githubData === null ? (
             <div className="flex flex-col gap-4">
               <h3 className="text-lg sm:text-xl font-bold text-left bg-gradient-to-r from-[#2ea043] to-[#238636] text-transparent bg-clip-text">
@@ -1056,7 +1056,7 @@ export default function Home() {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
         <div className="py-6 px-6 border-b block sm:hidden">
           {" "}
           <Snippet
@@ -1167,9 +1167,9 @@ export default function Home() {
                 onChange={(e) => {
                   setUserMetaData((prevUserMetaData: UserMetaData) => ({
                     ...prevUserMetaData,
-                    userName: e.target.value,
+                    userName: e.target.value.toLowerCase(),
                   }));
-                  handleInputChange("meta.userName", -1, "", e.target.value);
+                  handleInputChange("meta.userName", -1, "", e.target.value.toLowerCase());
                 }}
                 name="userName"
                 isInvalid={isError}
@@ -3628,7 +3628,7 @@ export default function Home() {
           fullWidth
         >
           <Tab key="template1" className="p-0" title="Portfolio">
-            <Temp1 isHome={true} user={user} githubData={githubData} />
+            <Temp1 user={user} />
           </Tab>
           <Tab key="template2" className="p-0" title="Resume">
             <ResumeTemplate profile={user} />

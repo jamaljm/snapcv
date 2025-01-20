@@ -96,7 +96,6 @@ export default async function IndexPage() {
   if (!data) {
     return <Hero />;
   }
-  console.log(data);
   const jsonLd = generateJsonLd(data);
 
   return (
@@ -105,7 +104,7 @@ export default async function IndexPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Temp_1 isHome={false} user={data} githubData={githubData} />
+      <Temp_1 user={data} />
     </>
   );
 }

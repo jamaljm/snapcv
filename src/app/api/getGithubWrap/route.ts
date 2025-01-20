@@ -8,7 +8,6 @@ export async function POST(request: Request) {
     .select("githubWrap")
     .eq("userName", username)
     .single();
-  console.log(data);
   return NextResponse.json(
     { githubData: data?.githubWrap, error },
     { status: 200 }

@@ -8,9 +8,5 @@ export async function POST(request: Request) {
     .select("*")
     .eq("userName", username)
     .single();
-  console.log(data);
-  return NextResponse.json(
-    { data: data?.resumeJson, githubData: data?.githubWrap, error },
-    { status: 200 }
-  );
+  return NextResponse.json({ data: data?.resumeJson, error }, { status: 200 });
 }

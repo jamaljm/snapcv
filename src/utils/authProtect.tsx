@@ -16,7 +16,6 @@ const withAuth = <P extends object>(
         try {
           const { data, error } = await supabase.auth.getSession();
           setUser(data.session);
-          console.log(data);
           if (!data.session) {
             router.push("/login");
           }

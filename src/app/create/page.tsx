@@ -42,7 +42,6 @@ function Page() {
 
   const [isAvailable, setIsAvailable] = useState(false);
   const isError = slugError || isChecking;
-  console.log("userData", userData);
   useEffect(() => {
     const user = getCookie("username");
     if (user) {
@@ -198,14 +197,14 @@ function Page() {
     }, 250);
     const { data, error } = await supabase.from("users").insert({
       id: userData?.user.id,
-      userName: shopSlug,
+      userName: shopSlug.toLowerCase(),
       resumeJson: {
         meta: {
           buttonText: "Hire me",
           resumeTheme: "professional",
           portfolioColor: "sky",
           portfolioTheme: "basic",
-          userName: shopSlug,
+          userName: shopSlug.toLowerCase(),
           avatarUrl: userData?.user.user_metadata.avatar_url,
         },
         basics: {
@@ -358,7 +357,7 @@ function Page() {
         ],
       },
       metaJson: {
-        userName: shopSlug,
+        userName: shopSlug.toLowerCase(),
         avatarUrl: userData?.user.user_metadata.avatar_url,
         buttonText: "Hire me",
         resumeTheme: "professional",
@@ -445,11 +444,11 @@ function Page() {
         frame();
         setValue(90);
         const extendedResult = await {
-          userName: shopSlug,
+          userName: shopSlug.toLowerCase(),
           resumeJson: {
             meta: {
               ...result.meta,
-              userName: shopSlug,
+              userName: shopSlug.toLowerCase(),
               buttonText: "Hire me",
               resumeTheme: "professional",
               portfolioColor: "sky",
@@ -464,7 +463,7 @@ function Page() {
             ...result,
           },
           metaJson: {
-            userName: shopSlug,
+            userName: shopSlug.toLowerCase(),
             avatarUrl: userData?.user.user_metadata.avatar_url,
             buttonText: "Hire me",
             resumeTheme: "professional",
@@ -538,10 +537,10 @@ function Page() {
         frame();
         setValue(90);
         const extendedResult = await {
-          userName: shopSlug,
+          userName: shopSlug.toLowerCase(),
           resumeJson: {
             meta: {
-              userName: shopSlug,
+              userName: shopSlug.toLowerCase(),
               buttonText: "Hire me",
               resumeTheme: "professional",
               portfolioColor: "sky",
@@ -556,7 +555,7 @@ function Page() {
             ...result,
           },
           metaJson: {
-            userName: shopSlug,
+            userName: shopSlug.toLowerCase(),
             avatarUrl: userData?.user.user_metadata.avatar_url,
             buttonText: "Hire me",
             resumeTheme: "professional",

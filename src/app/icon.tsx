@@ -41,7 +41,6 @@ export default async function Icon() {
   const headersList = await headers();
   const userName = headersList.get("x-forwarded-host")?.split(".")[0];
   const isDev = userName?.includes("localhost");
-  console.log("userName", userName);
 
   // Return the placeholder image immediately
   const placeholderResponse = new ImageResponse(
@@ -65,11 +64,9 @@ export default async function Icon() {
 
   try {
     if (userName === "www" || userName === "snapcv" || isDev) {
-      console.log("fetching default image");
       imageBuffer = await fetchImage("https://www.snapcv.me/logo_icon2.png");
     } else {
       const user = await getUser(userName || "");
-      console.log("user", user);
       if (user && user.avatarUrl) {
         imageBuffer = await fetchImage(user.avatarUrl);
         return new ImageResponse(

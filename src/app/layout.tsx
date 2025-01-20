@@ -165,7 +165,6 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
   const user: UserProfile | null = await getUser(userName || "");
-  console.log(user);
   if (!user) {
     return {
       metadataBase: new URL("https://snapcv.me"),

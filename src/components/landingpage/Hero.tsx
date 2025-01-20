@@ -30,7 +30,6 @@ export default function Hero() {
   const [isAvailable, setIsAvailable] = useState(false);
   const isError = slugError || isChecking;
   const router = useRouter();
-  console.log(userData);
   if (userData) {
     router.push("/home");
   }

@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { UserProfile, ThemeColor } from "@/lib/type";
 import { tailwindColors100 } from "@/lib/utils";
 import { AwardCard } from "@/components/award-card";
-import GithubCard from "@/components/github_wrap_portfolio/github-card";
 
 const socialMediaImages: { [key: string]: string } = {
   GitHub: "/icon/github.png",
@@ -20,54 +19,7 @@ const socialMediaImages: { [key: string]: string } = {
   default: "/icon/dribbble.png", // Default icon URL
 };
 
-const data = {
-  profile: {
-    name: "John Developer",
-    avatar_url: "https://avatars.githubusercontent.com/u/1234567",
-    followers: 1234,
-    public_repos: 45,
-    username: "johndeveloper",
-  },
-  activity_overview: {
-    total_contributions: {
-      commits: 1842,
-      pull_requests: 156,
-      issues: 89,
-    },
-    languages_used: {
-      JavaScript: 45,
-      TypeScript: 30,
-      Python: 15,
-      Go: 10,
-    },
-  },
-  repository_highlights: {
-    most_starred_repositories: [
-      {
-        name: "next-auth-example",
-        stars: 328,
-      },
-      {
-        name: "react-state-management",
-        stars: 245,
-      },
-      {
-        name: "go-microservices",
-        stars: 189,
-      },
-    ],
-  },
-};
-
-export default function page({
-  user,
-  isHome,
-  githubData,
-}: {
-  user: UserProfile;
-  isHome: boolean;
-  githubData: any;
-}) {
+export default function page({ user }: { user: UserProfile }) {
   const gradientColor =
     tailwindColors100[user.meta.portfolioColor as ThemeColor];
 
@@ -140,11 +92,6 @@ export default function page({
               {user.meta.buttonText}
             </Link>
           </section>
-          {!isHome && githubData && (
-            <div className="w-full p-4 sm:p-0">
-              <GithubCard data={githubData} />
-            </div>
-          )}
           {user.work.length > 0 && user.work[0].name !== "" && (
             <section id="work" className="p-6">
               <div className="flex min-h-0 flex-col gap-y-3">
