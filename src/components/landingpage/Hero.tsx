@@ -17,6 +17,7 @@ import RetroGrid from "../magicui/retro-grid";
 import Footer from "./Footer";
 import { GithubButton } from "./GithubButton";
 import axios from "axios";
+import { PortfolioCountButton } from "./PortfolioCountButton";
 
 export default function Hero() {
   const { userData } = useCommonContext();
@@ -77,6 +78,7 @@ export default function Hero() {
           Snapcv
         </h2>
         <div className="flex gap-2">
+          <PortfolioCountButton />
           <GithubButton />
           <Link
             className="text-black border-2 border-black/80 px-6 font-urbanist font-semibold py-1.5 sm:py-1.5 text-sm sm:text-base rounded-full"
@@ -234,7 +236,7 @@ export default function Hero() {
       </div>
 
       <div className="w-full min-h-screen mt-[100vh] absolute flex justify-center items-center">
-        {/* <TextReveal text="You're a coding genius, but I know you’ve got no time for portfolio website. So, I made it easy for you! 🚀" /> */}
+        {/* <TextReveal text="You're a coding genius, but I know you've got no time for portfolio website. So, I made it easy for you! 🚀" /> */}
         <TextReveal text="No time to build a portfolio because you're too busy? No worries—I've got you covered! ✨" />
         <RetroGrid />
         <Footer />
