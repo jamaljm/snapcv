@@ -8,26 +8,20 @@ export function GithubButton() {
   const [stars, setStars] = useState(10); // Default value
 
   useEffect(() => {
+    // Runs in the browser, so no secret token is available (a GITHUB_OAUTH_TOKEN
+    // would only be readable server-side). Use the unauthenticated public API.
     const fetchStars = async () => {
       try {
         const response = await fetch(
           "https://api.github.com/repos/jamaljm/snapcv",
-          {
-            headers: process.env.GITHUB_OAUTH_TOKEN
-              ? {
-                  Authorization: `Bearer ${process.env.GITHUB_OAUTH_TOKEN}`,
-                  "Content-Type": "application/json",
-                }
-              : {},
-            next: {
-              revalidate: 3600,
-            },
-          }
+          { next: { revalidate: 3600 } }
         );
 
         if (response.ok) {
           const data = await response.json();
-          setStars(data.stargazers_count || stars); // Update stars if API response is valid
+          if (typeof data.stargazers_count === "number") {
+            setStars(data.stargazers_count);
+          }
         }
       } catch (error) {
         console.error("Error fetching GitHub stars:", error);
@@ -35,7 +29,7 @@ export function GithubButton() {
     };
 
     fetchStars();
-  }, []); // Empty dependency array means this effect runs once when the component mounts
+  }, []); // run once on mount
 
   return (
     <Link

@@ -15,7 +15,7 @@ import Navbar from "@/components/create/Navbar";
 import { Tabs, Tab } from "@nextui-org/react";
 import AnimatedCircularProgressBar from "@/components/magicui/animated-circular-progress-bar";
 import withAuth from "@/utils/authProtect";
-import { link } from "fs";
+import { toast } from "@/components/ui/use-toast";
 interface User {
   userId: string;
   email: string;
@@ -166,7 +166,7 @@ function Page() {
 
   const ManuallyCreate = async () => {
     if (!shopSlug) {
-      alert("Please enter your portfolio domain");
+      toast({ title: "Please enter your portfolio domain", variant: "destructive" });
       return;
     }
     const duration = 5 * 1000;
@@ -379,12 +379,15 @@ function Page() {
     const linkedInPattern = /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/;
 
     if (!resumeUrl && !linkedInUrl) {
-      alert("Please upload your resume or enter your LinkedIn profile URL");
+      toast({
+        title: "Please upload your resume or enter your LinkedIn profile URL",
+        variant: "destructive",
+      });
       return;
     }
     if (!resumeUrl && linkedInUrl) {
       if (!linkedInPattern.test(linkedInUrl)) {
-        alert("Please enter a valid LinkedIn URL.");
+        toast({ title: "Please enter a valid LinkedIn URL.", variant: "destructive" });
         setLinkedInError(true);
         return;
       }
@@ -393,7 +396,7 @@ function Page() {
       setLinkedInUrl("");
     }
     if (!shopSlug) {
-      alert("Please enter your portfolio domain");
+      toast({ title: "Please enter your portfolio domain", variant: "destructive" });
       return;
     }
     setAiCreating(true);
@@ -488,7 +491,7 @@ function Page() {
         console.log("AI Generated Result:", result);
       } catch (error) {
         console.error("Error in AI generation:", error);
-        alert("Error in AI generation");
+        toast({ title: "Error in AI generation", description: "Please try again.", variant: "destructive" });
         setAiCreating(false);
       }
     }
@@ -580,7 +583,7 @@ function Page() {
         console.log("AI Generated Result:", result);
       } catch (error) {
         console.error("Error in AI generation:", error);
-        alert("Error in AI generation");
+        toast({ title: "Error in AI generation", description: "Please try again.", variant: "destructive" });
         setAiCreating(false);
       }
     }

@@ -7,7 +7,7 @@ import GithubCard from "@/components/github_wrap_portfolio/github-card";
 import GithubCard2 from "@/components/github_wrap/github-card";
 import { toPng } from "html-to-image";
 
-export default function page() {
+export default function Page() {
   const router = useRouter();
   const { userData } = useCommonContext();
   const [isLoading, setIsLoading] = useState(true);

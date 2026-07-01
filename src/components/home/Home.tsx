@@ -1083,6 +1083,7 @@ export default function Home() {
                 {user.meta.avatarUrl ? (
                   <img
                     src={user.meta.avatarUrl}
+                    alt="Profile photo"
                     className="w-12 h-12 sm:h-12 sm:w-12 rounded-xl object-cover"
                   />
                 ) : (
