@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { UserProfile, ThemeColor } from "@/lib/type";
 import { tailwindColors100 } from "@/lib/utils";
 import { AwardCard } from "@/components/award-card";
+import MadeWithSnapcv from "@/components/MadeWithSnapcv";
 
 const socialMediaImages: { [key: string]: string } = {
   GitHub: "/icon/github.png",
@@ -308,6 +309,7 @@ export default function page({ user }: { user: UserProfile }) {
               )}
             </div>
           </div>
+          <MadeWithSnapcv />
         </main>
       </div>
     </>

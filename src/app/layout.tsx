@@ -227,6 +227,16 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
 
+  const ogImage = `https://${user.meta.userName}.snapcv.me/api/og?name=${encodeURIComponent(
+    user.basics.name || ""
+  )}&label=${encodeURIComponent(
+    user.basics.label || ""
+  )}&avatar=${encodeURIComponent(
+    user.basics.avatarUrl || ""
+  )}&user=${encodeURIComponent(user.meta.userName || "")}&open=${
+    user.meta.openToWork ? 1 : 0
+  }`;
+
   return {
     metadataBase: new URL(`https://${user.meta.userName}.snapcv.me`),
     title: user.basics.name,
@@ -238,7 +248,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: `${user.meta.userName}`,
       locale: "en_US",
       type: "website",
-      images: `${user.basics.avatarUrl}`,
+      images: [{ url: ogImage, width: 1200, height: 630 }],
     },
     robots: {
       index: true,
@@ -254,6 +264,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       title: `${user.basics.name}`,
       card: "summary_large_image",
+      images: [ogImage],
     },
     verification: {
       google: "",
