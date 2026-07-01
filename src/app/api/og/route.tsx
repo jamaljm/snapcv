@@ -77,6 +77,7 @@ export async function GET(request: Request) {
               style={{
                 width: "168px",
                 height: "168px",
+                flexShrink: 0,
                 borderRadius: "28px",
                 objectFit: "cover",
                 border: "1px solid #e5e5e5",
@@ -87,6 +88,7 @@ export async function GET(request: Request) {
               style={{
                 width: "168px",
                 height: "168px",
+                flexShrink: 0,
                 borderRadius: "28px",
                 background: "#111111",
                 color: "#ffffff",
