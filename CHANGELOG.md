@@ -4,6 +4,21 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.4.0] — SEO & brand
+
+### Added
+- **Brand entity JSON-LD** on the landing (Organization + WebSite +
+  SoftwareApplication/free) so Google associates `snapcv.me` with "SnapCV" — the
+  signal that helps win the branded search vs. same-name competitors.
+- **Dynamic sitemap** (`sitemap.ts`, hourly) listing every published portfolio +
+  key routes, replacing the static 3-URL sitemap.
+- **`robots.txt`** (allow crawl, disallow editor/API/auth, points to the sitemap).
+
+### Changed
+- OG share cards now render in the brand font (**Urbanist**) instead of the
+  generic system font.
+- Thin/incomplete portfolios are `noindex`ed (domain-quality / UGC-spam safety).
+
 ## [2.3.0] — GitHub → instant portfolio
 
 ### Added

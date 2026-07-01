@@ -2,8 +2,27 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
+// Load a Google font as a TTF ArrayBuffer for Satori/ImageResponse. Subsetting
+// to `text` keeps it small and forces a truetype response.
+async function loadFont(weight: number, text: string): Promise<ArrayBuffer | null> {
+  try {
+    const url = `https://fonts.googleapis.com/css2?family=Urbanist:wght@${weight}&text=${encodeURIComponent(
+      text
+    )}`;
+    const css = await (await fetch(url)).text();
+    const src = css.match(/src:\s*url\(([^)]+)\)\s*format\('(truetype|opentype)'\)/);
+    if (!src) return null;
+    const res = await fetch(src[1]);
+    if (!res.ok) return null;
+    return await res.arrayBuffer();
+  } catch {
+    return null;
+  }
+}
+
 // Dynamic Open Graph card for a portfolio. Kept intentionally monochrome
 // (white + black) to match SnapCV's sleek résumé/portfolio look — no new colors.
+// Uses the SnapCV brand font (Urbanist), with a graceful fallback.
 // Params are passed from generateMetadata so this route does no data fetching.
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -14,6 +33,23 @@ export async function GET(request: Request) {
   const openToWork = searchParams.get("open") === "1";
 
   const initial = (name.trim()[0] || "S").toUpperCase();
+
+  // Glyphs used on the card — subset the font to exactly these.
+  const boldText = name + initial;
+  const regularText =
+    label + `${user}.snapcv.me` + "Made with SnapCVOpen to work" +
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-·@ ";
+  const [bold, regular] = await Promise.all([
+    loadFont(700, boldText),
+    loadFont(500, regularText),
+  ]);
+
+  const fonts = [
+    bold && { name: "Urbanist", data: bold, weight: 700 as const, style: "normal" as const },
+    regular && { name: "Urbanist", data: regular, weight: 500 as const, style: "normal" as const },
+  ].filter(Boolean) as { name: string; data: ArrayBuffer; weight: 700 | 500; style: "normal" }[];
+
+  const fontFamily = fonts.length ? "Urbanist, sans-serif" : "sans-serif";
 
   return new ImageResponse(
     (
@@ -26,7 +62,7 @@ export async function GET(request: Request) {
           justifyContent: "space-between",
           background: "#ffffff",
           padding: "72px 80px",
-          fontFamily: "sans-serif",
+          fontFamily,
           color: "#111111",
         }}
       >
@@ -111,6 +147,6 @@ export async function GET(request: Request) {
         </div>
       </div>
     ),
-    { width: 1200, height: 630 }
+    { width: 1200, height: 630, fonts: fonts.length ? fonts : undefined }
   );
 }
