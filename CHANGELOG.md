@@ -2,6 +2,14 @@
 
 All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
+## [2.5.0] — Résumé PDF export
+
+### Added
+- **Download PDF** button on the résumé page. Fully client-side (browser
+  print-to-PDF), so no server Chrome/Puppeteer is needed on Vercel or Azure.
+  Produces crisp, selectable, ATS-parseable text (not a rasterized image). A
+  print stylesheet isolates the résumé for a clean, paginated document.
+
 released to production when `staging` is merged to `main`.
 
 ## [2.4.2] — Fix /read-cv-alternative footer + AI-tell copy
