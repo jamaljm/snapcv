@@ -2,6 +2,8 @@
 
 All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
+released to production when `staging` is merged to `main`.
+
 ## [2.5.0] — Résumé PDF export
 
 ### Added
@@ -10,7 +12,20 @@ All notable changes to SnapCV are documented here. This project follows
   Produces crisp, selectable, ATS-parseable text (not a rasterized image). A
   print stylesheet isolates the résumé for a clean, paginated document.
 
-released to production when `staging` is merged to `main`.
+## [2.4.4] — Fix broken GitHub-to-portfolio in prod
+
+### Fixed
+- `/api/githubToProfile` returned 502 for every username in production (the
+  GITHUB_TOKEN is invalid/expired, or Vercel is rate-limited). It now retries
+  unauthenticated when the token is rejected, so the GitHub create path works
+  again. Verified with a deliberately invalid token.
+
+## [2.4.3] — Fix OG card avatar on long names
+
+### Fixed
+- The OG share card avatar/initial box collapsed to zero when a name was long
+  enough to wrap (missing flex-shrink:0 in Satori). Long-named users got a card
+  with no avatar. Verified the box renders again.
 
 ## [2.4.2] — Fix /read-cv-alternative footer + AI-tell copy
 
