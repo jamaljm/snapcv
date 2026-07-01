@@ -42,6 +42,7 @@ import { useRouter } from "next/navigation";
 import { tailwindColors } from "@/lib/utils";
 import { initialUserState } from "@/lib/utils";
 import ResumeTemplate from "../ResumeTemplate";
+import { SortableList, SortableItem, GripIcon } from "./Sortable";
 
 const initialUploadStatus: IndexedUploadStatus = {
   "profilePhoto-0": "idle",
@@ -485,6 +486,57 @@ export default function Home() {
         console.error(`${lastKey} is not an array`);
         return prevUser;
       }
+
+      return newUser;
+    });
+
+    markAsEdited();
+  };
+
+  // Move an array item from oldIndex to newIndex at the given dotted path
+  // (e.g. "skills" or "basics.skills"). Used by drag-and-drop reordering.
+  const reorderArray = (
+    path: string,
+    oldIndex: number,
+    newIndex: number,
+    setState: React.Dispatch<React.SetStateAction<UserProfile>>
+  ) => {
+    setState((prevUser) => {
+      const newUser: any = { ...prevUser };
+      const keys = path.split(".");
+      let current: any = newUser;
+
+      // Clone each level along the path so we update state immutably.
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) {
+          console.error(`Invalid path: ${path}`);
+          return prevUser;
+        }
+        current[keys[i]] = Array.isArray(current[keys[i]])
+          ? [...current[keys[i]]]
+          : { ...current[keys[i]] };
+        current = current[keys[i]];
+      }
+
+      const lastKey = keys[keys.length - 1];
+      if (!Array.isArray(current[lastKey])) {
+        console.error(`${lastKey} is not an array`);
+        return prevUser;
+      }
+
+      const arr = [...current[lastKey]];
+      if (
+        oldIndex < 0 ||
+        oldIndex >= arr.length ||
+        newIndex < 0 ||
+        newIndex >= arr.length
+      ) {
+        return prevUser;
+      }
+
+      const [moved] = arr.splice(oldIndex, 1);
+      arr.splice(newIndex, 0, moved);
+      current[lastKey] = arr;
 
       return newUser;
     });
@@ -1273,22 +1325,48 @@ export default function Home() {
                   }
                   className=" text-xs max-w-xs flex-wrap"
                 />
-                <div className="w-full  flex flex-wrap gap-1 max-w-xs">
-                  {user.basics.skills?.map((skill: string, index: number) => (
-                    <Chip
-                      key={index}
-                      onClose={() => handleSkillClose(skill, skill)}
-                      variant="flat"
-                      classNames={{
-                        closeButton: "text-gray-500 z-10",
-                        base: "bg-gray-50",
-                      }}
-                      className="flex mt-1 mb-1  items-center bg-none text-xs rounded-full border-1 border-gray-200 pl-2 "
-                    >
-                      {skill}
-                    </Chip>
-                  ))}
-                </div>
+                <SortableList
+                  ids={(user.basics.skills ?? []).map((_, i) => String(i))}
+                  strategy="horizontal"
+                  onReorder={(oldIndex, newIndex) =>
+                    reorderArray("basics.skills", oldIndex, newIndex, setUser)
+                  }
+                >
+                  <div className="w-full  flex flex-wrap gap-1 max-w-xs">
+                    {user.basics.skills?.map(
+                      (skill: string, index: number) => (
+                        <SortableItem key={index} id={String(index)}>
+                          {({ setNodeRef, style, attributes, listeners }) => (
+                            <div ref={setNodeRef} style={style}>
+                              <Chip
+                                onClose={() => handleSkillClose(skill, skill)}
+                                variant="flat"
+                                startContent={
+                                  <span
+                                    {...attributes}
+                                    {...listeners}
+                                    className="cursor-grab touch-none text-gray-400 pr-0.5"
+                                    aria-label="Drag to reorder skill"
+                                    title="Drag to reorder"
+                                  >
+                                    <GripIcon className="size-3" />
+                                  </span>
+                                }
+                                classNames={{
+                                  closeButton: "text-gray-500 z-10",
+                                  base: "bg-gray-50",
+                                }}
+                                className="flex mt-1 mb-1  items-center bg-none text-xs rounded-full border-1 border-gray-200 pl-1 "
+                              >
+                                {skill}
+                              </Chip>
+                            </div>
+                          )}
+                        </SortableItem>
+                      )
+                    )}
+                  </div>
+                </SortableList>
               </div>
             </div>
             <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
@@ -2720,36 +2798,54 @@ export default function Home() {
             className="flex flex-col pt-11 justify-center items-start gap-4"
           >
             <h2 className="font-semibold text-lg mb-4">Skills</h2>
-            {user.skills &&
-              user.skills.length > 0 &&
-              user.skills.map((skill, index) => (
-                <div
-                  key={`skill-${index}`}
-                  className="flex flex-col w-full gap-4 border rounded-xl p-5"
-                >
-                  <div className="w-full flex justify-end">
-                    <button
-                      onClick={() =>
-                        deleteItemByIndex("skills", index, setUser)
-                      }
-                      aria-label={`Delete skill ${index}`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6 text-red-400"
+            {user.skills && user.skills.length > 0 && (
+              <SortableList
+                ids={user.skills.map((_, i) => String(i))}
+                strategy="vertical"
+                onReorder={(oldIndex, newIndex) =>
+                  reorderArray("skills", oldIndex, newIndex, setUser)
+                }
+              >
+                {user.skills.map((skill, index) => (
+                  <SortableItem key={`skill-${index}`} id={String(index)}>
+                    {({ setNodeRef, style, attributes, listeners }) => (
+                      <div
+                        ref={setNodeRef}
+                        style={style}
+                        className="flex flex-col w-full gap-4 border rounded-xl p-5"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                        />
-                      </svg>
-                    </button>
-                  </div>
+                        <div className="w-full flex justify-between items-center">
+                          <button
+                            {...attributes}
+                            {...listeners}
+                            className="cursor-grab touch-none text-gray-400"
+                            aria-label={`Drag to reorder skill ${index + 1}`}
+                            title="Drag to reorder"
+                          >
+                            <GripIcon className="size-5" />
+                          </button>
+                          <button
+                            onClick={() =>
+                              deleteItemByIndex("skills", index, setUser)
+                            }
+                            aria-label={`Delete skill ${index}`}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-6 text-red-400"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                              />
+                            </svg>
+                          </button>
+                        </div>
                   <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
                     <p className="pt-.05">Skill Name</p>
                     <Input
@@ -2794,8 +2890,12 @@ export default function Home() {
                       }}
                     />
                   </div>
-                </div>
-              ))}
+                      </div>
+                    )}
+                  </SortableItem>
+                ))}
+              </SortableList>
+            )}
             <Button
               variant="bordered"
               onClick={addSkills}
