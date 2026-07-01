@@ -4,6 +4,13 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.4.1] — read.cv / Bento alternative landing page
+
+### Added
+- `/read-cv-alternative` — a high-intent SEO landing page for people whose
+  read.cv/Bento profiles are going away, in SnapCV's monochrome look and human
+  voice. Added to the sitemap.
+
 ## [2.4.0] — SEO & brand
 
 ### Added
