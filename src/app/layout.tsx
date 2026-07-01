@@ -237,6 +237,16 @@ export async function generateMetadata(): Promise<Metadata> {
     user.meta.openToWork ? 1 : 0
   }`;
 
+  // Only index portfolios with real content — thin/empty pages hurt domain
+  // quality (and risk a UGC-spam signal).
+  const hasContent = Boolean(
+    user.basics?.name?.trim() &&
+      (user.basics?.about?.trim() ||
+        user.work?.some((w: any) => w?.name?.trim()) ||
+        user.projects?.projects?.some((p: any) => p?.title?.trim()) ||
+        user.education?.some((e: any) => e?.institution?.trim()))
+  );
+
   return {
     metadataBase: new URL(`https://${user.meta.userName}.snapcv.me`),
     title: user.basics.name,
@@ -251,10 +261,10 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [{ url: ogImage, width: 1200, height: 630 }],
     },
     robots: {
-      index: true,
+      index: hasContent,
       follow: true,
       googleBot: {
-        index: true,
+        index: hasContent,
         follow: true,
         "max-video-preview": -1,
         "max-image-preview": "large",
