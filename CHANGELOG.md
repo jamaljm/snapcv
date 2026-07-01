@@ -2,6 +2,13 @@
 
 All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
+## [2.4.3] — Fix OG card avatar on long names
+
+### Fixed
+- The OG share card avatar/initial box collapsed to zero when a name was long
+  enough to wrap (missing flex-shrink:0 in Satori). Long-named users got a card
+  with no avatar. Verified the box renders again.
+
 released to production when `staging` is merged to `main`.
 
 ## [2.4.2] — Fix /read-cv-alternative footer + AI-tell copy
