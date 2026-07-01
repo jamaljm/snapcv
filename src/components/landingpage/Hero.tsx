@@ -165,6 +165,12 @@ export default function Hero() {
               </span>
             </ShimmerButton>{" "}
           </Link>
+          <Link
+            href="/try"
+            className="z-50 text-sm font-medium text-neutral-500 underline-offset-4 hover:text-neutral-900 hover:underline"
+          >
+            or preview from your GitHub
+          </Link>
         </div>{" "}
         <div className=" mt-5 sm:hidden flex justify-center items-center gap-5  flex-col w-full max-w-lg">
           <Input
