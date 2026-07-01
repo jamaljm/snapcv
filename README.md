@@ -1,8 +1,28 @@
+<div align="center">
+
 # SnapCV
 
-**SnapCV** is an open-source, AI-powered platform that turns a résumé into a
-professional portfolio hosted at `yourname.snapcv.me`. Upload a PDF, and an AI
-backend structures it into a portfolio + résumé you can customize.
+**Turn your résumé into a portfolio site — in about 20 seconds.**
+
+Free, open source, and yours to edit. Every portfolio lives at `yourname.snapcv.me`.
+
+[**Live demo**](https://snapcv.me) · [**Contribute**](CONTRIBUTING.md) · [**Report an issue**](https://github.com/jamaljm/snapcv/issues)
+
+![Stars](https://img.shields.io/github/stars/jamaljm/snapcv?style=flat&label=stars)
+![Forks](https://img.shields.io/github/forks/jamaljm/snapcv?style=flat&label=forks)
+![License](https://img.shields.io/github/license/jamaljm/snapcv)
+![Version](https://img.shields.io/github/package-json/v/jamaljm/snapcv/main)
+
+</div>
+
+Upload a résumé (or paste a LinkedIn URL) → an AI backend structures it → you get
+a hosted portfolio *and* a clean résumé page. No blank canvas, no paywall, no
+template smell.
+
+> Coming from **read.cv** or **Bento** (both shutting down)? SnapCV is a free,
+> open-source home for your profile.
+
+If SnapCV is useful to you, a ⭐ helps other people find it.
 
 ## Features
 
