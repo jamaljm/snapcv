@@ -18,6 +18,7 @@ import Footer from "./Footer";
 import { GithubButton } from "./GithubButton";
 import axios from "axios";
 import { PortfolioCountButton } from "./PortfolioCountButton";
+import { toast } from "@/components/ui/use-toast";
 
 export default function Hero() {
   const { userData } = useCommonContext();
@@ -114,7 +115,10 @@ export default function Hero() {
             onBlur={handleBlur}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               if (e.target.value.includes(" ")) {
-                alert("Spaces are not allowed in the username.");
+                toast({
+                  title: "Spaces are not allowed in the username.",
+                  variant: "destructive",
+                });
                 return;
               }
               setSlugError(false);

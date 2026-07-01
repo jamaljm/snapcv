@@ -44,7 +44,7 @@ const slugs = [
   "sonarqube",
   "figma",
 ];
-export default function page() {
+export default function Page() {
   const confettiRef = useRef<ConfettiRef>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -78,7 +78,7 @@ export default function page() {
           href="/snapcv"
           className="text-3xl sm:text-4xl flex items-center font-urbanist gap-1 font-bold"
         >
-          <img className="w-7 sm:w-10" src="/logo.png" />
+          <img className="w-7 sm:w-10" src="/logo.png" alt="SnapCV logo" />
           Snapcv
         </Link>{" "}
         <Link href="/signup">

@@ -40,7 +40,7 @@ export default function Navbar() {
                 title="snapcv"
                 className="flex gap-2 justify-center items-center text-2xl font-semibold"
               >
-                <img src="/logo.png" className="h-8" /> Snapcv
+                <img src="/logo.png" className="h-8" alt="SnapCV logo" /> Snapcv
               </Link>
             </div>
             <nav className=" sm:flex gap-3">
