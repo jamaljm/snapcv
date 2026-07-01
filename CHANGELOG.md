@@ -4,6 +4,15 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.6.0] — No-signup GitHub preview (try before you sign up)
+
+### Added
+- `/try` and `/try/[username]`: enter a GitHub username and instantly see a live
+  portfolio preview (no account needed), with a "claim yours" CTA. Removes the
+  signup wall, a top conversion + launch lever. Fully client-verifiable (no DB).
+- Extracted the GitHub-to-profile logic into `src/lib/github.ts`, shared by the
+  create-flow API route and the preview page.
+
 ## [2.5.0] — Résumé PDF export
 
 ### Added
