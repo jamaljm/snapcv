@@ -2,7 +2,7 @@
 
 # SnapCV
 
-**Turn your résumé into a portfolio site — in about 20 seconds.**
+**Turn your résumé into a portfolio site in about 20 seconds.**
 
 Free, open source, and yours to edit. Every portfolio lives at `yourname.snapcv.me`.
 
@@ -26,10 +26,10 @@ If SnapCV is useful to you, a ⭐ helps other people find it.
 
 ## Features
 
-- **AI-driven portfolio creation** — upload a résumé PDF, get a polished portfolio.
-- **Custom subdomains** — every portfolio lives at `name.snapcv.me`.
+- **AI-driven portfolio creation**: upload a résumé PDF, get a polished portfolio.
+- **Custom subdomains**: every portfolio lives at `name.snapcv.me`.
 - **Résumé + portfolio views**, GitHub Wrapped, drag-to-reorder skills, themes.
-- **Open source** — contributions welcome.
+- **Open source**: contributions welcome.
 
 ## Tech stack
 

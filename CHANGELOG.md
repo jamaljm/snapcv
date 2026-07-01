@@ -4,6 +4,14 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.4.2] — Fix /read-cv-alternative footer + AI-tell copy
+
+### Fixed
+- The alternative page reused the absolute-positioned landing Footer, which
+  overlapped the content. Replaced with a static footer.
+- Removed em dashes from that page and the README hero/features (they read as
+  AI-generated).
+
 ## [2.4.1] — read.cv / Bento alternative landing page
 
 ### Added
