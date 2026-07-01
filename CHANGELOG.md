@@ -2,6 +2,14 @@
 
 All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
+## [2.4.4] — Fix broken GitHub-to-portfolio in prod
+
+### Fixed
+- `/api/githubToProfile` returned 502 for every username in production (the
+  GITHUB_TOKEN is invalid/expired, or Vercel is rate-limited). It now retries
+  unauthenticated when the token is rejected, so the GitHub create path works
+  again. Verified with a deliberately invalid token.
+
 ## [2.4.3] — Fix OG card avatar on long names
 
 ### Fixed

@@ -3,13 +3,25 @@ import { NextResponse } from "next/server";
 const GH = "https://api.github.com";
 const token = process.env.GITHUB_TOKEN;
 
-function ghHeaders() {
+function ghHeaders(useToken: boolean): Record<string, string> {
   const h: Record<string, string> = {
     Accept: "application/vnd.github+json",
     "User-Agent": "snapcv",
   };
-  if (token) h.Authorization = `Bearer ${token}`;
+  if (useToken && token) h.Authorization = `Bearer ${token}`;
   return h;
+}
+
+// Fetch GitHub's public API. If a token is set but rejected (401 = invalid/
+// expired) or throttled (403 = rate limit / abuse), retry unauthenticated —
+// public profile/repo data doesn't need auth, and this keeps the feature
+// working even when the token is bad.
+async function ghFetch(url: string): Promise<Response> {
+  let res = await fetch(url, { headers: ghHeaders(true), cache: "no-store" });
+  if (token && (res.status === 401 || res.status === 403)) {
+    res = await fetch(url, { headers: ghHeaders(false), cache: "no-store" });
+  }
+  return res;
 }
 
 type GhUser = {
@@ -57,11 +69,8 @@ export async function POST(request: Request) {
 
   try {
     const [userRes, reposRes] = await Promise.all([
-      fetch(`${GH}/users/${username}`, { headers: ghHeaders(), cache: "no-store" }),
-      fetch(`${GH}/users/${username}/repos?per_page=100&sort=updated`, {
-        headers: ghHeaders(),
-        cache: "no-store",
-      }),
+      ghFetch(`${GH}/users/${username}`),
+      ghFetch(`${GH}/users/${username}/repos?per_page=100&sort=updated`),
     ]);
 
     if (userRes.status === 404) {
