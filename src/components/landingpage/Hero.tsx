@@ -223,6 +223,12 @@ export default function Hero() {
               </span>
             </ShimmerButton>{" "}
           </Link>
+          <Link
+            href="/try"
+            className="z-50 ml-4 text-sm font-medium text-neutral-500 underline-offset-4 hover:text-neutral-900 hover:underline"
+          >
+            or preview from your GitHub
+          </Link>
         </div>
         <a
           className="mt-6"
