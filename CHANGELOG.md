@@ -4,6 +4,16 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.2.0] — Share & Grow (in progress)
+
+### Added
+- **Dynamic OG share images** — every portfolio link (`name.snapcv.me`) now
+  unfurls into a sleek 1200×630 monochrome card (avatar, name, title, "open to
+  work") on LinkedIn/X/WhatsApp/Slack. Generated at `/api/og`, matched to the
+  résumé's black-and-white look.
+- **"Made with SnapCV" badge** — a subtle, monochrome footer badge on hosted
+  portfolios (referral loop; `?ref=badge` for attribution).
+
 ## [2.1.1] — Sleek monochrome résumé
 
 ### Changed
