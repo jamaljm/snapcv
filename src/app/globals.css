@@ -117,3 +117,24 @@
 .react-calendar-heatmap .color-scale-2 { fill: #8cc665; }
 .react-calendar-heatmap .color-scale-3 { fill: #44a340; }
 .react-calendar-heatmap .color-scale-4 { fill: #1e6823; }
+
+/* Print-to-PDF for the résumé page. Kept in normal document flow (no absolute
+   positioning) so a multi-page résumé paginates correctly. The /resume page
+   renders only the résumé + the download button, so resetting the résumé
+   container and hiding .no-print is enough for a clean document. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  #resume-template {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+  @page {
+    margin: 14mm;
+  }
+}

@@ -1,6 +1,7 @@
 import Hero from "@/components/landingpage/Hero";
 import { headers } from "next/headers";
 import ResumeTemplate from "@/components/design/resume_template";
+import PrintResumeButton from "@/components/PrintResumeButton";
 import {
   LANDING_PAGES,
   getPortfolio,
@@ -31,6 +32,7 @@ export default async function IndexPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <ResumeTemplate profile={result.data} />
+      <PrintResumeButton />
     </>
   );
 }
