@@ -47,6 +47,15 @@ export const tailwindColors100: Record<ThemeColor, string> = {
   sky: "#e0f2fe",
 };
 
+// Resolve a portfolio/resume accent color (ThemeColor name) to a hex value.
+// Falls back to slate when unset/unknown, and avoids pure white (invisible on
+// a white page). Used for resume section accents.
+export function getAccentColor(name?: string): string {
+  const match = tailwindColors.find((c) => c.name === name);
+  if (!match || match.name === "white") return "#334155"; // slate-700
+  return match.value;
+}
+
 export const initialUserState: UserProfile =
 {
   meta: {
