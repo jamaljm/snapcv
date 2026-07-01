@@ -31,6 +31,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# local MCP server config (dev tooling)
+.mcp.json
 
 # vercel
 .vercel
@@ -38,3 +42,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local MCP server config (dev tooling)
+.mcp.json

@@ -1,0 +1,26 @@
+{
+  "name": "snapcv-backend",
+  "version": "1.0.0",
+  "description": "SnapCV backend: extract a résumé PDF into structured JSON via OpenAI.",
+  "type": "module",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node ./index.js",
+    "dev": "nodemon ./index.js"
+  },
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "axios": "^1.12.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "openai": "^4.56.0",
+    "pdf-parse": "^1.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

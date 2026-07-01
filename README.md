@@ -1,69 +1,122 @@
-<h1 align="left">SnapCV</h1>
+# SnapCV
 
-<p align="left">
-  <b>SnapCV</b> is an open-source, AI-powered platform that effortlessly transforms resumes into professional portfolios. Whether you're a student, coder, or professional, SnapCV makes it easy to showcase your skills and achievements.
-</p>
+**SnapCV** is an open-source, AI-powered platform that turns a résumé into a
+professional portfolio hosted at `yourname.snapcv.me`. Upload a PDF, and an AI
+backend structures it into a portfolio + résumé you can customize.
 
-<h2>Features</h2>
-<ul>
-  <li><b>AI-Driven Portfolio Creation:</b> Upload your resume, and let our AI generate a polished portfolio for you.</li>
-  <li><b>Custom Subdomains:</b> Get your portfolio hosted on a custom domain like <i>name.snapcv.me</i>.</li>
-  <li><b>User-Friendly:</b> Built with modern web technologies to ensure a smooth and intuitive user experience.</li>
-  <li><b>Customization:</b> Modify and tweak your portfolio to fit your personal brand.</li>
-  <li><b>Open Source:</b> Contribute to the project, report issues, and help make SnapCV even better.</li>
-</ul>
+## Features
 
-<h2>Tech Stack</h2>
-<p>SnapCV is built using:</p>
-<ul>
-  <li><a href="https://nextjs.org/" target="_blank"><b>Next.js</b></a>: A powerful React framework for building server-rendered applications.</li>
-  <li><a href="https://tailwindcss.com/" target="_blank"><b>Tailwind CSS</b></a>: A utility-first CSS framework for creating responsive and customizable designs.</li>
-  <li><a href="https://supabase.com/" target="_blank"><b>Supabase</b></a>: An open-source Firebase alternative for managing the database and authentication.</li>
-</ul>
+- **AI-driven portfolio creation** — upload a résumé PDF, get a polished portfolio.
+- **Custom subdomains** — every portfolio lives at `name.snapcv.me`.
+- **Résumé + portfolio views**, GitHub Wrapped, drag-to-reorder skills, themes.
+- **Open source** — contributions welcome.
 
-<h2>Getting Started</h2>
-<p>To get a local copy up and running, follow these steps:</p>
+## Tech stack
 
-<h3>Prerequisites</h3>
-<ul>
-  <li>Node.js and npm installed on your machine.</li>
-  <li>Supabase account for database management.</li>
-</ul>
+- **Frontend:** Next.js (App Router), Tailwind CSS, NextUI, Supabase (auth + DB + storage)
+- **Backend:** Node.js + Express, OpenAI (résumé → structured JSON), `pdf-parse`
 
-<h3>Installation</h3>
-<ol>
-  <li><b>Clone the repository:</b>
-    <pre><code>git clone https://github.com/jamaljm/snapcv.git
-cd snapcv</code></pre>
-  </li>
-  <li><b>Install dependencies:</b>
-    <pre><code>npm install</code></pre>
-  </li>
-  <li><b>Set up environment variables:</b>
-    <p>Create a <code>.env.local</code> file in the root directory and add the following:</p>
-    <pre><code>NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-SUPABASE_ANON_KEY=your-supabase-service-key
-NEXT_PUBLIC_BACKEND=backend-link</code></pre>
-  </li>
-  <li><b>Run the development server:</b>
-    <pre><code>npm run dev</code></pre>
-    <p>Open <a href="http://localhost:3000" target="_blank">http://localhost:3000</a> to view the app in your browser.</p>
-  </li>
-</ol>
+## Repository layout
 
-<h2>Contributing</h2>
-<p>We welcome contributions from the community! If you'd like to add a new feature or fix a bug, please follow these steps:</p>
-<ol>
-  <li><b>Fork the repository</b> to your own GitHub account.</li>
-  <li><b>Create a new branch</b> for your feature or bugfix.</li>
-  <li><b>Make your changes</b> and commit them with clear messages.</li>
-  <li><b>Push your branch</b> to your forked repository.</li>
-  <li><b>Open a pull request</b> to merge your changes into the main repository.</li>
-</ol>
+```
+snapcv/
+├─ src/            # Next.js frontend (app, components, lib)
+├─ backend/        # Node/Express service: résumé PDF → structured JSON (see backend/README.md)
+├─ .env.example    # frontend env template
+└─ README.md
+```
 
-<h3>Reporting Issues</h3>
-<p>If you encounter any bugs or have suggestions for new features, please open an issue in the <a href="https://github.com/jamaljm/snapcv/issues" target="_blank">Issues section</a> of the repository. Be sure to include detailed information so we can help resolve it quickly.</p>
+## Getting started
 
-<h2>Contact</h2>
-<p>For any questions, feel free to reach out via the email us at <a href="mailto:jamalvga2002@gmail.com">jamalvga2002@gmail.com</a>.</p>
+### Prerequisites
+
+- Node.js **>= 20** and npm
+- A free [Supabase](https://supabase.com/) project
+- An [OpenAI API key](https://platform.openai.com/) (for the backend)
+
+### 1. Clone
+
+```bash
+git clone https://github.com/jamaljm/snapcv.git
+cd snapcv
+```
+
+### 2. Set up Supabase
+
+1. Create a Supabase project. From **Project Settings → API**, copy the project
+   URL and the `anon` key.
+2. **Auth → Providers → Google:** enable Google sign-in.
+3. **SQL editor:** create the `users` table (portfolios are public read; owners
+   write their own row):
+
+   ```sql
+   create table public.users (
+     id          uuid primary key,          -- Supabase auth user id
+     "userId"    uuid,                       -- auth user id (used by some queries)
+     "userName"  text unique not null,       -- the subdomain / slug
+     "userEmail" text,
+     "resumeJson" jsonb,
+     "metaJson"   jsonb,
+     "githubWrap" jsonb,
+     "updatedAt"  timestamptz default now()
+   );
+
+   alter table public.users enable row level security;
+   create policy "public read"  on public.users for select using (true);
+   create policy "owner insert" on public.users for insert with check (auth.uid() = id);
+   create policy "owner update" on public.users for update using (auth.uid() = id);
+   ```
+
+4. **Storage:** create two buckets — `resume` (uploaded PDFs) and `snapcv`
+   (portfolio images). Make them public-read for local dev.
+
+### 3. Run the backend (résumé extraction)
+
+```bash
+cd backend
+npm install
+cp .env.example .env      # set OPENAI_KEY
+npm run dev               # http://localhost:5000
+```
+
+See [`backend/README.md`](backend/README.md) for details.
+
+### 4. Run the frontend
+
+```bash
+# from the repo root
+npm install
+cp .env.example .env.local  # fill in Supabase + backend URL
+npm run dev                 # http://localhost:3000
+```
+
+> Local note: portfolios render by subdomain (`name.snapcv.me`). On `localhost`
+> you'll see the landing/marketing site; use the editor at `/create` and `/home`.
+
+## Environment variables (frontend)
+
+| Variable                        | Required | Description                                        |
+| ------------------------------- | -------- | -------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | yes      | Supabase project URL.                              |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | yes      | Supabase anon key (client).                        |
+| `SUPABASE_ANON_KEY`             | yes      | Key used by server-side API routes.                |
+| `NEXT_PUBLIC_API_BASE_URL`      | yes      | Base URL for the app's own `/api` routes.          |
+| `NEXT_PUBLIC_BACKEND`           | yes      | URL of the résumé-extraction backend (`/backend`). |
+| `GITHUB_TOKEN`                  | no       | Server-side token for the GitHub Wrapped feature.  |
+
+## Contributing
+
+1. Fork the repo and create a feature branch.
+2. Make your changes with clear commit messages (`next build` + `next lint` should pass).
+3. Open a pull request against `staging`.
+
+Bugs and ideas: open an [issue](https://github.com/jamaljm/snapcv/issues).
+
+## License
+
+[AGPL-3.0](LICENSE). Network use is distribution — if you run a modified version
+as a service, you must make your source available under the same license.
+
+## Contact
+
+Questions? Email [jamalvga2002@gmail.com](mailto:jamalvga2002@gmail.com).
