@@ -15,6 +15,7 @@ import {
   Tab,
   Select,
   SelectItem,
+  Switch,
 } from "@nextui-org/react";
 import React, {
   ChangeEvent,
@@ -1441,6 +1442,46 @@ export default function Home() {
                   inputWrapper: "border-1 shadow-none",
                 }}
               />
+            </div>
+            <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+              <p className="pt-.05">Open to work</p>
+              <div className="flex max-w-xs w-full flex-col gap-2 items-start">
+                <Switch
+                  size="sm"
+                  isSelected={!!user.meta.openToWork}
+                  onValueChange={(v) => {
+                    setUser((prev) => ({
+                      ...prev,
+                      meta: { ...prev.meta, openToWork: v },
+                    }));
+                    markAsEdited();
+                  }}
+                >
+                  <span className="text-xs text-gray-600">
+                    Show an “open to work” badge
+                  </span>
+                </Switch>
+                {user.meta.openToWork && (
+                  <Input
+                    type="text"
+                    variant="bordered"
+                    value={user.meta.availabilityLabel ?? ""}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "meta.availabilityLabel",
+                        -1,
+                        "",
+                        e.target.value
+                      )
+                    }
+                    placeholder="Open to work"
+                    className="max-w-xs text-gray-600"
+                    classNames={{
+                      inputWrapper: "border-1 shadow-none",
+                    }}
+                  />
+                )}
+              </div>
             </div>
             <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
               <p className="pt-.05">Theme color</p>
@@ -2890,6 +2931,37 @@ export default function Home() {
                       }}
                     />
                   </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Level</p>
+                    <div className="flex max-w-xs w-full items-center gap-2">
+                      {[1, 2, 3, 4, 5].map((lvl) => (
+                        <button
+                          key={`level-${lvl}`}
+                          type="button"
+                          aria-label={`Set ${skill.name || "skill"} level ${lvl}`}
+                          onClick={() => {
+                            setUser((prev) => {
+                              const skills = [...prev.skills];
+                              skills[index] = {
+                                ...skills[index],
+                                level: skills[index].level === lvl ? 0 : lvl,
+                              };
+                              return { ...prev, skills };
+                            });
+                            markAsEdited();
+                          }}
+                          className={`w-4 h-4 rounded-full border transition-colors ${
+                            (skill.level ?? 0) >= lvl
+                              ? "bg-gray-700 border-gray-700"
+                              : "bg-transparent border-gray-300"
+                          }`}
+                        />
+                      ))}
+                      <span className="text-xs text-gray-400 ml-1">
+                        {skill.level ? `${skill.level}/5` : "optional"}
+                      </span>
+                    </div>
+                  </div>
                       </div>
                     )}
                   </SortableItem>
@@ -3486,6 +3558,43 @@ export default function Home() {
                           e.target.value
                         )
                       }
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Role</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={reference.role ?? ""}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange("references", index, "role", e.target.value)
+                      }
+                      placeholder="e.g. Engineering Manager"
+                      className="max-w-xs text-gray-600"
+                      classNames={{
+                        inputWrapper: "border-1 shadow-none",
+                      }}
+                    />
+                  </div>
+                  <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+                    <p className="pt-.05">Company</p>
+                    <Input
+                      type="text"
+                      variant="bordered"
+                      value={reference.company ?? ""}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange(
+                          "references",
+                          index,
+                          "company",
+                          e.target.value
+                        )
+                      }
+                      placeholder="e.g. Acme Inc."
                       className="max-w-xs text-gray-600"
                       classNames={{
                         inputWrapper: "border-1 shadow-none",

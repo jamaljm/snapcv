@@ -99,6 +99,9 @@ export type Meta = {
   userName: string;
   buttonText: string;
   avatarUrl: string;
+  // Availability / "open to work" badge (all optional for backward compat).
+  openToWork?: boolean;
+  availabilityLabel?: string;
 };
 
 // Location type used in basics
@@ -154,6 +157,8 @@ export type Education = {
 export type Skill = {
   name: string;
   keywords: string[];
+  // Optional proficiency 1-5 (0/undefined = unspecified). Backward compatible.
+  level?: number;
 };
 
 // Awards
@@ -243,10 +248,14 @@ export type Interest = {
   keywords: string[];
 };
 
-// References
+// References / testimonials
 export type Reference = {
   reference: string;
   name: string;
+  // Optional richer testimonial fields (backward compatible).
+  role?: string;
+  company?: string;
+  avatarUrl?: string;
 };
 
 // Complete UserProfile
