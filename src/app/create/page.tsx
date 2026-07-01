@@ -38,6 +38,7 @@ function Page() {
   const [resumeUrl, setResumeUrl] = useState("");
   const [aiCreating, setAiCreating] = useState(false);
   const [linkedInUrl, setLinkedInUrl] = useState("");
+  const [githubUsername, setGithubUsername] = useState("");
   const [linkedInError, setLinkedInError] = useState(false);
 
   const [isAvailable, setIsAvailable] = useState(false);
@@ -378,9 +379,9 @@ function Page() {
   const generateai = async () => {
     const linkedInPattern = /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/;
 
-    if (!resumeUrl && !linkedInUrl) {
+    if (!resumeUrl && !linkedInUrl && !githubUsername) {
       toast({
-        title: "Please upload your resume or enter your LinkedIn profile URL",
+        title: "Upload a résumé, or enter a LinkedIn URL or GitHub username",
         variant: "destructive",
       });
       return;
@@ -587,6 +588,73 @@ function Page() {
         setAiCreating(false);
       }
     }
+    if (githubUsername) {
+      try {
+        const response = await axios.post("/api/githubToProfile", {
+          username: githubUsername,
+        });
+        setValue(80);
+        const gh = response.data.data;
+        const slug = shopSlug.toLowerCase().replace(/\s+/g, "");
+
+        const end = Date.now() + 3 * 1000;
+        const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
+        const frame = () => {
+          if (Date.now() > end) return;
+          confetti({
+            particleCount: 2,
+            angle: 60,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 0, y: 0.5 },
+            colors,
+          });
+          confetti({
+            particleCount: 2,
+            angle: 120,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 1, y: 0.5 },
+            colors,
+          });
+          requestAnimationFrame(frame);
+        };
+        frame();
+        setValue(90);
+
+        const extendedResult = {
+          userName: slug,
+          resumeJson: {
+            ...gh,
+            meta: { ...gh.meta, userName: slug, buttonText: "Hire me" },
+          },
+          metaJson: {
+            userName: slug,
+            avatarUrl: gh.meta?.avatarUrl,
+            buttonText: "Hire me",
+            resumeTheme: "",
+            portfolioColor: "",
+            portfolioTheme: "",
+          },
+          userEmail: userData?.user.email,
+          userId: userData?.user.id,
+        };
+        const { error } = await supabase.from("users").insert(extendedResult);
+        if (error) console.error("Error inserting user:", error);
+        setValue(100);
+        if (!error) {
+          router.push("/home");
+        }
+      } catch (error) {
+        console.error("Error generating from GitHub:", error);
+        toast({
+          title: "Couldn't build from that GitHub username",
+          description: "Double-check the username and try again.",
+          variant: "destructive",
+        });
+        setAiCreating(false);
+      }
+    }
     return null;
   };
 
@@ -772,6 +840,56 @@ function Page() {
                         />{" "}
                       </div>
                     </div>
+                  </div>
+                </Tab>
+                <Tab
+                  className="w-full"
+                  key="github"
+                  title={
+                    <div className="flex justify-center items-center space-x-1">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="size-5"
+                      >
+                        <path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.7 18 5 18 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5Z" />
+                      </svg>
+                      <span className="flex text-base h-full justify-center items-center">
+                        GitHub
+                      </span>
+                    </div>
+                  }
+                >
+                  <div className="flex z-50 mt-3 flex-col gap-2 sm:gap-0 w-full justify-center text-sm items-center">
+                    <p className="w-full text-start max-w-sm font-medium mb-2.5 text-base">
+                      Enter your GitHub username
+                    </p>
+                    <div className="flex max-w-sm w-full justify-center gap-2 items-center flex-row flex-wrap">
+                      <div className="flex flex-row h-12 text-slate-500 cursor-pointer shadow-xs justify-center items-center flex-1 border-black/40 rounded-xl bg-white">
+                        <Input
+                          type="text"
+                          placeholder="your-github-username"
+                          labelPlacement="outside"
+                          className="z-50 text-gray-600 mt-2 font-semibold max-w-sm flex justify-center w-full font-urbanist text-lg rounded-lg"
+                          size="lg"
+                          radius="md"
+                          classNames={{
+                            input: "font-semibold text-lg",
+                            label: "font-semibold text-base text-black/70",
+                          }}
+                          value={githubUsername}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setGithubUsername(
+                              e.target.value.trim().replace(/^@/, "")
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                    <p className="w-full text-start max-w-sm text-xs text-gray-400 mt-2">
+                      Builds a starter portfolio from your public repos — no
+                      résumé needed.
+                    </p>
                   </div>
                 </Tab>
                 <Tab

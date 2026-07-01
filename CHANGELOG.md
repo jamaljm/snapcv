@@ -4,7 +4,15 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
-## [2.2.0] — Share & Grow (in progress)
+## [2.3.0] — GitHub → instant portfolio
+
+### Added
+- **Create from GitHub** — enter a GitHub username and get a starter portfolio
+  from your public profile + top repos (projects, languages → skills, links). No
+  résumé needed — the lowest-friction way to make a portfolio. New `/api/githubToProfile`
+  route maps a GitHub user to the profile shape; a "GitHub" tab in the create flow.
+
+## [2.2.0] — Share & Grow
 
 ### Added
 - **Dynamic OG share images** — every portfolio link (`name.snapcv.me`) now
