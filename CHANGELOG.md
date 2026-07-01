@@ -4,6 +4,13 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.1.1] — Sleek monochrome résumé
+
+### Changed
+- The résumé is now **monochrome / black** instead of using the portfolio accent
+  color — cleaner, more professional, and ATS-friendly. (The portfolio still uses
+  the chosen accent color.)
+
 ## [2.1.0] — Resume redesign & richer profile data
 
 ### Added

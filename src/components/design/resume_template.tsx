@@ -1,6 +1,5 @@
 import React from "react";
 import { UserProfile } from "@/lib/type";
-import { getAccentColor } from "@/lib/utils";
 
 type ResumeTemplateProps = {
   profile: UserProfile;
@@ -93,7 +92,9 @@ const NetworkIcon: React.FC<{ network: string }> = ({ network }) => {
 /* ---------------- resume content (shared by public page + editor preview) ---------------- */
 
 export const ResumeContent: React.FC<ResumeTemplateProps> = ({ profile }) => {
-  const accent = getAccentColor(profile.meta?.portfolioColor);
+  // Résumés stay monochrome/black — sleek, professional, and ATS-friendly.
+  // (The portfolio still uses the chosen accent color; the résumé does not.)
+  const accent = "#111111";
   const openToWork = profile.meta?.openToWork;
   const availabilityLabel =
     profile.meta?.availabilityLabel?.trim() || "Open to work";
