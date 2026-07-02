@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = [
     { url: BASE, changeFrequency: "weekly", priority: 1 },
     { url: `${BASE}/read-cv-alternative`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${BASE}/github-portfolio-generator`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/login`, changeFrequency: "monthly", priority: 0.4 },
     { url: `${BASE}/signup`, changeFrequency: "monthly", priority: 0.4 },
     { url: `${BASE}/privacy-policy`, changeFrequency: "yearly", priority: 0.2 },

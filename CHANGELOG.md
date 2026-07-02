@@ -4,6 +4,14 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.11.0] — "GitHub portfolio generator" SEO landing page
+
+### Added
+- `/github-portfolio-generator` — a high-intent SEO landing page targeting the
+  wedge query ("turn GitHub into a portfolio"), funneling to the no-signup `/try`
+  preview. Human-voiced, monochrome, matches the existing landing pattern. Added
+  to the sitemap. A passive, compounding organic-acquisition surface.
+
 ## [2.10.1] — Contribution graph works without a token (+ design polish)
 
 ### Changed
