@@ -20,6 +20,12 @@ released to production when `staging` is merged to `main`.
 ### Added
 - **`llms.txt`** describing SnapCV for LLM crawlers (emerging AEO/GEO convention).
 
+### Fixed
+- Résumé **Skills** section rendered one bold label per line when skills were
+  stored as bare names (no keywords) — the common shape — leaving a tall, empty
+  column. Now only groups that actually carry keywords use the aligned grid;
+  keyword-less skills collapse into a single compact, wrapping line.
+
 ## [2.9.0] — World-class résumé template
 
 ### Changed
