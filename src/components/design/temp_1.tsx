@@ -24,8 +24,19 @@ const socialMediaImages: { [key: string]: string } = {
 export default function page({ user }: { user: UserProfile }) {
   const gradientColor =
     tailwindColors100[user.meta.portfolioColor as ThemeColor];
-  const githubUsername =
-    user.basics.profiles?.find((p) => p.network === "GitHub")?.username || "";
+  // Find the GitHub profile robustly: match the network label case-insensitively,
+  // or any profile whose URL is a github.com link. Fall back to parsing the handle
+  // from the URL when the username field is empty (common for older profiles), so
+  // the activity graph shows whenever a GitHub is linked at all.
+  const githubProfile = user.basics.profiles?.find(
+    (p) =>
+      p.network?.toLowerCase() === "github" || /github\.com\//i.test(p.url || "")
+  );
+  const githubUsername = (
+    githubProfile?.username?.trim() ||
+    githubProfile?.url?.match(/github\.com\/([A-Za-z0-9-]+)/i)?.[1] ||
+    ""
+  ).replace(/^@/, "");
 
   return (
     <>
