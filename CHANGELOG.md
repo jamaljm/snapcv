@@ -4,6 +4,23 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.9.0] — World-class résumé template
+
+### Changed
+- Rebuilt the résumé (`ResumeContent`, shared by `/resume` and the editor preview)
+  into a minimal, top-tier professional one-pager:
+  - **Flush-left letterhead** with a single strong anchor rule; every other rule is
+    a hairline. "Open to work" is now a quiet small-caps marker, not a pill.
+  - **True monochrome** via the pure `neutral` scale (no blue-tinted grays), with a
+    deliberate ink ramp for name/body/meta/hairlines.
+  - **Two-tier entries** (role + right-aligned tabular-nums dates on top, company +
+    location beneath) wrapped in `break-inside-avoid` so a job never splits across
+    PDF pages.
+  - **Skills as an aligned definition grid** (label column + keyword column line up);
+    proficiency shown as print-safe text glyphs, not colored dots.
+  - Denser education (one-line "Coursework:"), print-honest bare link URLs, and
+    consistent section rhythm. Clean sans typography; ATS-safe single-column DOM.
+
 ## [2.8.0] — GitHub contribution graph on the portfolio
 
 ### Added
