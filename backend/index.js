@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 
-import { getCompletionFromOpenAI } from "./openai.js";
+import { getCompletionFromOpenAI, generateRepoCards } from "./openai.js";
 import { assertSafeUrl } from "./lib/url-guard.js";
 import { extractTextFromPDF, fetchPdfBuffer } from "./lib/pdf.js";
 import { rateLimit } from "./lib/rate-limit.js";
@@ -55,6 +55,21 @@ app.post("/extract-pdf", limiter, async (req, res) => {
     const status = error.statusCode || 500;
     if (status >= 500) console.error("Error processing PDF:", error);
     return res.status(status).json({ error: error.message || "Failed to process PDF" });
+  }
+});
+
+// Turn GitHub repos into recruiter-legible project cards (AI-written).
+app.post("/github-cards", limiter, async (req, res) => {
+  const { repos } = req.body ?? {};
+  if (!Array.isArray(repos) || repos.length === 0) {
+    return res.status(400).json({ error: "Provide a non-empty repos array." });
+  }
+  try {
+    const cards = await generateRepoCards(repos);
+    return res.json({ cards });
+  } catch (error) {
+    console.error("Error generating repo cards:", error);
+    return res.status(502).json({ error: "Failed to generate cards." });
   }
 });
 

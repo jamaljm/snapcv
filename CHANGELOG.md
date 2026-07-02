@@ -4,6 +4,18 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.7.0] — AI recruiter cards for GitHub projects
+
+### Added
+- GitHub-built portfolios now get **AI-written, recruiter-legible project
+  descriptions** (what it does / what was built + real tech stack), generated
+  from each repo's README + metadata. Fixes the core problem for job-seekers:
+  their repos have no READMEs/descriptions, and recruiters scan GitHub in ~90s.
+  New backend `/github-cards` endpoint; the frontend fetches top-repo READMEs and
+  enriches the projects, with graceful fallback to the raw description.
+- A "readiness nudge" on the `/try` preview (e.g. "2/6 projects have a live demo
+  — add links to rank higher"), so the output feels like a scored, improvable asset.
+
 ## [2.6.0] — No-signup GitHub preview (try before you sign up)
 
 ### Added
