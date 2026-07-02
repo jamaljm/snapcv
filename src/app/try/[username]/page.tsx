@@ -50,6 +50,15 @@ export default async function TryPreviewPage({ params }: Props) {
     },
   } as UserProfile;
 
+  // Readiness nudge: how many projects have a live demo link. Makes the preview
+  // feel like a scored, improvable asset (recruiters reward live demos).
+  const projects = profile.projects?.projects || [];
+  const withDemo = projects.filter((p) => p.website && p.website.trim()).length;
+  const nudge =
+    projects.length > 0 && withDemo < projects.length
+      ? `${withDemo}/${projects.length} projects have a live demo — add links to rank higher`
+      : null;
+
   return (
     <>
       {/* Preview bar: this is the "see it before you sign in" hook. */}
@@ -67,6 +76,11 @@ export default async function TryPreviewPage({ params }: Props) {
             Claim yours, free
           </Link>
         </div>
+        {nudge && (
+          <div className="mx-auto max-w-4xl px-4 pb-2 text-xs text-neutral-500 font-urbanist">
+            {nudge}
+          </div>
+        )}
       </div>
       <Temp_1 user={profile} />
     </>

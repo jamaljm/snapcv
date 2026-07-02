@@ -55,6 +55,73 @@ export type GithubProfileResult =
   | { ok: true; data: Record<string, unknown> }
   | { ok: false; status: number; error: string };
 
+// Fetch a repo's README as raw text (best-effort, capped), with the same
+// invalid-token → unauthenticated fallback as ghFetch.
+async function fetchReadmeRaw(login: string, repo: string): Promise<string> {
+  const url = `${GH}/repos/${login}/${repo}/readme`;
+  const hdrs = (useToken: boolean) => ({
+    ...ghHeaders(useToken),
+    Accept: "application/vnd.github.raw",
+  });
+  try {
+    let res = await fetch(url, { headers: hdrs(true), cache: "no-store" });
+    if (token && (res.status === 401 || res.status === 403)) {
+      res = await fetch(url, { headers: hdrs(false), cache: "no-store" });
+    }
+    if (!res.ok) return "";
+    return (await res.text()).slice(0, 1500);
+  } catch {
+    return "";
+  }
+}
+
+type RepoCard = { description: string; technologies: string[] };
+
+// Ask the backend to write recruiter-legible cards for the top repos (uses the
+// OpenAI key that lives on the backend). Best-effort: on any failure we fall
+// back to the raw repo description, so the portfolio still renders.
+async function enrichWithCards(
+  login: string,
+  topRepos: GhRepo[]
+): Promise<Map<string, RepoCard>> {
+  const out = new Map<string, RepoCard>();
+  const backend = process.env.NEXT_PUBLIC_BACKEND;
+  if (!backend || topRepos.length === 0) return out;
+
+  try {
+    const repos = await Promise.all(
+      topRepos.map(async (r) => ({
+        name: r.name,
+        description: r.description || "",
+        language: r.language || "",
+        readme: await fetchReadmeRaw(login, r.name),
+      }))
+    );
+    const res = await fetch(`${backend}/github-cards`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ repos }),
+      cache: "no-store",
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) return out;
+    const json = await res.json();
+    for (const card of json?.cards || []) {
+      if (card?.name) {
+        out.set(String(card.name), {
+          description: String(card.description || ""),
+          technologies: Array.isArray(card.technologies)
+            ? card.technologies.map(String)
+            : [],
+        });
+      }
+    }
+  } catch (error) {
+    console.error("enrichWithCards failed:", error);
+  }
+  return out;
+}
+
 /** Turn a GitHub username into a portfolio-ready UserProfile-shaped object. */
 export async function fetchGithubProfile(
   usernameRaw: string
@@ -113,6 +180,9 @@ export async function fetchGithubProfile(
       website ? { username: "", url: website, network: "Website" } : null,
     ].filter(Boolean);
 
+    // AI-written recruiter cards for the top repos (best-effort).
+    const cards = await enrichWithCards(user.login, topRepos);
+
     const data = {
       meta: {
         resumeTheme: "",
@@ -145,16 +215,24 @@ export async function fetchGithubProfile(
       work: [],
       projects: {
         description: "",
-        projects: topRepos.map((r) => ({
-          title: r.name,
-          description: r.description || "",
-          website: r.homepage || "",
-          source: r.html_url,
-          duration: "",
-          technologies: r.language ? [r.language] : [],
-          highlights: [],
-          image: "",
-        })),
+        projects: topRepos.map((r) => {
+          const card = cards.get(r.name);
+          return {
+            title: r.name,
+            description: card?.description || r.description || "",
+            website: r.homepage || "",
+            source: r.html_url,
+            duration: "",
+            technologies:
+              card && card.technologies.length
+                ? card.technologies
+                : r.language
+                ? [r.language]
+                : [],
+            highlights: [],
+            image: "",
+          };
+        }),
       },
       languages: [],
       interests: [],
