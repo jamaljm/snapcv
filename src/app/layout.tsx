@@ -247,14 +247,27 @@ export async function generateMetadata(): Promise<Metadata> {
         user.education?.some((e: any) => e?.institution?.trim()))
   );
 
+  const canonical = `https://${user.meta.userName}.snapcv.me`;
+  // Title carries name + role so the SERP snippet reads as a real person, which
+  // helps the page rank for the owner's name (middot, not an em dash).
+  const displayTitle = user.basics.label
+    ? `${user.basics.name} · ${user.basics.label}`
+    : user.basics.name;
+  const displayDesc =
+    user.basics.about?.trim() ||
+    `${user.basics.name}${
+      user.basics.label ? `, ${user.basics.label}` : ""
+    }. Portfolio and resume, hosted on SnapCV.`;
+
   return {
-    metadataBase: new URL(`https://${user.meta.userName}.snapcv.me`),
-    title: user.basics.name,
-    description: user.basics.about,
+    metadataBase: new URL(canonical),
+    title: displayTitle,
+    description: displayDesc,
+    alternates: { canonical },
     openGraph: {
-      title: `${user.basics.name}`,
-      description: user.basics.about,
-      url: `https://${user.meta.userName}.snapcv.me`,
+      title: displayTitle,
+      description: displayDesc,
+      url: canonical,
       siteName: `${user.meta.userName}`,
       locale: "en_US",
       type: "website",
@@ -272,7 +285,8 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     twitter: {
-      title: `${user.basics.name}`,
+      title: displayTitle,
+      description: displayDesc,
       card: "summary_large_image",
       images: [ogImage],
     },

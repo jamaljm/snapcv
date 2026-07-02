@@ -51,51 +51,66 @@ export function getSubdomain(host: string | null): string {
 }
 
 /** Build schema.org Person JSON-LD for a portfolio (used across / and /resume). */
+// Structured data for a portfolio. Emitted as a ProfilePage wrapping a Person
+// (Google's recommended pattern for profile pages) using only valid schema.org
+// properties, so search + AI answer engines (AEO/GEO) can understand and cite the
+// person. The canonical URL is the snapcv portfolio, not the user's external site.
 export function generateJsonLd(user: UserProfile) {
+  const canonical = `https://${user.meta.userName}.snapcv.me`;
+  const orUndef = <T,>(arr: T[]): T[] | undefined =>
+    arr.length ? arr : undefined;
+
+  // Socials + personal site, plus the canonical portfolio, as the entity's
+  // corroborating identities.
+  const sameAs = [
+    ...(user.basics.profiles || []).map((p) => p.url).filter(Boolean),
+    user.basics.website,
+  ].filter(Boolean);
+
+  // knowsAbout is a strong AEO signal for "what is this person expert in".
+  const knowsAbout = [
+    ...(user.basics.skills || []),
+    ...(user.skills || []).flatMap((s) => s.keywords || []),
+  ]
+    .map((s) => (typeof s === "string" ? s.trim() : ""))
+    .filter(Boolean);
+
+  const person = {
+    "@type": "Person",
+    "@id": `${canonical}/#person`,
+    name: user.basics.name,
+    url: canonical,
+    image: user.basics.avatarUrl || undefined,
+    description: user.basics.about || undefined,
+    jobTitle: user.basics.label || user.work?.[0]?.position || undefined,
+    email: user.basics.email ? `mailto:${user.basics.email}` : undefined,
+    address: user.basics.location?.city
+      ? {
+          "@type": "PostalAddress",
+          addressLocality: user.basics.location.city,
+          addressCountry: user.basics.location.countryCode || undefined,
+        }
+      : undefined,
+    sameAs: orUndef(sameAs),
+    worksFor: user.work?.[0]?.name
+      ? { "@type": "Organization", name: user.work[0].name }
+      : undefined,
+    alumniOf: orUndef(
+      (user.education || [])
+        .filter((edu) => edu.institution?.trim())
+        .map((edu) => ({
+          "@type": "EducationalOrganization",
+          name: edu.institution,
+        }))
+    ),
+    knowsAbout: orUndef([...new Set(knowsAbout)]),
+  };
+
   return {
     "@context": "https://schema.org",
-    "@type": "Person",
-    name: user.basics.name,
-    url: user.basics.website,
-    image: user.basics.avatarUrl,
-    description: user.basics.about,
-    sameAs: user.basics.profiles.map((profile) => profile.url).filter(Boolean),
-    worksFor:
-      user.work.length > 0
-        ? {
-            "@type": "Organization",
-            name: user.work[0].name,
-          }
-        : undefined,
-    jobTitle: user.work.length > 0 ? user.work[0].position : undefined,
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": user.basics.website,
-    },
-    education: user.education.map((edu) => ({
-      "@type": "EducationalOrganization",
-      name: edu.institution,
-      degree: edu.studyType,
-      startDate: edu.startDate,
-      endDate: edu.endDate,
-    })),
-    experience: user.work.map((work) => ({
-      "@type": "Organization",
-      name: work.name,
-      jobTitle: work.position,
-      startDate: work.startDate,
-      endDate: work.endDate,
-    })),
-    project: user.projects.projects.map((project) => ({
-      "@type": "CreativeWork",
-      name: project.title,
-      description: project.description,
-      url: project.website,
-    })),
-    award: user.hackathons.hackathons.map((hackathon) => ({
-      "@type": "Award",
-      name: hackathon.title,
-      description: hackathon.description,
-    })),
+    "@type": "ProfilePage",
+    "@id": canonical,
+    url: canonical,
+    mainEntity: person,
   };
 }

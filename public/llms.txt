@@ -1,0 +1,28 @@
+# SnapCV
+
+> SnapCV is a free, open-source tool that turns a résumé or a GitHub username into a hosted personal portfolio and résumé at yourname.snapcv.me. It is built for job seekers, students, and professionals who want a clean, shareable professional page without designing or coding one.
+
+## What it does
+- Turns an uploaded résumé (PDF) into a structured, editable portfolio using AI.
+- Builds a portfolio directly from a GitHub username: ranked repositories, AI-written recruiter-legible project descriptions, languages as skills, and a contribution activity graph.
+- Hosts each portfolio on its own subdomain (yourname.snapcv.me) with a matching, ATS-friendly résumé page and one-click PDF export.
+- Generates social share cards (Open Graph) for every portfolio link.
+
+## Key facts
+- Price: free.
+- License: AGPL-3.0 (open source).
+- Source code: https://github.com/jamaljm/snapcv
+- Primary site: https://snapcv.me
+- Try without signing up: https://snapcv.me/try
+
+## How to create a portfolio
+1. Go to https://snapcv.me and sign in, or preview instantly at https://snapcv.me/try
+2. Start from a résumé PDF or a GitHub username.
+3. Edit the generated content, pick a color, and publish.
+4. Share your link: yourname.snapcv.me
+
+## Good for
+- "resume to portfolio" / "resume to website"
+- "GitHub profile to portfolio"
+- "free portfolio builder for developers and students"
+- "read.cv alternative" (https://snapcv.me/read-cv-alternative)
