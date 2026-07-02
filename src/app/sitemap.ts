@@ -6,6 +6,13 @@ export const revalidate = 3600;
 
 const BASE = "https://snapcv.me";
 
+// A valid DNS label / subdomain: lowercase alphanumeric + hyphens, 1–63 chars,
+// no leading/trailing hyphen. Excludes usernames with spaces, dots, slashes, or
+// full URLs (legacy/garbage data) that caused Google Search Console errors.
+function isValidSubdomain(name: string): boolean {
+  return /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(name);
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = [
     { url: BASE, changeFrequency: "weekly", priority: 1 },
@@ -26,9 +33,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .limit(10000);
 
     portfolios = (data || [])
-      .filter((u: { userName?: string | null }) => u.userName)
-      .map((u: { userName: string; updatedAt?: string | null }) => ({
-        url: `https://${u.userName.toLowerCase()}.snapcv.me`,
+      .map((u: { userName?: string | null; updatedAt?: string | null }) => ({
+        name: (u.userName || "").trim().toLowerCase(),
+        updatedAt: u.updatedAt,
+      }))
+      .filter((u) => isValidSubdomain(u.name))
+      .map((u) => ({
+        url: `https://${u.name}.snapcv.me`,
         lastModified: u.updatedAt || undefined,
         changeFrequency: "weekly" as const,
         priority: 0.8,

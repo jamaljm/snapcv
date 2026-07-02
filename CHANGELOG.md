@@ -21,6 +21,26 @@ released to production when `staging` is merged to `main`.
   - Denser education (one-line "Coursework:"), print-honest bare link URLs, and
     consistent section rhythm. Clean sans typography; ATS-safe single-column DOM.
 
+## [2.8.0] — GitHub contribution graph on the portfolio
+
+### Added
+- Portfolios with a linked GitHub now show a **contribution activity graph**
+  (the green square grid + "N contributions this year") — the strongest at-a-glance
+  proof-of-work for a recruiter's 90-second scan. New `/api/githubActivity` route
+  (GraphQL `contributionCalendar`) + a self-contained client component (no new deps).
+- **Honesty gate**: the graph only renders when contributions clear a threshold
+  (150/yr), so a sparse account is never made to look inactive. Any failure (no
+  token, unknown user, rate limit) silently renders nothing.
+
+## [2.7.1] — Fix invalid sitemap URLs (Search Console)
+
+### Fixed
+- The sitemap emitted usernames verbatim as subdomains, so accounts whose
+  `userName` had spaces (`siri chandana`) or held legacy garbage (a full Wix URL)
+  produced invalid entries that Google Search Console rejected ("Invalid URL",
+  "URL not allowed"). The sitemap now only emits DNS-valid subdomain labels
+  (`[a-z0-9-]`, 1–63 chars, no leading/trailing hyphen), silently skipping the rest.
+
 ## [2.7.0] — AI recruiter cards for GitHub projects
 
 ### Added
