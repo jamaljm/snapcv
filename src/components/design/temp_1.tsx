@@ -10,6 +10,7 @@ import { UserProfile, ThemeColor } from "@/lib/type";
 import { tailwindColors100 } from "@/lib/utils";
 import { AwardCard } from "@/components/award-card";
 import MadeWithSnapcv from "@/components/MadeWithSnapcv";
+import GithubActivity from "@/components/design/github-activity";
 
 const socialMediaImages: { [key: string]: string } = {
   GitHub: "/icon/github.png",
@@ -23,6 +24,8 @@ const socialMediaImages: { [key: string]: string } = {
 export default function page({ user }: { user: UserProfile }) {
   const gradientColor =
     tailwindColors100[user.meta.portfolioColor as ThemeColor];
+  const githubUsername =
+    user.basics.profiles?.find((p) => p.network === "GitHub")?.username || "";
 
   return (
     <>
@@ -176,6 +179,7 @@ export default function page({ user }: { user: UserProfile }) {
                 </div>
               </section>
             )}
+          {githubUsername && <GithubActivity username={githubUsername} />}
           {user.hackathons.hackathons.length > 0 &&
             user.hackathons.hackathons[0].title !== "" && (
               <section id="hackathons" className="p-6">
