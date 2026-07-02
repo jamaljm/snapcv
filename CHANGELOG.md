@@ -4,6 +4,15 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.7.1] — Fix invalid sitemap URLs (Search Console)
+
+### Fixed
+- The sitemap emitted usernames verbatim as subdomains, so accounts whose
+  `userName` had spaces (`siri chandana`) or held legacy garbage (a full Wix URL)
+  produced invalid entries that Google Search Console rejected ("Invalid URL",
+  "URL not allowed"). The sitemap now only emits DNS-valid subdomain labels
+  (`[a-z0-9-]`, 1–63 chars, no leading/trailing hyphen), silently skipping the rest.
+
 ## [2.7.0] — AI recruiter cards for GitHub projects
 
 ### Added
