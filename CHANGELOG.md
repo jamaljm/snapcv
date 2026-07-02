@@ -4,6 +4,18 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.10.1] — Contribution graph works without a token (+ design polish)
+
+### Changed
+- The portfolio activity graph now sources its data from a public, **tokenless**
+  GitHub contributions API instead of GitHub's GraphQL (which required a
+  `GITHUB_TOKEN` that kept expiring and silently hid the graph for everyone).
+  `/api/githubActivity` no longer needs any token; the grid aligns to Sunday and
+  still falls back to empty on any failure. Verified end-to-end with real data.
+- **Design**: the graph now sits in a bordered card that matches the portfolio's
+  project cards, sized to fit the column (the full year fits without scrolling),
+  with a centered "N contributions this year" header and a subtle cell ring.
+
 ## [2.10.0] — SEO / AEO / GEO hardening
 
 ### Changed
