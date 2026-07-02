@@ -4,6 +4,16 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.10.2] — Fix: activity graph hidden when GitHub username field is empty
+
+### Fixed
+- The contribution graph derived the GitHub handle from `profile.username` and
+  required an exact `"GitHub"` network label, so portfolios that stored only the
+  GitHub **URL** (empty username field) or a different casing never rendered the
+  graph — even with a linked GitHub and plenty of contributions. Now it matches
+  the network case-insensitively (or any `github.com` URL) and falls back to
+  parsing the handle from the URL. Verified against the real data shapes.
+
 ## [2.10.1] — Contribution graph works without a token (+ design polish)
 
 ### Changed
