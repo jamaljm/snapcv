@@ -4,6 +4,17 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.8.0] — GitHub contribution graph on the portfolio
+
+### Added
+- Portfolios with a linked GitHub now show a **contribution activity graph**
+  (the green square grid + "N contributions this year") — the strongest at-a-glance
+  proof-of-work for a recruiter's 90-second scan. New `/api/githubActivity` route
+  (GraphQL `contributionCalendar`) + a self-contained client component (no new deps).
+- **Honesty gate**: the graph only renders when contributions clear a threshold
+  (150/yr), so a sparse account is never made to look inactive. Any failure (no
+  token, unknown user, rate limit) silently renders nothing.
+
 ## [2.7.0] — AI recruiter cards for GitHub projects
 
 ### Added
