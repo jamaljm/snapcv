@@ -2,6 +2,74 @@
 
 All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
+released to production when `staging` is merged to `main`.
+
+## [2.9.0] — World-class résumé template
+
+### Changed
+- Rebuilt the résumé (`ResumeContent`, shared by `/resume` and the editor preview)
+  into a minimal, top-tier professional one-pager:
+  - **Flush-left letterhead** with a single strong anchor rule; every other rule is
+    a hairline. "Open to work" is now a quiet small-caps marker, not a pill.
+  - **True monochrome** via the pure `neutral` scale (no blue-tinted grays), with a
+    deliberate ink ramp for name/body/meta/hairlines.
+  - **Two-tier entries** (role + right-aligned tabular-nums dates on top, company +
+    location beneath) wrapped in `break-inside-avoid` so a job never splits across
+    PDF pages.
+  - **Skills as an aligned definition grid** (label column + keyword column line up);
+    proficiency shown as print-safe text glyphs, not colored dots.
+  - Denser education (one-line "Coursework:"), print-honest bare link URLs, and
+    consistent section rhythm. Clean sans typography; ATS-safe single-column DOM.
+
+## [2.8.0] — GitHub contribution graph on the portfolio
+
+### Added
+- Portfolios with a linked GitHub now show a **contribution activity graph**
+  (the green square grid + "N contributions this year") — the strongest at-a-glance
+  proof-of-work for a recruiter's 90-second scan. New `/api/githubActivity` route
+  (GraphQL `contributionCalendar`) + a self-contained client component (no new deps).
+- **Honesty gate**: the graph only renders when contributions clear a threshold
+  (150/yr), so a sparse account is never made to look inactive. Any failure (no
+  token, unknown user, rate limit) silently renders nothing.
+
+## [2.7.1] — Fix invalid sitemap URLs (Search Console)
+
+### Fixed
+- The sitemap emitted usernames verbatim as subdomains, so accounts whose
+  `userName` had spaces (`siri chandana`) or held legacy garbage (a full Wix URL)
+  produced invalid entries that Google Search Console rejected ("Invalid URL",
+  "URL not allowed"). The sitemap now only emits DNS-valid subdomain labels
+  (`[a-z0-9-]`, 1–63 chars, no leading/trailing hyphen), silently skipping the rest.
+
+## [2.7.0] — AI recruiter cards for GitHub projects
+
+### Added
+- GitHub-built portfolios now get **AI-written, recruiter-legible project
+  descriptions** (what it does / what was built + real tech stack), generated
+  from each repo's README + metadata. Fixes the core problem for job-seekers:
+  their repos have no READMEs/descriptions, and recruiters scan GitHub in ~90s.
+  New backend `/github-cards` endpoint; the frontend fetches top-repo READMEs and
+  enriches the projects, with graceful fallback to the raw description.
+- A "readiness nudge" on the `/try` preview (e.g. "2/6 projects have a live demo
+  — add links to rank higher"), so the output feels like a scored, improvable asset.
+
+## [2.6.0] — No-signup GitHub preview (try before you sign up)
+
+### Added
+- `/try` and `/try/[username]`: enter a GitHub username and instantly see a live
+  portfolio preview (no account needed), with a "claim yours" CTA. Removes the
+  signup wall, a top conversion + launch lever. Fully client-verifiable (no DB).
+- Extracted the GitHub-to-profile logic into `src/lib/github.ts`, shared by the
+  create-flow API route and the preview page.
+
+## [2.5.0] — Résumé PDF export
+
+### Added
+- **Download PDF** button on the résumé page. Fully client-side (browser
+  print-to-PDF), so no server Chrome/Puppeteer is needed on Vercel or Azure.
+  Produces crisp, selectable, ATS-parseable text (not a rasterized image). A
+  print stylesheet isolates the résumé for a clean, paginated document.
+
 ## [2.4.4] — Fix broken GitHub-to-portfolio in prod
 
 ### Fixed
@@ -16,8 +84,6 @@ All notable changes to SnapCV are documented here. This project follows
 - The OG share card avatar/initial box collapsed to zero when a name was long
   enough to wrap (missing flex-shrink:0 in Satori). Long-named users got a card
   with no avatar. Verified the box renders again.
-
-released to production when `staging` is merged to `main`.
 
 ## [2.4.2] — Fix /read-cv-alternative footer + AI-tell copy
 
