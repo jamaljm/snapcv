@@ -4,6 +4,28 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.10.0] — SEO / AEO / GEO hardening
+
+### Changed
+- **Portfolio structured data** rewritten from a loose `Person` (with invalid,
+  ignored properties and the user's external URL as canonical) into a proper
+  `ProfilePage` → `Person` using only valid schema.org fields (`knowsAbout`,
+  `alumniOf`, `worksFor`, `jobTitle`, `address`, `sameAs`), with the snapcv page
+  as the canonical `@id`/`url`. This is what search + AI answer engines parse to
+  understand and cite a person (AEO/GEO).
+- **Per-portfolio metadata**: title now includes the role (`Name · Role`) for a
+  richer SERP snippet, an explicit `canonical` is set, a description fallback is
+  added when the bio is empty, and the Twitter card gets a description.
+
+### Added
+- **`llms.txt`** describing SnapCV for LLM crawlers (emerging AEO/GEO convention).
+
+### Fixed
+- Résumé **Skills** section rendered one bold label per line when skills were
+  stored as bare names (no keywords) — the common shape — leaving a tall, empty
+  column. Now only groups that actually carry keywords use the aligned grid;
+  keyword-less skills collapse into a single compact, wrapping line.
+
 ## [2.9.0] — World-class résumé template
 
 ### Changed

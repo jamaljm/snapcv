@@ -114,7 +114,19 @@ export const ResumeContent: React.FC<ResumeTemplateProps> = ({ profile }) => {
     p?.title?.trim()
   );
   const skillGroups = (profile.skills || []).filter((s) => s?.name?.trim());
-  const flatSkills = clean(basics?.skills);
+  // Only groups that actually carry keywords belong in the aligned grid. Skills
+  // stored as bare names (no keywords) — the common shape — would otherwise
+  // render as one lonely bold label per row, so collect them into a single
+  // compact inline line instead.
+  const groupedSkills = skillGroups.filter(
+    (s) => clean(s.keywords).length > 0
+  );
+  const looseSkills = [
+    ...skillGroups
+      .filter((s) => clean(s.keywords).length === 0)
+      .map((s) => s.name.trim()),
+    ...clean(basics?.skills),
+  ].filter((v, i, a) => v && a.indexOf(v) === i);
   const education = (profile.education || []).filter((e) =>
     e?.institution?.trim()
   );
@@ -314,28 +326,30 @@ export const ResumeContent: React.FC<ResumeTemplateProps> = ({ profile }) => {
       {/* Skills: a definition grid so keyword columns align, which is what
           makes a skills block scan in one pass. Falls back to the flat
           basics list when no groups exist. */}
-      {(skillGroups.length > 0 || flatSkills.length > 0) && (
+      {(groupedSkills.length > 0 || looseSkills.length > 0) && (
         <Section title="Skills">
-          {skillGroups.length > 0 ? (
+          {groupedSkills.length > 0 && (
             <div className="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-5 gap-y-[5px]">
-              {skillGroups.map((skill, index) => {
-                const kws = clean(skill.keywords);
-                return (
-                  <React.Fragment key={`skillResume-${index}`}>
-                    <div className="text-[11.5px] font-semibold text-neutral-900 leading-[1.5]">
-                      {skill.name}
-                      <LevelDots level={skill.level} />
-                    </div>
-                    <div className="text-[11.5px] text-neutral-700 leading-[1.5]">
-                      {kws.join(", ")}
-                    </div>
-                  </React.Fragment>
-                );
-              })}
+              {groupedSkills.map((skill, index) => (
+                <React.Fragment key={`skillGroup-${index}`}>
+                  <div className="text-[11.5px] font-semibold text-neutral-900 leading-[1.5]">
+                    {skill.name}
+                    <LevelDots level={skill.level} />
+                  </div>
+                  <div className="text-[11.5px] text-neutral-700 leading-[1.5]">
+                    {clean(skill.keywords).join(", ")}
+                  </div>
+                </React.Fragment>
+              ))}
             </div>
-          ) : (
-            <p className="text-[11.5px] leading-[1.5] text-neutral-700">
-              {flatSkills.join(", ")}
+          )}
+          {looseSkills.length > 0 && (
+            <p
+              className={`text-[11.5px] leading-[1.7] text-neutral-700 ${
+                groupedSkills.length > 0 ? "mt-2" : ""
+              }`}
+            >
+              {looseSkills.join(", ")}
             </p>
           )}
         </Section>
