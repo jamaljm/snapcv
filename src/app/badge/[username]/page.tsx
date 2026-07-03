@@ -17,14 +17,11 @@ export default async function BadgePage({ params }: Props) {
   const { username } = await params;
   const handle = (username || "").trim().toLowerCase();
   const base = "https://www.snapcv.me";
-  const lightCard = `${base}/api/card/${handle}`;
-  const darkCard = `${base}/api/card/${handle}?theme=dark`;
   const portfolioUrl = `https://${handle}.snapcv.me`;
-  // A <picture> so GitHub swaps the card to match the viewer's light/dark theme.
-  const snippet = `<a href="${portfolioUrl}"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="${darkCard}">
-  <img src="${lightCard}" alt="My SnapCV portfolio" width="460">
-</picture></a>`;
+  // Pick a fixed variant. GitHub can't auto-switch an external image by theme, so
+  // we give both and let the person choose. Dark is the default recommendation.
+  const darkSnippet = `[![My portfolio](${base}/api/card/${handle}?theme=dark)](${portfolioUrl})`;
+  const lightSnippet = `[![My portfolio](${base}/api/card/${handle})](${portfolioUrl})`;
 
   return (
     <main className="min-h-screen bg-white font-urbanist text-neutral-900">
@@ -56,7 +53,7 @@ export default async function BadgePage({ params }: Props) {
               height={140}
               className="mx-auto w-full max-w-[380px]"
             />
-            <p className="mt-3 text-center text-xs text-neutral-400">Light mode</p>
+            <p className="mt-3 text-center text-xs text-neutral-400">Light</p>
           </div>
           <div className="rounded-2xl border border-neutral-800 bg-[#0d1117] p-5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -67,19 +64,26 @@ export default async function BadgePage({ params }: Props) {
               height={140}
               className="mx-auto w-full max-w-[380px]"
             />
-            <p className="mt-3 text-center text-xs text-neutral-500">Dark mode</p>
+            <p className="mt-3 text-center text-xs text-neutral-500">
+              Dark (recommended)
+            </p>
           </div>
         </div>
 
         <h2 className="mt-10 text-sm font-semibold uppercase tracking-wide text-neutral-500">
-          Copy this into your README
+          Copy one into your README
         </h2>
         <p className="mt-2 text-sm text-neutral-600">
-          It automatically switches between light and dark to match whoever is
-          viewing your profile.
+          Pick the look you want. GitHub can&apos;t auto-switch an image by theme,
+          so choose one. Dark reads as premium on most profiles.
         </p>
-        <div className="mt-3">
-          <CopySnippet snippet={snippet} />
+        <div className="mt-4">
+          <p className="mb-1.5 text-xs font-semibold text-neutral-500">Dark</p>
+          <CopySnippet snippet={darkSnippet} />
+        </div>
+        <div className="mt-4">
+          <p className="mb-1.5 text-xs font-semibold text-neutral-500">Light</p>
+          <CopySnippet snippet={lightSnippet} />
         </div>
 
         <ol className="mt-8 space-y-3 list-decimal pl-5 text-neutral-700">
@@ -90,7 +94,7 @@ export default async function BadgePage({ params }: Props) {
             </span>
             ). Create it if you don&apos;t have one, with a README.
           </li>
-          <li>Paste the line above at the top of the README and commit.</li>
+          <li>Paste one line at the top of the README and commit.</li>
           <li>Your profile now shows a clean card that links to your portfolio.</li>
         </ol>
 
