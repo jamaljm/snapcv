@@ -4,6 +4,14 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.10.5] — Fix clipped create-flow tabs
+
+### Fixed
+- On the create page, the first source tab was labeled "Enter linkedIn profile",
+  which was long enough to push the third tab ("Upload resume") off-screen. The
+  three tabs are now short, even, and consistent: **LinkedIn / GitHub / Resume**,
+  so all three fit and are fully visible.
+
 ## [2.10.4] — Activity graph shows last 6 months on mobile
 
 ### Changed
