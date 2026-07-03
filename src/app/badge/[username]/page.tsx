@@ -16,9 +16,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BadgePage({ params }: Props) {
   const { username } = await params;
   const handle = (username || "").trim().toLowerCase();
-  const cardUrl = `https://snapcv.me/api/card/${handle}`;
+  const base = "https://www.snapcv.me";
+  const lightCard = `${base}/api/card/${handle}`;
+  const darkCard = `${base}/api/card/${handle}?theme=dark`;
   const portfolioUrl = `https://${handle}.snapcv.me`;
-  const markdown = `[![My portfolio](${cardUrl})](${portfolioUrl})`;
+  // A <picture> so GitHub swaps the card to match the viewer's light/dark theme.
+  const snippet = `<a href="${portfolioUrl}"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="${darkCard}">
+  <img src="${lightCard}" alt="My SnapCV portfolio" width="460">
+</picture></a>`;
 
   return (
     <main className="min-h-screen bg-white font-urbanist text-neutral-900">
@@ -39,23 +45,41 @@ export default async function BadgePage({ params }: Props) {
           markdown.
         </p>
 
-        {/* Live preview of the card (rendered by the /api/card endpoint). */}
-        <div className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50 p-6">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={`/api/card/${handle}`}
-            alt={`${handle} on SnapCV`}
-            width={460}
-            height={140}
-            className="mx-auto"
-          />
+        {/* Live previews: light and dark, so it's clear the card adapts. */}
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/api/card/${handle}`}
+              alt={`${handle} on SnapCV, light`}
+              width={460}
+              height={140}
+              className="mx-auto w-full max-w-[380px]"
+            />
+            <p className="mt-3 text-center text-xs text-neutral-400">Light mode</p>
+          </div>
+          <div className="rounded-2xl border border-neutral-800 bg-[#0d1117] p-5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/api/card/${handle}?theme=dark`}
+              alt={`${handle} on SnapCV, dark`}
+              width={460}
+              height={140}
+              className="mx-auto w-full max-w-[380px]"
+            />
+            <p className="mt-3 text-center text-xs text-neutral-500">Dark mode</p>
+          </div>
         </div>
 
         <h2 className="mt-10 text-sm font-semibold uppercase tracking-wide text-neutral-500">
           Copy this into your README
         </h2>
+        <p className="mt-2 text-sm text-neutral-600">
+          It automatically switches between light and dark to match whoever is
+          viewing your profile.
+        </p>
         <div className="mt-3">
-          <CopySnippet snippet={markdown} />
+          <CopySnippet snippet={snippet} />
         </div>
 
         <ol className="mt-8 space-y-3 list-decimal pl-5 text-neutral-700">
