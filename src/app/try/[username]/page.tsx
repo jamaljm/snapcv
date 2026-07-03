@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { fetchGithubProfile } from "@/lib/github";
 import Temp_1 from "@/components/design/temp_1";
 import type { UserProfile } from "@/lib/type";
+import ClaimButton from "./claim-button";
 
 type Props = { params: Promise<{ username: string }> };
 
@@ -65,16 +66,16 @@ export default async function TryPreviewPage({ params }: Props) {
       <div className="no-print sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-2.5 text-sm font-urbanist">
           <span className="text-neutral-600">
-            Preview built from{" "}
+            This is a live preview from{" "}
             <span className="font-semibold text-neutral-900">@{username}</span>
-            &apos;s GitHub
+            &apos;s GitHub. Sign up to save it and edit every section.
           </span>
-          <Link
-            href="/login"
+          <ClaimButton
+            username={username}
             className="whitespace-nowrap rounded-lg bg-neutral-900 px-3.5 py-1.5 font-semibold text-white hover:bg-neutral-800"
           >
-            Claim yours, free
-          </Link>
+            Claim &amp; edit yours, free
+          </ClaimButton>
         </div>
         {nudge && (
           <div className="mx-auto max-w-4xl px-4 pb-2 text-xs text-neutral-500 font-urbanist">

@@ -40,6 +40,21 @@ function Page() {
   const [linkedInUrl, setLinkedInUrl] = useState("");
   const [githubUsername, setGithubUsername] = useState("");
   const [linkedInError, setLinkedInError] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<string>("photos");
+
+  // If the user came from a /try preview and signed up to claim it, pre-fill the
+  // GitHub username they previewed and open the GitHub tab, so they don't retype
+  // it. The value survives the OAuth round-trip via localStorage.
+  useEffect(() => {
+    try {
+      const pending = localStorage.getItem("snapcv_prefill_github");
+      if (pending) {
+        setGithubUsername(pending.trim().replace(/^@/, ""));
+        setSelectedTab("github");
+        localStorage.removeItem("snapcv_prefill_github");
+      }
+    } catch {}
+  }, []);
 
   const [isAvailable, setIsAvailable] = useState(false);
   const isError = slugError || isChecking;
@@ -742,6 +757,8 @@ function Page() {
                 variant="light"
                 size="lg"
                 radius="sm"
+                selectedKey={selectedTab}
+                onSelectionChange={(key) => setSelectedTab(String(key))}
               >
                 <Tab
                   className="w-full "

@@ -4,6 +4,18 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.11.0] — Claim-your-preview flow (try → signup → your portfolio)
+
+### Added
+- The `/try` preview now closes the loop into signup. The banner makes it clear
+  it's a live, editable preview ("Sign up to save it and edit every section"),
+  and the CTA ("Claim & edit yours, free") carries the previewed GitHub username
+  through Google sign-in (via localStorage, surviving the OAuth round-trip). On
+  `/create`, that username is pre-filled and the GitHub tab is opened, so a
+  claimed preview becomes the person's real portfolio in one click, with no
+  retyping. This is the conversion path from a shared preview link to an owned
+  portfolio.
+
 ## [2.10.5] — Fix clipped create-flow tabs
 
 ### Fixed
