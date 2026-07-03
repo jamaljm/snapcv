@@ -4,6 +4,17 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.12.3] — README badge: pick light or dark (GitHub can't auto-switch)
+
+### Changed
+- GitHub has removed every reliable way to theme an external README image by the
+  viewer's mode (`<picture>` sources aren't camo-proxied, `#gh-dark-mode-only` is
+  deprecated, and `prefers-color-scheme` is ignored inside `<img>`-embedded SVGs,
+  all verified). So the badge page now offers **two fixed snippets, light and
+  dark** (dark recommended, reads premium on most profiles), instead of a
+  non-working auto-switch. The card endpoint serves a deterministic palette per
+  `?theme=`.
+
 ## [2.12.2] — Dark-mode + sleeker README badge
 
 ### Changed
