@@ -4,6 +4,18 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.12.0] — GitHub README badge (the embed loop)
+
+### Added
+- An **embeddable portfolio card** for GitHub profile READMEs — the growth loop
+  where a portfolio recruits strangers, not just its own viewers. New
+  `/api/card/{username}` returns a clean monochrome SVG (name, role, top skills,
+  `{username}.snapcv.me` + SnapCV mark), cached for GitHub's image proxy. A public
+  `/badge/{username}` page shows a live preview, the one-line copy-paste markdown
+  (`[![...](/api/card/user)](https://user.snapcv.me)`), and setup steps. Same
+  self-referring mechanic that took github-readme-stats to ~80k stars, pointed at
+  SnapCV's funnel. (Next: surface the badge link in the owner's dashboard.)
+
 ## [2.11.0] — Claim-your-preview flow (try → signup → your portfolio)
 
 ### Added
