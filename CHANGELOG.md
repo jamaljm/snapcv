@@ -4,6 +4,16 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.12.2] — Dark-mode + sleeker README badge
+
+### Changed
+- The GitHub README card now has a **dark variant** (`?theme=dark`) that matches
+  GitHub's dark UI (near-black `#0d1117`, inverted avatar, GitHub-dark text), and
+  the badge snippet is now a `<picture>` element so the card **auto-switches to the
+  viewer's light/dark theme**. Refined the card design (rounder corners, tighter
+  type, better spacing) and the badge page now previews both modes. Card image
+  served from the non-redirecting `www` host.
+
 ## [2.12.1] — Surface the GitHub badge in the dashboard
 
 ### Added
