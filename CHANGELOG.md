@@ -4,6 +4,14 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.10.4] — Activity graph shows last 6 months on mobile
+
+### Changed
+- On mobile, the contribution graph now shows the most recent ~6 months (26
+  weeks) instead of the full year, so the cells stay a legible size instead of
+  shrinking to fit 53 weeks. Desktop still shows the full year. A "Last 6 months"
+  caption appears on mobile; the headline count stays the full-year total.
+
 ## [2.10.3] — Activity graph fits mobile (no horizontal scroll)
 
 ### Fixed

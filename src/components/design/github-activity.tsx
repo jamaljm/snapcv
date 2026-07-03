@@ -6,6 +6,10 @@ import { useEffect, useState } from "react";
 // we render nothing at all. Recruiters reward density; we only show real momentum.
 const MIN_CONTRIBUTIONS = 150;
 
+// On mobile, showing the full year makes each cell tiny. Show the most recent
+// ~6 months instead, so cells stay legible and the block still fills the width.
+const MOBILE_WEEKS = 26;
+
 // Canonical GitHub-green scale (light theme) to match the light portfolio.
 const LEVEL_COLORS = ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"];
 
@@ -25,6 +29,7 @@ function Swatch({ level }: { level: number }) {
 
 export default function GithubActivity({ username }: { username?: string }) {
   const [data, setData] = useState<ActivityData | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     if (!username) return;
@@ -40,8 +45,19 @@ export default function GithubActivity({ username }: { username?: string }) {
     };
   }, [username]);
 
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   // Gate: only show a graph strong enough to help — never a barren one.
   if (!data || data.totalContributions < MIN_CONTRIBUTIONS) return null;
+
+  // On mobile, window to the most recent ~6 months for legible cell sizes.
+  const weeks = isMobile ? data.weeks.slice(-MOBILE_WEEKS) : data.weeks;
 
   return (
     <section id="activity" className="p-6">
@@ -55,14 +71,17 @@ export default function GithubActivity({ username }: { username?: string }) {
           </h2>
         </div>
 
-        {/* Bordered card so the grid reads as a deliberate block that matches the
-            portfolio's project cards. The grid columns flex to fill the width and
-            cells stay square (aspect-square), so the full year always fits with no
-            horizontal scroll, on desktop and mobile alike. */}
+        {/* Bordered card matching the portfolio's project cards. Columns flex to
+            fill the width and cells stay square, so the grid always fits with no
+            horizontal scroll: the full year on desktop, the last 6 months (with
+            bigger cells) on mobile. */}
         <div className="mx-auto w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
-          <div className="flex w-full gap-[1.5px] sm:gap-[3px]">
-            {data.weeks.map((week, wi) => (
-              <div key={wi} className="flex flex-1 flex-col gap-[1.5px] sm:gap-[3px]">
+          <div className="flex w-full gap-[2px] sm:gap-[3px]">
+            {weeks.map((week, wi) => (
+              <div
+                key={wi}
+                className="flex flex-1 flex-col gap-[2px] sm:gap-[3px]"
+              >
                 {week.days.map((day, di) => (
                   <span
                     key={di}
@@ -83,12 +102,15 @@ export default function GithubActivity({ username }: { username?: string }) {
               </div>
             ))}
           </div>
-          <div className="mt-3 flex items-center justify-end gap-1.5 text-[11px] text-slate-400">
-            <span>Less</span>
-            {LEVEL_COLORS.map((_, i) => (
-              <Swatch key={i} level={i} />
-            ))}
-            <span>More</span>
+          <div className="mt-3 flex items-center justify-between gap-2 text-[11px] text-slate-400">
+            <span className="sm:hidden">Last 6 months</span>
+            <span className="ml-auto flex items-center gap-1.5">
+              <span>Less</span>
+              {LEVEL_COLORS.map((_, i) => (
+                <Swatch key={i} level={i} />
+              ))}
+              <span>More</span>
+            </span>
           </div>
         </div>
       </div>
