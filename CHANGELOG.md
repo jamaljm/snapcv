@@ -4,6 +4,14 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.12.1] — Surface the GitHub badge in the dashboard
+
+### Added
+- A "GitHub badge" link in the editor dashboard nav (next to the portfolio URL)
+  pointing to `/badge/{username}`, so every owner discovers the README card and
+  can plant it on their GitHub profile. Closes the discovery gap that kept the
+  embed loop from firing.
+
 ## [2.12.0] — GitHub README badge (the embed loop)
 
 ### Added
