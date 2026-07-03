@@ -4,6 +4,14 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.10.3] — Activity graph fits mobile (no horizontal scroll)
+
+### Fixed
+- The contribution graph used fixed-pixel cells, so on mobile you had to scroll
+  sideways to see the full year. The grid now scales to its container (week
+  columns flex to fill the width, cells stay square via `aspect-square`), so the
+  entire year fits with no horizontal scroll on any screen, phone to desktop.
+
 ## [2.10.2] — Fix: activity graph hidden when GitHub username field is empty
 
 ### Fixed
