@@ -4,6 +4,14 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.13.0] — Website field in Social Links
+
+### Added
+- A **Website** field in the editor's Social Links (below Dribbble), stored as a
+  `Website` profile. Renders on the portfolio with a neutral globe icon (new
+  `/icon/website.svg`), which is now also the default icon for any custom network
+  (previously the Dribbble icon). Also fixed the Dribbble icon key casing.
+
 ## [2.12.3] — README badge: pick light or dark (GitHub can't auto-switch)
 
 ### Changed
