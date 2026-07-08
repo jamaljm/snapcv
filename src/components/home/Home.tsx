@@ -69,8 +69,9 @@ const socialMediaImages: { [key: string]: string } = {
   LinkedIn: "/icon/linkedin.png",
   X: "/icon/twitter.png",
   Youtube: "/icon/youtube.png",
-  dribbble: "/icon/dribbble.png",
-  default: "/icon/dribbble.png",
+  Dribbble: "/icon/dribbble.png",
+  Website: "/icon/website.svg",
+  default: "/icon/website.svg",
 };
 
 export default function Home() {
@@ -3772,6 +3773,33 @@ export default function Home() {
                     src="/icon/dribbble.png"
                     className="w-5 h-5 opacity-70"
                     alt="Dribbble"
+                  />
+                }
+                classNames={{
+                  inputWrapper: "border-1 shadow-none",
+                }}
+              />
+            </div>
+            <div className="flex sm:flex-row flex-col gap-2 sm:gap-0 w-full justify-between text-sm items-start">
+              <p className="pt-0.5">Website</p>
+              <Input
+                type="text"
+                variant="bordered"
+                placeholder="https://yoursite.com"
+                value={
+                  user.basics.profiles.find(
+                    (profile) => profile.network === "Website"
+                  )?.url || ""
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleSocialProfileChange("Website", e.target.value, setUser)
+                }
+                className="max-w-xs text-gray-600"
+                startContent={
+                  <img
+                    src="/icon/website.svg"
+                    className="w-5 h-5 opacity-70"
+                    alt="Website"
                   />
                 }
                 classNames={{

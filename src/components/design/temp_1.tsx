@@ -17,8 +17,9 @@ const socialMediaImages: { [key: string]: string } = {
   LinkedIn: "/icon/linkedin.png",
   X: "/icon/twitter.png",
   Youtube: "/icon/youtube.png",
-  dribbble: "/icon/dribbble.png",
-  default: "/icon/dribbble.png", // Default icon URL
+  Dribbble: "/icon/dribbble.png",
+  Website: "/icon/website.svg",
+  default: "/icon/website.svg", // Default: a neutral globe for any custom link
 };
 
 export default function page({ user }: { user: UserProfile }) {
