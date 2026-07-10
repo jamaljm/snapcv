@@ -1,16 +1,12 @@
 import { supabase } from "@/utils/supabase/supabase_service";
 
-// Embeddable SVG portfolio card for a user's GitHub profile README (the viral
-// loop: the copied markdown carries the snapcv URL, and the card renders on the
-// highest-intent dev surface there is). Served as image/svg+xml, cached for
-// GitHub's image proxy / CDNs.
-//
-// Theme: ?theme=dark serves the dark palette, otherwise light. GitHub has removed
-// every way to auto-switch an EXTERNAL image by the viewer's theme (<picture>
-// sources aren't camo-proxied, #gh-dark-mode-only is deprecated, and
-// prefers-color-scheme is ignored inside <img>-embedded SVGs), so the user picks a
-// fixed variant on the badge page. The dark card is the default recommendation:
-// it reads as premium on a dark README and intentional on a light one.
+// Embeddable SVG cards for a GitHub profile README (the viral loop: the copied
+// markdown carries the snapcv URL, and the card renders on the highest-intent dev
+// surface there is). Two styles:
+//   default          a clean monochrome portfolio card (?theme=dark|light)
+//   ?style=terminal  a neofetch/terminal-style stats card (dark, monospace)
+// GitHub can't auto-switch external images by viewer theme, so the badge page lets
+// the user pick a fixed variant.
 
 export const revalidate = 3600;
 
@@ -66,7 +62,6 @@ function clamp(s: string, max: number): string {
   return t.length > max ? `${t.slice(0, max - 1).trimEnd()}…` : t;
 }
 
-// CSS rules mapping each class to a palette's colors.
 function rules(p: Palette): string {
   return `.cbg{fill:${p.card};stroke:${p.border}}.cav{fill:${p.avatarBg}}.cai{fill:${p.avatarText}}.cnm{fill:${p.name}}.cro{fill:${p.role}}.csk{fill:${p.skills}}.cdv{stroke:${p.divider}}.cdm{fill:${p.domain}}.cbr{fill:${p.brand}}`;
 }
@@ -114,13 +109,165 @@ function buildCard(
 </svg>`;
 }
 
+// ---- Terminal / neofetch style ----
+
+async function fetchContribTotal(handle: string): Promise<number> {
+  try {
+    const res = await fetch(
+      `https://github-contributions-api.jogruber.de/v4/${encodeURIComponent(
+        handle
+      )}?y=last`,
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return 0;
+    const d = await res.json();
+    return typeof d?.total?.lastYear === "number" ? d.total.lastYear : 0;
+  } catch {
+    return 0;
+  }
+}
+
+const T = {
+  bg: "#0d1117",
+  border: "#21262d",
+  title: "#8b949e",
+  name: "#e6edf3",
+  dim: "#6e7681",
+  dots: "#30363d",
+  label: "#e3b341",
+  text: "#c9d1d9",
+  link: "#79c0ff",
+  green: "#3fb950",
+  head: "#8b949e",
+};
+
+function tRow(y: number, label: string, value: string, color: string): string {
+  const dots = ".".repeat(Math.max(2, 14 - label.length));
+  return `<text x="34" y="${y}" class="m" font-size="13"><tspan fill="${
+    T.label
+  }">${esc(label)}</tspan><tspan fill="${T.dots}"> ${dots}</tspan><tspan fill="${color}"> ${esc(
+    value
+  )}</tspan></text>`;
+}
+
+function tHead(y: number, label: string): string {
+  return `<text x="34" y="${y}" class="m" font-size="13" fill="${
+    T.head
+  }">── ${esc(label)} ${"─".repeat(Math.max(2, 40 - label.length))}</text>`;
+}
+
+type TData = {
+  name: string;
+  handle: string;
+  label: string;
+  loc: string;
+  langs: string;
+  project: string;
+  contrib: number;
+  email: string;
+  github: string;
+  linkedin: string;
+};
+
+function buildTerminal(d: TData): string {
+  const top: [string, string, string][] = [
+    ["Portfolio", `${d.handle}.snapcv.me`, T.link],
+  ];
+  if (d.label) top.push(["Role", clamp(d.label, 40), T.text]);
+  if (d.loc) top.push(["Location", clamp(d.loc, 40), T.text]);
+  if (d.langs) top.push(["Languages", clamp(d.langs, 42), T.text]);
+  if (d.project) top.push(["Focus", clamp(d.project, 40), T.text]);
+  if (d.contrib > 0)
+    top.push(["Contributions", `${d.contrib.toLocaleString()} last year`, T.green]);
+
+  const contact: [string, string, string][] = [];
+  if (d.email) contact.push(["Email", clamp(d.email, 40), T.link]);
+  if (d.github) contact.push(["GitHub", clamp(d.github, 40), T.link]);
+  if (d.linkedin) contact.push(["LinkedIn", clamp(d.linkedin, 40), T.link]);
+
+  let y = 116;
+  const step = 25;
+  let body = "";
+  for (const [l, v, c] of top) {
+    body += tRow(y, l, v, c);
+    y += step;
+  }
+  if (contact.length) {
+    y += 8;
+    body += tHead(y, "contact");
+    y += step;
+    for (const [l, v, c] of contact) {
+      body += tRow(y, l, v, c);
+      y += step;
+    }
+  }
+  const height = y + 22;
+  const W = 640;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${height}" viewBox="0 0 ${W} ${height}" role="img" aria-label="${esc(
+    d.name
+  )} on SnapCV">
+  <style>.m{font-family:ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace}</style>
+  <rect x="0.75" y="0.75" width="${W - 1.5}" height="${
+    height - 1.5
+  }" rx="12" fill="${T.bg}" stroke="${T.border}" stroke-width="1.5"/>
+  <circle cx="26" cy="28" r="5.5" fill="#ff5f56"/>
+  <circle cx="44" cy="28" r="5.5" fill="#ffbd2e"/>
+  <circle cx="62" cy="28" r="5.5" fill="#27c93f"/>
+  <text x="86" y="32" class="m" font-size="12.5" fill="${T.title}">${esc(
+    d.handle
+  )} — snapcv</text>
+  <line x1="0" y1="50" x2="${W}" y2="50" stroke="${T.border}"/>
+  <text x="34" y="84" class="m" font-size="18" font-weight="700" fill="${
+    T.name
+  }">${esc(clamp(d.name, 28))}<tspan fill="${T.dim}" font-weight="400"> @snapcv</tspan></text>
+  ${body}
+  <text x="${W - 34}" y="${height - 18}" class="m" font-size="11.5" fill="${
+    T.dim
+  }" text-anchor="end">made with snapcv.me</text>
+</svg>`;
+}
+
+function ghHandleFrom(
+  profiles: { network?: string; url?: string; username?: string }[],
+  fallback: string
+): string {
+  const gh = (profiles || []).find(
+    (p) => p.network?.toLowerCase() === "github" || /github\.com\//i.test(p.url || "")
+  );
+  return (
+    gh?.username?.trim() ||
+    gh?.url?.match(/github\.com\/([A-Za-z0-9-]+)/i)?.[1] ||
+    fallback
+  ).replace(/^@/, "");
+}
+
+function linkedinHandleFrom(
+  profiles: { network?: string; url?: string; username?: string }[]
+): string {
+  const li = (profiles || []).find(
+    (p) =>
+      p.network?.toLowerCase() === "linkedin" || /linkedin\.com/i.test(p.url || "")
+  );
+  if (!li) return "";
+  return (
+    li.username?.trim() ||
+    li.url
+      ?.replace(/^https?:\/\/(www\.)?linkedin\.com\/(in\/)?/i, "")
+      .replace(/\/+$/, "") ||
+    ""
+  );
+}
+
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ username: string }> }
 ) {
   const { username } = await params;
   const handle = (username || "").trim().toLowerCase();
-  const themeParam = new URL(req.url).searchParams.get("theme");
+  const url = new URL(req.url);
+  const themeParam = url.searchParams.get("theme");
+  const style = url.searchParams.get("style");
   const themeStyle = themeParam === "dark" ? rules(DARK) : rules(LIGHT);
 
   if (!/^[a-z0-9-]{1,63}$/.test(handle)) {
@@ -136,6 +283,34 @@ export async function GET(
 
     const r = data?.resumeJson;
     if (!r?.basics?.name) return svgResponse(EMPTY_SVG, 300);
+
+    if (style === "terminal") {
+      const profiles = r.basics.profiles || [];
+      const github = ghHandleFrom(profiles, handle);
+      const contrib = await fetchContribTotal(github);
+      const loc = [r.basics.location?.city, r.basics.location?.countryCode]
+        .filter(Boolean)
+        .join(", ");
+      const langs = (Array.isArray(r.basics.skills) ? r.basics.skills : [])
+        .filter((s: unknown) => typeof s === "string" && s.trim())
+        .slice(0, 6)
+        .join(", ");
+      return svgResponse(
+        buildTerminal({
+          name: r.basics.name,
+          handle,
+          label: r.basics.label || "Developer",
+          loc,
+          langs,
+          project: r.projects?.projects?.[0]?.title || "",
+          contrib,
+          email: r.basics.email || "",
+          github,
+          linkedin: linkedinHandleFrom(profiles),
+        }),
+        3600
+      );
+    }
 
     const name = clamp(r.basics.name, 30);
     const label = clamp(r.basics.label || "Developer", 42);
