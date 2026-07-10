@@ -22,6 +22,7 @@ export default async function BadgePage({ params }: Props) {
   // we give both and let the person choose. Dark is the default recommendation.
   const darkSnippet = `[![My portfolio](${base}/api/card/${handle}?theme=dark)](${portfolioUrl})`;
   const lightSnippet = `[![My portfolio](${base}/api/card/${handle})](${portfolioUrl})`;
+  const terminalSnippet = `[![My portfolio](${base}/api/card/${handle}?style=terminal)](${portfolioUrl})`;
 
   return (
     <main className="min-h-screen bg-white font-urbanist text-neutral-900">
@@ -84,6 +85,28 @@ export default async function BadgePage({ params }: Props) {
         <div className="mt-4">
           <p className="mb-1.5 text-xs font-semibold text-neutral-500">Light</p>
           <CopySnippet snippet={lightSnippet} />
+        </div>
+
+        {/* Terminal / neofetch style: a bolder, more shareable card. */}
+        <div className="mt-10">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
+            Or go terminal
+          </h2>
+          <p className="mt-2 text-sm text-neutral-600">
+            A neofetch-style card with your live GitHub contribution count. Great
+            for a striking profile.
+          </p>
+          <div className="mt-4 rounded-2xl border border-neutral-800 bg-[#010409] p-5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/api/card/${handle}?style=terminal`}
+              alt={`${handle} terminal card`}
+              className="mx-auto w-full max-w-[560px]"
+            />
+          </div>
+          <div className="mt-4">
+            <CopySnippet snippet={terminalSnippet} />
+          </div>
         </div>
 
         <ol className="mt-8 space-y-3 list-decimal pl-5 text-neutral-700">
