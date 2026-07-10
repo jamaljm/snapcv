@@ -4,6 +4,17 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.14.0] — Terminal / neofetch GitHub card
+
+### Added
+- A **terminal-style card** (`/api/card/{username}?style=terminal`) — a
+  neofetch-inspired dark card (traffic-light title bar, monospace, gold labels
+  with dotted leaders) showing portfolio, role, location, languages, focus, live
+  contribution count (tokenless), and contact. A far more shareable artifact for a
+  GitHub profile README than a plain badge, and a stronger hook for the
+  GitHub-native growth loop. Offered as a third option on the `/badge/{username}`
+  page alongside the light/dark cards.
+
 ## [2.13.0] — Website field in Social Links
 
 ### Added
