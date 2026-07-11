@@ -4,6 +4,16 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.15.0] — Terminal card: ASCII portrait + live GitHub stats
+
+### Added
+- The terminal card (`?style=terminal`) now renders an **ASCII-art portrait** of
+  the avatar (generated with `sharp`, the neofetch signature) in a left column,
+  and a **GitHub Stats** section with live **Repos, Stars, Followers** (public
+  REST, unauthenticated) alongside the contribution count. Both degrade gracefully
+  (no avatar → single-column; stats fail → those rows drop), so the card always
+  renders. Relabeled "Languages" → "Stack".
+
 ## [2.14.0] — Terminal / neofetch GitHub card
 
 ### Added
