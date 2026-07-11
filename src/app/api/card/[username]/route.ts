@@ -139,21 +139,98 @@ const T = {
   link: "#79c0ff",
   green: "#3fb950",
   head: "#8b949e",
+  ascii: "#7ee787",
 };
 
-function tRow(y: number, label: string, value: string, color: string): string {
-  const dots = ".".repeat(Math.max(2, 14 - label.length));
-  return `<text x="34" y="${y}" class="m" font-size="13"><tspan fill="${
+function tRow(
+  x: number,
+  y: number,
+  label: string,
+  value: string,
+  color: string,
+  padTo = 14
+): string {
+  const dots = ".".repeat(Math.max(2, padTo - label.length));
+  return `<text x="${x}" y="${y}" class="m" font-size="13"><tspan fill="${
     T.label
   }">${esc(label)}</tspan><tspan fill="${T.dots}"> ${dots}</tspan><tspan fill="${color}"> ${esc(
     value
   )}</tspan></text>`;
 }
 
-function tHead(y: number, label: string): string {
-  return `<text x="34" y="${y}" class="m" font-size="13" fill="${
+function tHead(x: number, y: number, label: string, width = 40): string {
+  return `<text x="${x}" y="${y}" class="m" font-size="13" fill="${
     T.head
-  }">── ${esc(label)} ${"─".repeat(Math.max(2, 40 - label.length))}</text>`;
+  }">── ${esc(label)} ${"─".repeat(Math.max(2, width - label.length))}</text>`;
+}
+
+// ASCII-art portrait from the avatar (the neofetch signature). Uses sharp lazily
+// so a decode failure never breaks the other card styles; returns [] on any error.
+async function asciiAvatar(url: string): Promise<string[]> {
+  if (!url) return [];
+  try {
+    const sharp = (await import("sharp")).default;
+    const res = await fetch(url, { next: { revalidate: 86400 } });
+    if (!res.ok) return [];
+    const buf = Buffer.from(await res.arrayBuffer());
+    const cols = 22;
+    const rows = 11;
+    const { data } = await sharp(buf)
+      .resize(cols, rows, { fit: "cover" })
+      .grayscale()
+      .normalise()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const ramp = " .:-=+*#%@";
+    const lines: string[] = [];
+    for (let yy = 0; yy < rows; yy++) {
+      let line = "";
+      for (let xx = 0; xx < cols; xx++) {
+        const v = data[yy * cols + xx] ?? 0;
+        line += ramp[Math.min(ramp.length - 1, Math.floor((v / 255) * ramp.length))];
+      }
+      lines.push(line.replace(/\s+$/, ""));
+    }
+    return lines;
+  } catch {
+    return [];
+  }
+}
+
+// Public GitHub stats (repos, stars, followers) via unauthenticated REST. Cached,
+// so the 60/hr shared-IP limit is not a problem. Graceful zeros on any failure.
+async function fetchGithubStats(
+  handle: string
+): Promise<{ repos: number; stars: number; followers: number }> {
+  try {
+    const h = { Accept: "application/vnd.github+json" };
+    const [u, rp] = await Promise.all([
+      fetch(`https://api.github.com/users/${encodeURIComponent(handle)}`, {
+        headers: h,
+        next: { revalidate: 3600 },
+      }),
+      fetch(
+        `https://api.github.com/users/${encodeURIComponent(handle)}/repos?per_page=100`,
+        { headers: h, next: { revalidate: 3600 } }
+      ),
+    ]);
+    const user = u.ok ? await u.json() : {};
+    const repos = rp.ok ? await rp.json() : [];
+    const stars = Array.isArray(repos)
+      ? repos.reduce(
+          (s: number, r: { stargazers_count?: number }) =>
+            s + (r.stargazers_count || 0),
+          0
+        )
+      : 0;
+    return {
+      repos: user.public_repos || 0,
+      followers: user.followers || 0,
+      stars,
+    };
+  } catch {
+    return { repos: 0, stars: 0, followers: 0 };
+  }
 }
 
 type TData = {
@@ -169,40 +246,81 @@ type TData = {
   linkedin: string;
 };
 
-function buildTerminal(d: TData): string {
-  const top: [string, string, string][] = [
+function buildTerminal(
+  d: TData,
+  ascii: string[],
+  stats: { repos: number; stars: number; followers: number }
+): string {
+  const hasArt = ascii.length > 0;
+  const W = hasArt ? 700 : 560;
+  const RX = hasArt ? 208 : 34;
+  const pad = 14;
+
+  const info: [string, string, string][] = [
     ["Portfolio", `${d.handle}.snapcv.me`, T.link],
   ];
-  if (d.label) top.push(["Role", clamp(d.label, 40), T.text]);
-  if (d.loc) top.push(["Location", clamp(d.loc, 40), T.text]);
-  if (d.langs) top.push(["Languages", clamp(d.langs, 42), T.text]);
-  if (d.project) top.push(["Focus", clamp(d.project, 40), T.text]);
+  if (d.label) info.push(["Role", clamp(d.label, 34), T.text]);
+  if (d.loc) info.push(["Location", clamp(d.loc, 34), T.text]);
+  if (d.langs) info.push(["Stack", clamp(d.langs, 36), T.text]);
+  if (d.project) info.push(["Focus", clamp(d.project, 34), T.text]);
+
+  const ghStats: [string, string, string][] = [];
+  if (stats.repos) ghStats.push(["Repos", String(stats.repos), T.green]);
+  if (stats.stars) ghStats.push(["Stars", String(stats.stars), T.green]);
+  if (stats.followers)
+    ghStats.push(["Followers", String(stats.followers), T.green]);
   if (d.contrib > 0)
-    top.push(["Contributions", `${d.contrib.toLocaleString()} last year`, T.green]);
+    ghStats.push(["Contributions", `${d.contrib.toLocaleString()} last yr`, T.green]);
 
   const contact: [string, string, string][] = [];
-  if (d.email) contact.push(["Email", clamp(d.email, 40), T.link]);
-  if (d.github) contact.push(["GitHub", clamp(d.github, 40), T.link]);
-  if (d.linkedin) contact.push(["LinkedIn", clamp(d.linkedin, 40), T.link]);
+  if (d.email) contact.push(["Email", clamp(d.email, 34), T.link]);
+  if (d.github) contact.push(["GitHub", clamp(d.github, 34), T.link]);
+  if (d.linkedin) contact.push(["LinkedIn", clamp(d.linkedin, 34), T.link]);
 
-  let y = 116;
-  const step = 25;
+  const headW = hasArt ? 34 : 40;
+  let y = 120;
+  const step = 23;
   let body = "";
-  for (const [l, v, c] of top) {
-    body += tRow(y, l, v, c);
+  for (const [l, v, c] of info) {
+    body += tRow(RX, y, l, v, c, pad);
     y += step;
   }
-  if (contact.length) {
-    y += 8;
-    body += tHead(y, "contact");
+  if (ghStats.length) {
+    y += 7;
+    body += tHead(RX, y, "github stats", headW);
     y += step;
-    for (const [l, v, c] of contact) {
-      body += tRow(y, l, v, c);
+    for (const [l, v, c] of ghStats) {
+      body += tRow(RX, y, l, v, c, pad);
       y += step;
     }
   }
-  const height = y + 22;
-  const W = 640;
+  if (contact.length) {
+    y += 7;
+    body += tHead(RX, y, "contact", headW);
+    y += step;
+    for (const [l, v, c] of contact) {
+      body += tRow(RX, y, l, v, c, pad);
+      y += step;
+    }
+  }
+
+  let art = "";
+  if (hasArt) {
+    const ay0 = 80;
+    const lh = 9.6;
+    art = ascii
+      .map(
+        (line, i) =>
+          `<text x="26" y="${(ay0 + i * lh).toFixed(
+            1
+          )}" class="m" font-size="8.5" fill="${
+            T.ascii
+          }" xml:space="preserve">${esc(line)}</text>`
+      )
+      .join("");
+    y = Math.max(y, ay0 + ascii.length * lh + 24);
+  }
+  const height = Math.round(y + 6);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${height}" viewBox="0 0 ${W} ${height}" role="img" aria-label="${esc(
     d.name
@@ -218,11 +336,13 @@ function buildTerminal(d: TData): string {
     d.handle
   )} — snapcv</text>
   <line x1="0" y1="50" x2="${W}" y2="50" stroke="${T.border}"/>
-  <text x="34" y="84" class="m" font-size="18" font-weight="700" fill="${
+  ${art}
+  <text x="${RX}" y="90" class="m" font-size="18" font-weight="700" fill="${
     T.name
-  }">${esc(clamp(d.name, 28))}<tspan fill="${T.dim}" font-weight="400"> @snapcv</tspan></text>
+  }">${esc(clamp(d.name, 26))}<tspan fill="${T.dim}" font-weight="400"> @snapcv</tspan></text>
+  <line x1="${RX}" y1="104" x2="${W - 24}" y2="104" stroke="${T.border}"/>
   ${body}
-  <text x="${W - 34}" y="${height - 18}" class="m" font-size="11.5" fill="${
+  <text x="${W - 26}" y="${height - 16}" class="m" font-size="11" fill="${
     T.dim
   }" text-anchor="end">made with snapcv.me</text>
 </svg>`;
@@ -287,7 +407,11 @@ export async function GET(
     if (style === "terminal") {
       const profiles = r.basics.profiles || [];
       const github = ghHandleFrom(profiles, handle);
-      const contrib = await fetchContribTotal(github);
+      const [contrib, stats, ascii] = await Promise.all([
+        fetchContribTotal(github),
+        fetchGithubStats(github),
+        asciiAvatar(r.basics.avatarUrl || r.meta?.avatarUrl || ""),
+      ]);
       const loc = [r.basics.location?.city, r.basics.location?.countryCode]
         .filter(Boolean)
         .join(", ");
@@ -296,18 +420,22 @@ export async function GET(
         .slice(0, 6)
         .join(", ");
       return svgResponse(
-        buildTerminal({
-          name: r.basics.name,
-          handle,
-          label: r.basics.label || "Developer",
-          loc,
-          langs,
-          project: r.projects?.projects?.[0]?.title || "",
-          contrib,
-          email: r.basics.email || "",
-          github,
-          linkedin: linkedinHandleFrom(profiles),
-        }),
+        buildTerminal(
+          {
+            name: r.basics.name,
+            handle,
+            label: r.basics.label || "Developer",
+            loc,
+            langs,
+            project: r.projects?.projects?.[0]?.title || "",
+            contrib,
+            email: r.basics.email || "",
+            github,
+            linkedin: linkedinHandleFrom(profiles),
+          },
+          ascii,
+          stats
+        ),
         3600
       );
     }
