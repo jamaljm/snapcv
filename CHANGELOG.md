@@ -4,6 +4,14 @@ All notable changes to SnapCV are documented here. This project follows
 [Semantic Versioning](https://semver.org/). Features land on `staging` and are
 released to production when `staging` is merged to `main`.
 
+## [2.15.1] — Remove ASCII portrait from terminal card
+
+### Changed
+- Dropped the ASCII-art portrait from the terminal card — at readable sizes it was
+  too low-res to look good. The card is back to a clean single column, keeping the
+  live GitHub Stats section (repos, stars, followers, contributions). Also removed
+  the `sharp` avatar decoding.
+
 ## [2.15.0] — Terminal card: ASCII portrait + live GitHub stats
 
 ### Added
