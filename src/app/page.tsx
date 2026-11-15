@@ -6,6 +6,7 @@ import {
   getPortfolio,
   getSubdomain,
   generateJsonLd,
+  serializeJsonLd,
 } from "@/lib/portfolio";
 
 export default async function IndexPage() {
@@ -66,7 +67,7 @@ export default async function IndexPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <Temp_1 user={result.data} />
     </>

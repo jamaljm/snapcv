@@ -16,6 +16,7 @@ import { Tabs, Tab } from "@nextui-org/react";
 import AnimatedCircularProgressBar from "@/components/magicui/animated-circular-progress-bar";
 import withAuth from "@/utils/authProtect";
 import { toast } from "@/components/ui/use-toast";
+import { PROFESSIONS } from "@/lib/profession";
 interface User {
   userId: string;
   email: string;
@@ -462,11 +463,17 @@ function Page() {
 
         frame();
         setValue(90);
+        // The backend returns the inferred profession at the top level;
+        // it belongs in meta. Older backends don't send it.
+        const { profession, ...resumeResult } = result;
         const extendedResult = await {
           userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
           resumeJson: {
             meta: {
               ...result.meta,
+              ...(profession && PROFESSIONS.some((p) => p.value === profession)
+                ? { profession }
+                : {}),
               userName: shopSlug.toLowerCase().replace(/\s+/g, ""),
               buttonText: "Hire me",
               resumeTheme: "professional",
@@ -479,7 +486,7 @@ function Page() {
               email: userData?.user.email,
               avatarUrl: userData?.user.user_metadata.avatar_url,
             },
-            ...result,
+            ...resumeResult,
           },
           metaJson: {
             userName: shopSlug.toLowerCase().replace(/\s+/g, ""),

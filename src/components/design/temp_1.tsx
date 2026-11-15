@@ -11,6 +11,8 @@ import { tailwindColors100 } from "@/lib/utils";
 import { AwardCard } from "@/components/award-card";
 import MadeWithSnapcv from "@/components/MadeWithSnapcv";
 import GithubActivity from "@/components/design/github-activity";
+import PracticeSections from "@/components/design/practice-sections";
+import { isPractitioner } from "@/lib/profession";
 
 const socialMediaImages: { [key: string]: string } = {
   GitHub: "/icon/github.png",
@@ -38,6 +40,11 @@ export default function page({ user }: { user: UserProfile }) {
     githubProfile?.url?.match(/github\.com\/([A-Za-z0-9-]+)/i)?.[1] ||
     ""
   ).replace(/^@/, "");
+  // Practitioners with a booking link send the main button there instead of
+  // to email.
+  const bookingUrl = isPractitioner(user)
+    ? user.practice?.bookingUrl?.trim()
+    : "";
 
   return (
     <>
@@ -103,11 +110,13 @@ export default function page({ user }: { user: UserProfile }) {
             </Link>
             <Link
               className="bg-gradient-to-r from-slate-900/90 to-slate-800 text-white flex-1 text-sm justify-center flex items-center rounded-xl font-medium py-2 px-4 "
-              href={`mailto:${user.basics.email}`}
+              href={bookingUrl || `mailto:${user.basics.email}`}
+              target={bookingUrl ? "_blank" : undefined}
             >
-              {user.meta.buttonText}
+              {user.meta.buttonText || (bookingUrl ? "Book a consultation" : "Contact")}
             </Link>
           </section>
+          <PracticeSections user={user} />
           {user.work.length > 0 && user.work[0].name !== "" && (
             <section id="work" className="p-6">
               <div className="flex min-h-0 flex-col gap-y-3">

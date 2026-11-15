@@ -169,7 +169,31 @@ ${text}
             name: "",
           },
         ],
+        profession: "",
+        practice: {
+          name: "",
+          registrationNumber: "",
+          credentials: [""],
+          specialities: [""],
+          services: [
+            {
+              name: "",
+              description: "",
+              duration: "",
+              price: "",
+              currency: "",
+            },
+          ],
+          consultationModes: [],
+          bookingUrl: "",
+          address: "",
+          serviceArea: "",
+        },
       }
+
+### Profession and practice rules:
+- "profession" must be exactly one of: "developer", "designer", "dietician", "nutritionist", "therapist", "physiotherapist", "coach", "doctor", "lawyer", "consultant", "other". Pick the one that best matches the person's current role; use "developer" for software engineers.
+- Fill "practice" only for service professionals (not developer/designer) and only with facts stated in the text: their clinic/firm name, licence or registration number, professional credentials (e.g. "Registered Dietitian"), conditions or areas they work with, services they offer, and how they consult ("in_person", "online", "home_visit"). Never invent prices, registration numbers or services.
 
 Please format your response according to this JSON schema.return this full json object even if no data is found.
 `;

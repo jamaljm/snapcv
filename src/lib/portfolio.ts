@@ -1,4 +1,10 @@
 import type { UserProfile } from "@/lib/type";
+import {
+  getProfession,
+  hasPracticeContent,
+  isPractitioner,
+  practiceSchemaType,
+} from "@/lib/profession";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -106,11 +112,103 @@ export function generateJsonLd(user: UserProfile) {
     knowsAbout: orUndef([...new Set(knowsAbout)]),
   };
 
-  return {
-    "@context": "https://schema.org",
+  const profilePage = {
     "@type": "ProfilePage",
     "@id": canonical,
     url: canonical,
     mainEntity: person,
   };
+
+  const practice = user.practice;
+  if (!isPractitioner(user) || !hasPracticeContent(practice)) {
+    return { "@context": "https://schema.org", ...profilePage };
+  }
+
+  // Service professionals: describe what they offer, their credentials and
+  // their practice, so answer engines can match "dietician for PCOS in Kochi".
+  const services = (practice?.services || []).filter((s) => s.name?.trim());
+  const credentials = (practice?.credentials || [])
+    .map((c) => c.trim())
+    .filter(Boolean);
+  const specialities = (practice?.specialities || [])
+    .map((c) => c.trim())
+    .filter(Boolean);
+  const faqs = (practice?.faqs || []).filter(
+    (f) => f.question?.trim() && f.answer?.trim()
+  );
+
+  Object.assign(person, {
+    knowsAbout: orUndef([...new Set([...knowsAbout, ...specialities])]),
+    hasCredential: orUndef(
+      credentials.map((name) => ({
+        "@type": "EducationalOccupationalCredential",
+        name,
+      }))
+    ),
+    makesOffer: orUndef(
+      services.map((s) => {
+        const price = Number((s.price || "").replace(/,/g, ""));
+        return {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: s.name,
+            description: s.description || undefined,
+          },
+          price: s.price && !Number.isNaN(price) ? price : undefined,
+          priceCurrency: s.currency || undefined,
+        };
+      })
+    ),
+  });
+
+  const graph: Record<string, unknown>[] = [profilePage];
+
+  if (practice?.name?.trim()) {
+    const practiceNode = {
+      "@type": practiceSchemaType(getProfession(user)),
+      "@id": `${canonical}/#practice`,
+      name: practice.name,
+      url: canonical,
+      image: user.basics.avatarUrl || user.meta.avatarUrl || undefined,
+      description: user.basics.about || undefined,
+      telephone: user.basics.phone || undefined,
+      email: user.basics.email || undefined,
+      address: practice.address?.trim()
+        ? {
+            "@type": "PostalAddress",
+            streetAddress: practice.address,
+            addressLocality: user.basics.location?.city || undefined,
+            addressCountry: user.basics.location?.countryCode || undefined,
+          }
+        : undefined,
+      areaServed: practice.serviceArea?.trim() || undefined,
+      founder: { "@id": `${canonical}/#person` },
+    };
+    Object.assign(person, { worksFor: { "@id": `${canonical}/#practice` } });
+    graph.push(practiceNode);
+  }
+
+  if (faqs.length) {
+    graph.push({
+      "@type": "FAQPage",
+      "@id": `${canonical}/#faq`,
+      url: canonical,
+      mainEntity: faqs.map((f) => ({
+        "@type": "Question",
+        name: f.question,
+        acceptedAnswer: { "@type": "Answer", text: f.answer },
+      })),
+    });
+  }
+
+  return { "@context": "https://schema.org", "@graph": graph };
+}
+
+/**
+ * Serialize JSON-LD for a <script> tag. Escapes "<" so user-written text
+ * (about, FAQs) can never close the script element.
+ */
+export function serializeJsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
 }

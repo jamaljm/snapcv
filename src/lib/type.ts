@@ -102,6 +102,56 @@ export type Meta = {
   // Availability / "open to work" badge (all optional for backward compat).
   openToWork?: boolean;
   availabilityLabel?: string;
+  // What the person does. Drives which editor sections and portfolio blocks
+  // show. Missing on older profiles, which are treated as "developer".
+  profession?: Profession;
+};
+
+// Professions SnapCV tailors profiles for. Keep in sync with PROFESSIONS in
+// src/lib/profession.ts and the backend prompt (backend/openai.js).
+export type Profession =
+  | "developer"
+  | "designer"
+  | "dietician"
+  | "nutritionist"
+  | "therapist"
+  | "physiotherapist"
+  | "coach"
+  | "doctor"
+  | "lawyer"
+  | "consultant"
+  | "other";
+
+export type ConsultationMode = "in_person" | "online" | "home_visit";
+
+// A service a practitioner offers, e.g. "Initial consultation, 45 min, ₹1500".
+export type Service = {
+  name: string;
+  description: string;
+  duration?: string;
+  // Free text so practitioners can write "1500" or "From 1500"; shown as-is.
+  price?: string;
+  currency?: string; // ISO 4217, e.g. "INR", "USD"
+};
+
+export type Faq = {
+  question: string;
+  answer: string;
+};
+
+// Practice details for service professionals (dieticians, therapists,
+// lawyers, ...). Every field is optional: older profiles have no practice.
+export type Practice = {
+  name?: string; // clinic / practice / firm name
+  registrationNumber?: string; // licence or council registration
+  credentials?: string[]; // e.g. "Registered Dietitian (IDA)"
+  specialities?: string[]; // conditions or areas served, e.g. "PCOS", "Diabetes"
+  services?: Service[];
+  consultationModes?: ConsultationMode[];
+  bookingUrl?: string;
+  address?: string;
+  serviceArea?: string; // e.g. "Online across India"
+  faqs?: Faq[];
 };
 
 // Location type used in basics
@@ -274,6 +324,8 @@ export interface UserProfile {
   languages?: Language[];
   interests: Interest[];
   references: Reference[];
+  // Service professionals only; see Practice.
+  practice?: Practice;
 }
 
 export type UserMetaData = {

@@ -44,6 +44,7 @@ import { tailwindColors } from "@/lib/utils";
 import { initialUserState } from "@/lib/utils";
 import ResumeTemplate from "../ResumeTemplate";
 import { SortableList, SortableItem, GripIcon } from "./Sortable";
+import PracticeSection from "./sections/PracticeSection";
 
 const initialUploadStatus: IndexedUploadStatus = {
   "profilePhoto-0": "idle",
@@ -569,6 +570,7 @@ export default function Home() {
 
     const sectionIds = [
       "general-info",
+      "practice",
       "work-experience",
       "education",
       "project",
@@ -896,6 +898,7 @@ export default function Home() {
 
   const sections = [
     { id: "general-info", label: "General Info" },
+    { id: "practice", label: "Practice" },
     { id: "work-experience", label: "Work Experience" },
     { id: "education", label: "Education" },
     { id: "project", label: "Projects" },
@@ -1514,6 +1517,11 @@ export default function Home() {
               </div>
             </div>
           </div>{" "}
+          <PracticeSection
+            user={user}
+            setUser={setUser}
+            markAsEdited={markAsEdited}
+          />
           <div
             id="work-experience"
             className="flex min-h-screen flex-col pt-11 justify-center items-start gap-4"
